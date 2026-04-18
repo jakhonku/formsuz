@@ -30,9 +30,19 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user, account, profile }) {
+      console.log("[AUTH DEBUG] signIn callback", {
+        userId: user?.id,
+        email: user?.email,
+        provider: account?.provider,
+        hasProfile: !!profile,
+      });
+      return true;
+    },
     async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
+        console.log("[AUTH DEBUG] jwt callback — new sign in", { userId: user.id });
       }
       if (account) {
         token.accessToken = account.access_token;
@@ -46,9 +56,31 @@ export const authOptions: NextAuthOptions = {
         session.user.accessToken = token.accessToken as string | undefined;
         session.user.refreshToken = token.refreshToken as string | undefined;
       }
+      console.log("[AUTH DEBUG] session callback", {
+        hasUser: !!session.user,
+        userId: token.id,
+      });
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      console.log("[AUTH DEBUG] redirect callback", { url, baseUrl });
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    },
   },
+  events: {
+    async signIn(message) {
+      console.log("[AUTH DEBUG] event:signIn", {
+        userId: message.user?.id,
+        isNewUser: message.isNewUser,
+      });
+    },
+    async createUser(message) {
+      console.log("[AUTH DEBUG] event:createUser", { userId: message.user?.id });
+    },
+  },
+  debug: true,
   pages: {
     signIn: "/login",
   },
