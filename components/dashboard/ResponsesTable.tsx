@@ -100,7 +100,7 @@ export function ResponsesTable({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full max-w-full overflow-hidden">
       <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
         <div className="relative w-full md:w-96">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />

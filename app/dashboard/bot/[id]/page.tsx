@@ -58,7 +58,7 @@ export default async function BotDetailPage({
     : "responses";
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 w-full min-w-0">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
