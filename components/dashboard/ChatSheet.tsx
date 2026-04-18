@@ -208,14 +208,34 @@ export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatS
                             ? "bg-primary text-white rounded-tr-none" 
                             : "bg-white text-slate-800 rounded-tl-none border border-slate-100"
                         }`}>
-                          {msg.type === "text" && <p className="whitespace-pre-wrap">{msg.content}</p>}
+                          {msg.type === "text" && <p className="text-sm whitespace-pre-wrap">{msg.content}</p>}
                           {msg.type === "image" && (
-                            <img src={msg.fileUrl || ""} alt="Media" className="rounded-lg max-h-60 w-auto" />
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <ImageIcon size={16} />
+                                <span className="text-xs font-medium">Rasm</span>
+                              </div>
+                              {msg.content && <p className="text-sm">{msg.content}</p>}
+                              {msg.fileUrl && (
+                                <img src={msg.fileUrl} alt="Media" className="rounded-lg max-h-60 w-auto mt-2" />
+                              )}
+                            </div>
+                          )}
+                          {msg.type === "file" && (
+                            <div className="flex items-center gap-2 bg-black/5 p-2 rounded-lg border border-black/10">
+                              <FileIcon size={20} className="shrink-0" />
+                              <div className="min-w-0">
+                                <p className="text-xs font-medium truncate max-w-[150px]">
+                                  {msg.content || "Fayl"}
+                                </p>
+                                <p className="text-[10px] opacity-60">Hujjat</p>
+                              </div>
+                            </div>
                           )}
                           {msg.type === "voice" && (
-                            <div className="flex items-center gap-2 py-1">
-                              <Mic size={14} />
-                              <span className="text-xs lowercase">Ovozli habar</span>
+                            <div className="flex items-center gap-2">
+                              <Mic size={16} />
+                              <span className="text-xs">Ovozli xabar</span>
                             </div>
                           )}
                         </div>
