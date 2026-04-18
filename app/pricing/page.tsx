@@ -78,14 +78,14 @@ export default function PricingPage() {
           {tiers.map((tier) => (
             <Card 
               key={tier.id} 
-              className={`relative flex flex-col h-full border-none transition-all duration-300 hover:-translate-y-2 ${
+              className={`relative flex flex-col h-full border-none transition-all duration-300 hover:-translate-y-2 overflow-visible ${
                 tier.popular 
                   ? "shadow-[0_20px_50px_rgba(37,99,235,0.15)] ring-2 ring-primary scale-105 z-10" 
                   : "shadow-xl shadow-slate-200/50 bg-white"
               }`}
             >
               {tier.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-lg z-20">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-lg z-30">
                   ENG MASHHUR
                 </div>
               )}
