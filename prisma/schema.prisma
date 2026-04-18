@@ -85,9 +85,13 @@ model Bot {
 }
 
 model Response {
-  id        String   @id @default(cuid())
-  botId     String
-  bot       Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
-  data      Json     // The responses collected from Telegram
-  createdAt DateTime @default(now())
+  id                String   @id @default(cuid())
+  botId             String
+  bot               Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  data              Json     // The responses collected from Telegram
+  status            String   @default("completed") // in_progress, completed
+  chatId            String?  // Telegram chat id
+  lastQuestionIndex Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
