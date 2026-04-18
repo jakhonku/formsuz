@@ -83,8 +83,6 @@ export async function POST(req: Request, { params }: { params: { botId: string }
               type,
               fileUrl,
               sender: "user",
-              senderName: `${from?.first_name || ""} ${from?.last_name || ""}`.trim() || null,
-              senderUsername: from?.username || null
             },
           });
         }
