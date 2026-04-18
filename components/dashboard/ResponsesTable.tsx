@@ -100,9 +100,9 @@ export function ResponsesTable({
   };
 
   return (
-    <div className="space-y-6 w-full max-w-full overflow-hidden">
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
-        <div className="relative w-full md:w-96">
+    <div className="space-y-6 w-full">
+      <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center">
+        <div className="relative flex-1 min-w-0">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <Input
             placeholder="Javoblar yoki foydalanuvchi bo'yicha qidirish..."
@@ -116,7 +116,7 @@ export function ResponsesTable({
           variant="outline"
           onClick={exportToExcel}
           disabled={filteredResponses.length === 0}
-          className="w-full md:w-auto h-11 bg-white gap-2 border-slate-200 hover:bg-green-50 hover:text-green-700 hover:border-green-200 transition-all font-semibold rounded-xl shadow-sm"
+          className="shrink-0 h-11 bg-white gap-2 border-slate-200 hover:bg-green-50 hover:text-green-700 hover:border-green-200 transition-all font-semibold rounded-xl shadow-sm"
         >
           <FileSpreadsheet size={18} />
           Excel yuklash
@@ -128,26 +128,26 @@ export function ResponsesTable({
           <Table>
             <TableHeader className="bg-slate-50/80">
               <TableRow>
-                <TableHead className="font-bold text-slate-900 border-b min-w-[180px]">
+                <TableHead className="font-bold text-slate-900 border-b whitespace-nowrap">
                   Sana
                 </TableHead>
-                <TableHead className="font-bold text-slate-900 border-b min-w-[140px]">
+                <TableHead className="font-bold text-slate-900 border-b whitespace-nowrap">
                   User ID
                 </TableHead>
                 {questions.map((q) => (
                   <TableHead
                     key={q.questionId}
-                    className="font-bold text-slate-900 border-b min-w-[200px]"
+                    className="font-bold text-slate-900 border-b whitespace-nowrap"
                   >
                     {q.title}
                   </TableHead>
                 ))}
                 {isQuiz && (
-                  <TableHead className="font-bold text-slate-900 border-b min-w-[120px]">
+                  <TableHead className="font-bold text-slate-900 border-b whitespace-nowrap">
                     Ball
                   </TableHead>
                 )}
-                <TableHead className="font-bold text-slate-900 border-b min-w-[100px] text-right">
+                <TableHead className="font-bold text-slate-900 border-b whitespace-nowrap text-right">
                   Amallar
                 </TableHead>
               </TableRow>
