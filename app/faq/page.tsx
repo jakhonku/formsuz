@@ -125,7 +125,7 @@ const sections: Section[] = [
       },
       {
         q: "Professional tarif qanchaga tushadi?",
-        a: "Oyiga 99 000 so'm. 10 ta botgacha, real-vaqtda chat, Excel eksport va prioritet qo'llab-quvvatlash kiradi.",
+        a: "Oyiga 15 000 so'm. 10 ta botgacha, real-vaqtda chat, Excel eksport va prioritet qo'llab-quvvatlash kiradi.",
       },
       {
         q: "Gway.uz bilan tarifi nima?",

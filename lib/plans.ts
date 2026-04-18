@@ -13,7 +13,7 @@ export const PLANS = {
     maxForms: 10,
     features: ["Barcha bepul imkoniyatlar", "10 tagacha bot", "Admin bilan real-vaqtda chat", "Media fayllar (Rasm, PDF, Fayl)", "Eksport (Excel/CSV)", "Tezkor yordam"],
     chatEnabled: true,
-    price: 99000
+    price: 15000
   },
   BUSINESS: {
     name: "Biznes",

@@ -21,7 +21,7 @@ const tiers = [
   {
     name: "Professional",
     id: "PRO",
-    price: "99,000 so'm",
+    price: "15,000 so'm",
     unit: "/oy",
     description: "Kichik va o'rta biznes egalari uchun kengaytirilgan imkoniyatlar.",
     features: [
