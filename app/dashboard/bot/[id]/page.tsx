@@ -130,7 +130,7 @@ export default async function BotDetailPage({
 
       {/* Tabs */}
       <Tabs defaultValue={activeTab} className="w-full">
-        <div className="flex justify-center">
+        <div className="flex justify-start">
           <TabsList className="bg-slate-100 p-1 rounded-full h-11">
             <TabsTrigger value="responses" className="rounded-full px-5 gap-2 text-sm">
               <MessageSquare size={14} />
