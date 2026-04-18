@@ -50,6 +50,26 @@ export async function createSpreadsheet(accessToken: string, title: string) {
   return response.data.spreadsheetId;
 }
 
+export async function writeSheetHeaders(
+  accessToken: string,
+  spreadsheetId: string,
+  headers: string[]
+) {
+  const sheets = await getGoogleSheetsClient(accessToken);
+  try {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: "A1",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [headers],
+      },
+    });
+  } catch (error) {
+    console.error("writeSheetHeaders error:", error);
+  }
+}
+
 export async function appendResponseToSheet(accessToken: string, spreadsheetId: string, values: any[]) {
   const sheets = await getGoogleSheetsClient(accessToken);
   try {
@@ -63,7 +83,6 @@ export async function appendResponseToSheet(accessToken: string, spreadsheetId: 
     });
   } catch (error: any) {
     // If Sheet1 doesn't exist (default name might be different in other languages)
-    // Try appending without specific sheet name
     await sheets.spreadsheets.values.append({
       spreadsheetId,
       range: "A1",

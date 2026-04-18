@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getFormDetails, createSpreadsheet } from "@/lib/google";
+import { getFormDetails, createSpreadsheet, writeSheetHeaders } from "@/lib/google";
 import { setWebhook, verifyBotToken } from "@/lib/telegram";
 import { encrypt } from "@/lib/crypto";
+import { parseForm } from "@/lib/formQuestions";
 
 function resolvePublicBaseUrl(req: Request) {
   const envUrl = process.env.NEXTAUTH_URL;
@@ -85,6 +86,16 @@ export async function POST(req: Request) {
             where: { id: dbForm.id },
             data: { linkedSheetId: sheetId }
           });
+          try {
+            const parsed = parseForm(googleForm);
+            await writeSheetHeaders(session.user.accessToken!, sheetId, [
+              "Sana",
+              "User ID",
+              ...parsed.questions.map((q) => q.title),
+            ]);
+          } catch (headerErr) {
+            console.error("Failed to write sheet headers:", headerErr);
+          }
         }
       } catch (sheetErr) {
         console.error("Failed to create spreadsheet:", sheetErr);
