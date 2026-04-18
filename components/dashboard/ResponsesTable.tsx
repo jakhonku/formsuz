@@ -63,12 +63,21 @@ export function ResponsesTable({
   const exportToExcel = () => {
     if (filteredResponses.length === 0) return;
 
+    const escapeCell = (val: string) => {
+      const str = String(val);
+      if (str.includes("\t") || str.includes('"') || str.includes("\n")) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
     const headers = [
       "Sana",
       "User ID",
       ...questions.map((q) => q.title),
       ...(isQuiz ? ["Ball"] : []),
     ];
+
     const rows = filteredResponses.map((resp) => {
       const cells: string[] = [
         new Date(resp.createdAt).toLocaleString("uz-UZ"),
@@ -79,20 +88,17 @@ export function ResponsesTable({
         const { gained, total } = computeQuizScore(resp.data, questions);
         cells.push(`${gained} / ${total}`);
       }
-      return cells
-        .map((val) => `"${String(val).replace(/"/g, '""')}"`)
-        .join(",");
+      return cells.map(escapeCell).join("\t");
     });
 
-    const csvContent =
-      "\uFEFFsep=,\n" + [headers.join(","), ...rows].join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const content = "\uFEFF" + [headers.map(escapeCell).join("\t"), ...rows].join("\n");
+    const blob = new Blob([content], { type: "application/vnd.ms-excel;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
     link.setAttribute(
       "download",
-      `FormBot_${botName}_${new Date().toISOString().split("T")[0]}.csv`
+      `FormBot_${botName}_${new Date().toISOString().split("T")[0]}.xls`
     );
     document.body.appendChild(link);
     link.click();
