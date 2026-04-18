@@ -110,7 +110,9 @@ export async function POST(req: Request, { params }: { params: { botId: string }
           }
 
           if (spreadsheetId) {
-            const values = Object.values(updatedData);
+            // Ensure values are in the same order as questions
+            const values = questions.map((q: any) => updatedData[q.title] || "");
+            
             // Add date as first column
             await appendResponseToSheet(accessToken, spreadsheetId, [new Date().toLocaleString(), ...values]);
             console.log("Data successfully written to sheet:", spreadsheetId);
