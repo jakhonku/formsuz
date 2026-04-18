@@ -1,20 +1,23 @@
 export const PLANS = {
   FREE: {
-    name: "Free",
-    maxBots: 3,
-    features: ["Google Form ulanish", "Telegram bot orqali javoblar", "3 tagacha bot", "Asosiy qo'llab-quvvatlash"],
+    name: "Bepul",
+    maxBots: 1,
+    features: ["1 tagacha bot", "Google Form ulanish", "Telegram bot orqali javoblar", "Asosiy qo'llab-quvvatlash"],
+    chatEnabled: false,
     price: 0
   },
   PRO: {
-    name: "Pro",
+    name: "Professional",
     maxBots: 10,
-    features: ["Barcha Free imkoniyatlar", "10 tagacha bot", "Real-time chat", "Eksport (Excel/CSV)", "Tezkor yordam"],
-    price: 99000 // In Sums (example)
+    features: ["Barcha bepul imkoniyatlar", "10 tagacha bot", "Admin bilan real-vaqtda chat", "Media fayllar (Rasm, PDF, Fayl)", "Eksport (Excel/CSV)", "Tezkor yordam"],
+    chatEnabled: true,
+    price: 99000
   },
   BUSINESS: {
-    name: "Business",
+    name: "Biznes",
     maxBots: 100,
-    features: ["Cheksiz botlar", "Custom branding", "24/7 Priority support", "API Access", "Shaxsiy menejer"],
+    features: ["Cheksiz botlar", "Shaxsiy brending (Branding)", "Cheksiz chat tarixi", "API orqali ulanish imkoniyati", "24/7 Ustuvor qo'llab-quvvatlash", "Shaxsiy menejer"],
+    chatEnabled: true,
     price: 299000
   }
 };

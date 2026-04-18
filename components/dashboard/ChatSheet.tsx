@@ -25,6 +25,10 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { getPlanLimit, PLANS } from "@/lib/plans";
+import { Lock, ArrowRight, ShieldAlert } from "lucide-react";
+import Link from "next/link";
 
 interface Message {
   id: string;
@@ -156,6 +160,10 @@ export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatS
     }
   };
 
+  const { data: session } = useSession();
+  const userPlan = session?.user?.plan || "FREE";
+  const isChatLocked = !getPlanLimit(userPlan).chatEnabled;
+
   const lastUserMsg = [...messages].reverse().find(m => m.sender === "user");
   const displayName = lastUserMsg?.senderName || userInfo?.name || `Chat #${chatId}`;
   const displayUsername = lastUserMsg?.senderUsername 
@@ -164,8 +172,68 @@ export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatS
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="sm:max-w-md flex flex-col p-0 gap-0">
-        <SheetHeader className="p-4 border-b bg-slate-50 flex-row items-center justify-between space-y-0">
+      <SheetContent className="sm:max-w-md flex flex-col p-0 gap-0 overflow-hidden">
+        {isChatLocked ? (
+          <div className="flex flex-col h-full bg-slate-50">
+            <SheetHeader className="p-4 border-b bg-white flex-row items-center gap-3 space-y-0">
+               <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+                 <Lock size={18} className="text-slate-400" />
+               </div>
+               <div className="text-left flex-1">
+                 <SheetTitle className="text-sm font-bold">Chat Cheklangan</SheetTitle>
+                 <SheetDescription className="text-[10px]">Professional tarif talab qilinadi</SheetDescription>
+               </div>
+               <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full w-8 h-8">
+                 <X size={16} />
+               </Button>
+            </SheetHeader>
+            
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-6">
+              <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center text-primary relative">
+                <ShieldAlert size={40} />
+                <div className="absolute -top-2 -right-2 bg-yellow-400 text-black px-2 py-0.5 rounded-full text-[10px] font-black border-2 border-slate-50">
+                  PRO
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <h3 className="text-xl font-black text-slate-900 leading-tight">
+                  Mijozlar bilan jonli muloqot qiling!
+                </h3>
+                <p className="text-sm text-slate-500 leading-relaxed">
+                  Bepul tarifda faqat xabarlarni qabul qilishingiz mumkin. 
+                  Foydalanuvchilarga javob yozish va media fayllar yuborish uchun **Professional** tarifga o'ting.
+                </p>
+              </div>
+
+              <div className="w-full space-y-3 bg-white p-4 rounded-2xl border border-slate-200">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-left px-2">PRO Imkoniyatlar:</p>
+                <ul className="space-y-2.5 text-left">
+                  {PLANS.PRO.features.slice(2, 6).map((f, i) => (
+                    <li key={i} className="text-xs flex items-center gap-2 text-slate-600">
+                      <div className="w-4 h-4 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+                        <Check size={10} strokeWidth={3} />
+                      </div>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <Button asChild className="w-full h-12 rounded-xl text-md font-bold shadow-lg shadow-primary/25 bg-primary hover:bg-primary/90">
+                <Link href="/pricing" onClick={onClose}>
+                  Tarifni yangilash <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              
+              <p className="text-[10px] text-slate-400">
+                * Ma'lumotlaringiz xavfsizligi kafolatlanadi
+              </p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <SheetHeader className="p-4 border-b bg-slate-50 flex-row items-center justify-between space-y-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center overflow-hidden">
               {lastUserMsg?.senderPhoto ? (
@@ -322,7 +390,9 @@ export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatS
             </div>
           </form>
         </div>
-      </SheetContent>
-    </Sheet>
+      </>
+    )}
+  </SheetContent>
+</Sheet>
   );
 }
