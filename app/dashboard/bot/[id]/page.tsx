@@ -5,10 +5,17 @@ import { notFound } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Bot as BotIcon, MessageSquare, ListTodo, Settings, ExternalLink, Award } from "lucide-react";
+import {
+  Bot as BotIcon,
+  MessageSquare,
+  ListTodo,
+  Settings,
+  ExternalLink,
+  Award,
+} from "lucide-react";
 import { BotSettingsPanel } from "@/components/dashboard/BotSettingsPanel";
 import { ResponsesTable } from "@/components/dashboard/ResponsesTable";
+import { BotHeaderActions } from "@/components/dashboard/BotHeaderActions";
 import { parseForm } from "@/lib/formQuestions";
 
 const TYPE_LABEL: Record<string, string> = {
@@ -24,108 +31,125 @@ const TYPE_LABEL: Record<string, string> = {
   unknown: "Boshqa",
 };
 
-export default async function BotDetailPage({ params }: { params: { id: string } }) {
+export default async function BotDetailPage({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams?: { tab?: string };
+}) {
   const session = await getServerSession(authOptions);
 
   const bot = await prisma.bot.findUnique({
     where: { id: params.id, userId: session?.user?.id },
     include: {
       form: true,
-      responses: {
-        orderBy: { createdAt: "desc" },
-      },
+      responses: { orderBy: { createdAt: "desc" } },
     },
   });
 
-  if (!bot) {
-    notFound();
-  }
+  if (!bot) notFound();
 
   const parsed = parseForm(bot.form.metadata);
   const questions = parsed.questions;
   const completedResponses = bot.responses.filter((r) => r.status === "completed");
+  const activeTab = ["responses", "questions", "settings"].includes(searchParams?.tab || "")
+    ? searchParams!.tab!
+    : "responses";
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col gap-5">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
-            <BotIcon size={28} />
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <div
+            className={`w-11 h-11 rounded-2xl flex items-center justify-center shadow-md shrink-0 ${
+              bot.status === "active"
+                ? "bg-primary text-white shadow-primary/20"
+                : "bg-slate-200 text-slate-400"
+            }`}
+          >
+            <BotIcon size={22} />
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-2xl font-bold tracking-tight">@{bot.telegramBotUsername}</h1>
-              <Badge variant={bot.status === "active" ? "default" : "secondary"}>
-                {bot.status === "active" ? "Aktiv" : "Faol emas"}
+              <h1 className="text-xl font-bold tracking-tight truncate">
+                @{bot.telegramBotUsername}
+              </h1>
+              <Badge variant={bot.status === "active" ? "default" : "secondary"} className="text-xs">
+                {bot.status === "active" ? "Aktiv" : "Tohtatilgan"}
               </Badge>
               {parsed.isQuiz && (
-                <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 gap-1">
-                  <Award size={12} /> Test rejimi
+                <Badge
+                  variant="outline"
+                  className="bg-amber-50 text-amber-700 border-amber-200 gap-1 text-xs"
+                >
+                  <Award size={11} /> Test rejimi
                 </Badge>
               )}
             </div>
-            <p className="text-slate-500 flex items-center gap-1">
-              <ExternalLink size={14} />
+            <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5 truncate">
+              <ExternalLink size={12} />
               {bot.form.title}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" asChild className="rounded-full">
-            <a href={`https://t.me/${bot.telegramBotUsername}`} target="_blank" rel="noreferrer">
-              Botga o'tish
-            </a>
-          </Button>
-        </div>
+        <BotHeaderActions
+          botId={bot.id}
+          initialStatus={bot.status}
+          telegramUsername={bot.telegramBotUsername}
+        />
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-none shadow-sm">
-          <CardHeader className="pb-2">
-            <CardDescription className="font-medium uppercase tracking-wider text-xs">Jami javoblar</CardDescription>
-            <CardTitle className="text-3xl font-bold">{completedResponses.length}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card className="border-none shadow-sm">
-          <CardHeader className="pb-2">
-            <CardDescription className="font-medium uppercase tracking-wider text-xs">Savollar soni</CardDescription>
-            <CardTitle className="text-3xl font-bold">{questions.length}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card className="border-none shadow-sm">
-          <CardHeader className="pb-2">
-            <CardDescription className="font-medium uppercase tracking-wider text-xs">Oxirgi faollik</CardDescription>
-            <CardTitle className="text-xl font-bold">
-              {bot.responses.length > 0
-                ? new Date(bot.responses[0].createdAt).toLocaleDateString("uz-UZ")
-                : "Hali yo'q"}
-            </CardTitle>
-          </CardHeader>
-        </Card>
+      {/* Stats row */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <MiniStat label="Jami javoblar" value={completedResponses.length} />
+        <MiniStat label="Savollar" value={questions.length} />
+        <MiniStat
+          label="Oxirgi faollik"
+          value={
+            bot.responses.length > 0
+              ? new Date(bot.responses[0].createdAt).toLocaleDateString("uz-UZ", {
+                  month: "short",
+                  day: "numeric",
+                })
+              : "—"
+          }
+          small
+        />
+        <MiniStat
+          label="Yaratilgan"
+          value={new Date(bot.createdAt).toLocaleDateString("uz-UZ", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
+          small
+        />
       </div>
 
-      {/* Tabs Section */}
-      <Tabs defaultValue="responses" className="w-full">
-        <div className="flex justify-center mb-6">
-          <TabsList className="bg-slate-100 p-1 rounded-full h-12">
-            <TabsTrigger value="responses" className="rounded-full px-8 gap-2">
-              <MessageSquare size={16} />
+      {/* Tabs */}
+      <Tabs defaultValue={activeTab} className="w-full">
+        <div className="flex justify-center">
+          <TabsList className="bg-slate-100 p-1 rounded-full h-11">
+            <TabsTrigger value="responses" className="rounded-full px-5 gap-2 text-sm">
+              <MessageSquare size={14} />
               Javoblar
+              <span className="text-xs text-slate-400">({completedResponses.length})</span>
             </TabsTrigger>
-            <TabsTrigger value="questions" className="rounded-full px-8 gap-2">
-              <ListTodo size={16} />
+            <TabsTrigger value="questions" className="rounded-full px-5 gap-2 text-sm">
+              <ListTodo size={14} />
               Savollar
+              <span className="text-xs text-slate-400">({questions.length})</span>
             </TabsTrigger>
-            <TabsTrigger value="settings" className="rounded-full px-8 gap-2">
-              <Settings size={16} />
+            <TabsTrigger value="settings" className="rounded-full px-5 gap-2 text-sm">
+              <Settings size={14} />
               Sozlamalar
             </TabsTrigger>
           </TabsList>
         </div>
 
-        <TabsContent value="responses" className="w-full">
+        <TabsContent value="responses" className="w-full mt-5">
           <ResponsesTable
             responses={completedResponses}
             questions={questions}
@@ -134,52 +158,62 @@ export default async function BotDetailPage({ params }: { params: { id: string }
           />
         </TabsContent>
 
-        <TabsContent value="questions" className="w-full">
+        <TabsContent value="questions" className="w-full mt-5">
           {questions.length === 0 ? (
             <Card className="border-dashed border-2 bg-transparent">
-              <CardContent className="py-16 text-center text-slate-500">
+              <CardContent className="py-14 text-center text-slate-500 text-sm">
                 Bu formada hali savollar yo'q.
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
               {questions.map((q, i) => (
                 <Card key={q.questionId || i} className="border-none shadow-sm h-full">
-                  <CardContent className="p-6 flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold flex-shrink-0">
+                  <CardContent className="p-4 flex gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold flex-shrink-0 text-sm">
                       {i + 1}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-bold text-slate-800 break-words">{q.title}</p>
+                      <p className="font-semibold text-slate-800 break-words text-sm">
+                        {q.title}
+                      </p>
                       {q.description && (
-                        <p className="text-sm text-slate-500 mt-1 line-clamp-2">{q.description}</p>
+                        <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">
+                          {q.description}
+                        </p>
                       )}
-                      <div className="flex items-center gap-2 mt-2 flex-wrap">
+                      <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                         <Badge variant="secondary" className="rounded-full text-xs font-normal">
                           {TYPE_LABEL[q.type] || q.type}
                         </Badge>
                         {q.required && (
-                          <Badge variant="outline" className="rounded-full text-xs font-normal bg-red-50 text-red-600 border-red-100">
+                          <Badge
+                            variant="outline"
+                            className="rounded-full text-xs font-normal bg-red-50 text-red-600 border-red-100"
+                          >
                             Majburiy
                           </Badge>
                         )}
                         {typeof q.points === "number" && (
-                          <Badge variant="outline" className="rounded-full text-xs font-normal bg-amber-50 text-amber-700 border-amber-200">
+                          <Badge
+                            variant="outline"
+                            className="rounded-full text-xs font-normal bg-amber-50 text-amber-700 border-amber-200"
+                          >
                             {q.points} ball
                           </Badge>
                         )}
                       </div>
                       {q.options && q.options.length > 0 && (
-                        <ul className="mt-3 space-y-1 text-xs text-slate-500">
-                          {q.options.slice(0, 5).map((o, oi) => (
-                            <li key={oi} className="flex items-center gap-2">
-                              <span className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                        <ul className="mt-2 space-y-0.5 text-xs text-slate-500">
+                          {q.options.slice(0, 3).map((o, oi) => (
+                            <li key={oi} className="flex items-center gap-1.5">
+                              <span className="w-1 h-1 rounded-full bg-slate-300" />
                               <span className="truncate">{o.value}</span>
                               {o.isCorrect && <span className="text-green-600">✓</span>}
                             </li>
                           ))}
-                          {q.options.length > 5 && (
-                            <li className="text-slate-400">+{q.options.length - 5} boshqa</li>
+                          {q.options.length > 3 && (
+                            <li className="text-slate-400">+{q.options.length - 3} boshqa</li>
                           )}
                         </ul>
                       )}
@@ -191,7 +225,7 @@ export default async function BotDetailPage({ params }: { params: { id: string }
           )}
         </TabsContent>
 
-        <TabsContent value="settings" className="w-full">
+        <TabsContent value="settings" className="w-full mt-5">
           <div className="max-w-3xl mx-auto">
             <BotSettingsPanel
               botId={bot.id}
@@ -202,5 +236,26 @@ export default async function BotDetailPage({ params }: { params: { id: string }
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+function MiniStat({
+  label,
+  value,
+  small = false,
+}: {
+  label: string;
+  value: number | string;
+  small?: boolean;
+}) {
+  return (
+    <Card className="border-none shadow-sm bg-white">
+      <CardContent className="p-3">
+        <p className="text-xs text-slate-500 font-medium">{label}</p>
+        <p className={small ? "text-sm font-semibold mt-0.5" : "text-xl font-bold mt-0.5"}>
+          {value}
+        </p>
+      </CardContent>
+    </Card>
   );
 }

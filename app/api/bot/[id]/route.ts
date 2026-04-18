@@ -55,6 +55,38 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       data.status = body.status;
     }
 
+    // Refresh form metadata from Google (user edited form in Google Forms)
+    if (body.refreshForm === true) {
+      if (!session.user?.accessToken) {
+        return NextResponse.json(
+          { error: "Google ruxsati yo'q. Qaytadan kiring." },
+          { status: 401 }
+        );
+      }
+      const currentForm = await prisma.form.findUnique({ where: { id: bot.formId } });
+      if (!currentForm) {
+        return NextResponse.json({ error: "Forma topilmadi" }, { status: 404 });
+      }
+      try {
+        const googleForm = await getFormDetails(
+          session.user.accessToken,
+          currentForm.googleFormId
+        );
+        await prisma.form.update({
+          where: { id: currentForm.id },
+          data: {
+            title: googleForm.info?.title || currentForm.title,
+            metadata: googleForm as any,
+          },
+        });
+      } catch (err: any) {
+        return NextResponse.json(
+          { error: "Formani Google'dan yuklab bo'lmadi. Qaytadan kiring." },
+          { status: 400 }
+        );
+      }
+    }
+
     if (typeof body.formId === "string" && body.formId.length > 0) {
       if (!session.user?.accessToken) {
         return NextResponse.json(
@@ -88,8 +120,17 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       data.formId = dbForm.id;
     }
 
-    if (Object.keys(data).length === 0) {
+    if (Object.keys(data).length === 0 && body.refreshForm !== true) {
       return NextResponse.json({ error: "O'zgartirish uchun ma'lumot yo'q" }, { status: 400 });
+    }
+
+    if (Object.keys(data).length === 0) {
+      // Only refresh happened — return updated bot
+      const refreshed = await prisma.bot.findUnique({
+        where: { id: bot.id },
+        include: { form: true },
+      });
+      return NextResponse.json(refreshed);
     }
 
     const updated = await prisma.bot.update({

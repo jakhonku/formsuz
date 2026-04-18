@@ -3,91 +3,217 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, Bot, MessageSquare, ExternalLink } from "lucide-react";
+import {
+  PlusCircle,
+  Bot,
+  MessageSquare,
+  Activity,
+  Clock,
+  ArrowRight,
+  Eye,
+  FileText,
+} from "lucide-react";
+import { BotCard } from "@/components/dashboard/BotCard";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
-  
-  const bots = await prisma.bot.findMany({
-    where: { userId: session?.user?.id },
-    include: {
-      form: true,
-      _count: {
-        select: { responses: true }
-      }
-    },
-    orderBy: { createdAt: "desc" }
+  const userId = session?.user?.id;
+
+  const [bots, recentResponses, totalResponses, activeBotsCount, formCount] =
+    await Promise.all([
+      prisma.bot.findMany({
+        where: { userId },
+        include: { form: true, _count: { select: { responses: true } } },
+        orderBy: { createdAt: "desc" },
+        take: 3,
+      }),
+      prisma.response.findMany({
+        where: { bot: { userId }, status: "completed" },
+        include: { bot: { select: { telegramBotUsername: true, form: { select: { title: true } } } } },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      }),
+      prisma.response.count({ where: { bot: { userId }, status: "completed" } }),
+      prisma.bot.count({ where: { userId, status: "active" } }),
+      prisma.form.count({ where: { userId } }),
+    ]);
+
+  const totalBots = await prisma.bot.count({ where: { userId } });
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayResponses = await prisma.response.count({
+    where: { bot: { userId }, status: "completed", createdAt: { gte: today } },
   });
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="flex flex-col h-full gap-5">
+      {/* Welcome bar */}
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Xush kelibsiz, {session?.user?.name}!</h1>
-          <p className="text-slate-500 text-lg">Barcha botlaringiz va ulangan formalaringiz shu yerda.</p>
+          <h1 className="text-2xl font-bold tracking-tight">
+            Xush kelibsiz, {session?.user?.name?.split(" ")[0] || "Do'st"}!
+          </h1>
+          <p className="text-slate-500 text-sm">
+            Barcha botlaringiz va javoblar bir ko'rinishda.
+          </p>
         </div>
-        <Button size="lg" asChild className="rounded-full shadow-lg shadow-primary/20 gap-2 h-12 px-6">
+        <Button asChild size="sm" className="rounded-full h-10 gap-2 shadow-md shadow-primary/20">
           <Link href="/dashboard/new">
-            <PlusCircle className="h-5 w-5" />
+            <PlusCircle size={16} />
             Yangi bot ulash
           </Link>
         </Button>
       </div>
 
-      {bots.length === 0 ? (
-        <Card className="border-dashed border-2 bg-transparent">
-          <CardContent className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6">
-              <Bot className="h-10 w-10 text-slate-400" />
-            </div>
-            <h3 className="text-2xl font-semibold mb-2">Hali botlar yo'q</h3>
-            <p className="text-slate-500 max-w-sm mb-8">
-              Siz hali hech qanday Google Formni Telegram botga ulamagansiz. Boshlash uchun tugmani bosing.
-            </p>
-            <Button asChild size="lg" className="rounded-full">
-              <Link href="/dashboard/new">Yangi bot ulash</Link>
+      {/* Stats row */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <StatCard icon={<Bot size={18} />} label="Botlar" value={totalBots} hint={`${activeBotsCount} aktiv`} />
+        <StatCard icon={<MessageSquare size={18} />} label="Javoblar" value={totalResponses} hint="jami" />
+        <StatCard icon={<Activity size={18} />} label="Bugun" value={todayResponses} hint="ta javob" accent />
+        <StatCard icon={<FileText size={18} />} label="Formalar" value={formCount} hint="ulangan" />
+      </div>
+
+      {/* Main content */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 flex-1 min-h-0">
+        {/* My bots quick view */}
+        <div className="lg:col-span-2 flex flex-col min-h-0">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-base font-bold text-slate-800">Oxirgi botlaringiz</h2>
+            <Button asChild variant="ghost" size="sm" className="h-8 gap-1 text-primary">
+              <Link href="/dashboard/bots">
+                Hammasi <ArrowRight size={14} />
+              </Link>
             </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {bots.map((bot) => (
-            <Card key={bot.id} className="group hover:shadow-xl transition-all duration-300 border-none shadow-sm overflow-hidden bg-white">
-              <CardHeader className="pb-4">
-                <div className="flex justify-between items-start mb-2">
-                  <div className="p-2 bg-primary/5 text-primary rounded-lg group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                    <Bot size={24} />
-                  </div>
-                  <Badge variant={bot.status === "active" ? "default" : "secondary"} className="rounded-full">
-                    {bot.status === "active" ? "Aktiv" : "Faol emas"}
-                  </Badge>
+          </div>
+
+          {bots.length === 0 ? (
+            <Card className="border-dashed border-2 bg-transparent flex-1">
+              <CardContent className="flex flex-col items-center justify-center py-10 text-center h-full">
+                <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mb-3">
+                  <Bot className="h-7 w-7 text-slate-400" />
                 </div>
-                <CardTitle className="text-xl font-bold truncate">@{bot.telegramBotUsername || bot.name}</CardTitle>
-                <div className="flex items-center text-sm text-slate-500 gap-1">
-                  <ExternalLink size={14} />
-                  <span className="truncate">{bot.form.title}</span>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                  <div className="flex flex-col">
-                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Javoblar</span>
-                    <div className="flex items-center gap-2 mt-1">
-                      <MessageSquare size={16} className="text-primary" />
-                      <span className="text-2xl font-bold text-slate-900">{bot._count.responses}</span>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="sm" asChild className="text-primary hover:text-primary hover:bg-primary/10">
-                    <Link href={`/dashboard/bot/${bot.id}`}>Batafsil</Link>
-                  </Button>
-                </div>
+                <h3 className="text-base font-semibold mb-1">Hali botlar yo'q</h3>
+                <p className="text-slate-500 text-sm max-w-xs mb-4">
+                  Birinchi botingizni ulab, Google Form javoblarini Telegram'da qabul qilishni boshlang.
+                </p>
+                <Button asChild size="sm" className="rounded-full">
+                  <Link href="/dashboard/new">Yangi bot ulash</Link>
+                </Button>
               </CardContent>
             </Card>
-          ))}
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {bots.map((bot) => (
+                <BotCard
+                  key={bot.id}
+                  compact
+                  bot={{
+                    id: bot.id,
+                    telegramBotUsername: bot.telegramBotUsername,
+                    name: bot.name,
+                    status: bot.status,
+                    responsesCount: bot._count.responses,
+                    formTitle: bot.form.title,
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
-      )}
+
+        {/* Recent responses */}
+        <div className="flex flex-col min-h-0">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <Clock size={16} className="text-primary" />
+              Oxirgi javoblar
+            </h2>
+          </div>
+          <Card className="border-none shadow-sm flex-1">
+            <CardContent className="p-2">
+              {recentResponses.length === 0 ? (
+                <div className="text-center py-8 text-sm text-slate-400">
+                  Hali javoblar yo'q
+                </div>
+              ) : (
+                <ul className="divide-y divide-slate-100">
+                  {recentResponses.map((r) => (
+                    <li key={r.id}>
+                      <Link
+                        href={`/dashboard/bot/${r.botId}/response/${r.id}`}
+                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                          {r.chatId?.slice(-2) || "—"}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium truncate">
+                            {r.bot.form?.title || "Forma"}
+                          </p>
+                          <p className="text-xs text-slate-400 truncate">
+                            @{r.bot.telegramBotUsername || "bot"} •{" "}
+                            {new Date(r.createdAt).toLocaleString("uz-UZ", {
+                              month: "short",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </p>
+                        </div>
+                        <Badge variant="outline" className="shrink-0 text-xs gap-1">
+                          <Eye size={11} />
+                          ko'rish
+                        </Badge>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
+  );
+}
+
+function StatCard({
+  icon,
+  label,
+  value,
+  hint,
+  accent = false,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  hint: string;
+  accent?: boolean;
+}) {
+  return (
+    <Card
+      className={`border-none shadow-sm ${
+        accent ? "bg-primary text-white" : "bg-white"
+      }`}
+    >
+      <CardContent className="p-3 flex items-center gap-3">
+        <div
+          className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+            accent ? "bg-white/20 text-white" : "bg-primary/10 text-primary"
+          }`}
+        >
+          {icon}
+        </div>
+        <div className="min-w-0">
+          <p className={`text-xs font-medium ${accent ? "text-white/80" : "text-slate-500"}`}>
+            {label}
+          </p>
+          <p className="text-xl font-bold leading-tight">{value}</p>
+          <p className={`text-xs ${accent ? "text-white/70" : "text-slate-400"}`}>{hint}</p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
