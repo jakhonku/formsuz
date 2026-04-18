@@ -26,10 +26,11 @@ export function Navbar() {
     <nav className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">
-            F
-          </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900">FormBot</span>
+          <img 
+            src="/logo.png" 
+            alt="FormBot Logo" 
+            className="h-10 w-auto" 
+          />
         </Link>
 
         <div className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600">

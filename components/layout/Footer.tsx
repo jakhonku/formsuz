@@ -8,10 +8,11 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">
-                F
-              </div>
-              <span className="text-xl font-bold tracking-tight">FormBot</span>
+              <img 
+                src="/logo.png" 
+                alt="FormBot Logo" 
+                className="h-10 w-auto" 
+              />
             </div>
             <p className="text-slate-500 max-w-sm mb-5 text-sm leading-relaxed">
               Google Form'larni Telegram botga ulashning eng oson va tezkor usuli.
