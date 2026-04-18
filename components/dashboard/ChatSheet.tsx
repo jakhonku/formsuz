@@ -198,55 +198,63 @@ export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatS
                   <p className="text-xs text-slate-400">Hali xabarlar yo'q. Birinchi xabarni yuboring.</p>
                 </div>
               ) : (
-                messages.map((msg, i) => {
-                  const isAdmin = msg.sender === "admin";
-                  return (
-                    <div key={msg.id} className={`flex ${isAdmin ? "justify-end" : "justify-start"}`}>
-                      <div className={`max-w-[85%] flex flex-col ${isAdmin ? "items-end" : "items-start"}`}>
-                        <div className={`px-4 py-2 rounded-2xl text-sm shadow-sm ${
-                          isAdmin 
-                            ? "bg-primary text-white rounded-tr-none" 
-                            : "bg-white text-slate-800 rounded-tl-none border border-slate-100"
-                        }`}>
-                          {msg.type === "text" && <p className="text-sm whitespace-pre-wrap">{msg.content}</p>}
-                          {msg.type === "image" && (
-                            <div className="flex flex-col gap-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <ImageIcon size={16} />
-                                <span className="text-xs font-medium">Rasm</span>
-                              </div>
-                              {msg.content && <p className="text-sm">{msg.content}</p>}
-                              {msg.fileUrl && (
-                                <img src={msg.fileUrl} alt="Media" className="rounded-lg max-h-60 w-auto mt-2" />
-                              )}
-                            </div>
-                          )}
-                          {msg.type === "file" && (
-                            <div className="flex items-center gap-2 bg-black/5 p-2 rounded-lg border border-black/10">
-                              <FileIcon size={20} className="shrink-0" />
-                              <div className="min-w-0">
-                                <p className="text-xs font-medium truncate max-w-[150px]">
-                                  {msg.content || "Fayl"}
-                                </p>
-                                <p className="text-[10px] opacity-60">Hujjat</p>
-                              </div>
-                            </div>
-                          )}
-                          {msg.type === "voice" && (
-                            <div className="flex items-center gap-2">
-                              <Mic size={16} />
-                              <span className="text-xs">Ovozli xabar</span>
-                            </div>
+                messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex flex-col ${msg.sender === "admin" ? "items-end" : "items-start"}`}
+                  >
+                    <div className={`max-w-[85%] p-3 rounded-2xl ${
+                      msg.sender === "admin" 
+                        ? "bg-primary text-white rounded-tr-none" 
+                        : "bg-white text-slate-800 rounded-tl-none border border-slate-100"
+                    }`}>
+                      {msg.type === "text" && <p className="text-sm whitespace-pre-wrap">{msg.content}</p>}
+                      {msg.type === "image" && (
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <ImageIcon size={16} />
+                            <span className="text-xs font-medium">Rasm</span>
+                          </div>
+                          {msg.content && <p className="text-sm">{msg.content}</p>}
+                          {msg.fileUrl && (
+                            <img src={msg.fileUrl} alt="Media" className="rounded-lg max-h-60 w-auto mt-2" />
                           )}
                         </div>
-                        <span className="text-[10px] text-slate-400 mt-1">
-                          {new Date(msg.createdAt).toLocaleTimeString("uz-UZ", { hour: "2-digit", minute: "2-digit" })}
-                        </span>
-                      </div>
+                      )}
+                      {msg.type === "file" && (
+                        <div className="flex items-center gap-2 bg-black/5 p-2 rounded-lg border border-black/10">
+                          <FileIcon size={20} className="shrink-0" />
+                          <div className="min-w-0">
+                            <p className="text-xs font-medium truncate max-w-[150px]">
+                              {msg.content || "Fayl"}
+                            </p>
+                            <p className="text-[10px] opacity-60">Hujjat</p>
+                          </div>
+                        </div>
+                      )}
+                      {msg.type === "voice" && (
+                        <div className="flex items-center gap-2">
+                          <Mic size={16} />
+                          <span className="text-xs">Ovozli xabar</span>
+                        </div>
+                      )}
                     </div>
-                  );
-                })
+                    <span className="text-[10px] text-slate-400 mt-1 px-1">
+                      {new Date(msg.createdAt).toLocaleTimeString("uz-UZ", { hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                  </div>
+                ))
               )}
+              
+              {isSending && (
+                <div className="flex flex-col items-end animate-pulse">
+                  <div className="bg-primary/50 text-white p-3 rounded-2xl rounded-tr-none flex items-center gap-2">
+                    <Loader2 size={16} className="animate-spin" />
+                    <span className="text-xs font-medium">Fayl yuklanmoqda...</span>
+                  </div>
+                </div>
+              )}
+              
               <div ref={scrollRef} />
             </div>
           </ScrollArea>
@@ -276,9 +284,9 @@ export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatS
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
               />
-              {inputValue.trim() ? (
+              {inputValue.trim() || isSending ? (
                 <Button type="submit" size="icon" className="rounded-full shrink-0 h-9 w-9 bg-primary" disabled={isSending}>
-                  <Send size={18} />
+                  {isSending ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
                 </Button>
               ) : (
                 <Button 
