@@ -145,8 +145,10 @@ export default function PricingPage() {
             Agar sizga alohida imkoniyatlar yoki korporativ yechim kerak bo'lsa, 
             biz bilan bevosita bog'laning. Biz sizga mos moslashuvchan narxlarni taklif qilamiz.
           </p>
-          <Button variant="outline" size="lg" className="rounded-full gap-2 px-8">
-            Biz bilan bog'lanish <ArrowRight size={18} />
+          <Button variant="outline" size="lg" className="rounded-full gap-2 px-8" asChild>
+            <Link href="https://t.me/jakhonku" target="_blank">
+              Biz bilan bog'lanish <ArrowRight size={18} />
+            </Link>
           </Button>
         </div>
       </div>

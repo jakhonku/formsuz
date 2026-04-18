@@ -33,7 +33,7 @@ export default function CheckoutPage() {
     // Simulation: In real app, redirect to Click/Payme API
     setTimeout(() => {
       if (method === "telegram") {
-        window.open("https://t.me/jaxongir_baxtiyarov", "_blank");
+        window.open("https://t.me/jakhonku", "_blank");
       } else {
         alert(`${method} orqali to'lov tizimi tez kunda ishga tushadi. Hozircha Telegram orqali bog'laning.`);
       }
@@ -83,7 +83,7 @@ export default function CheckoutPage() {
             <h3 className="text-sm font-bold uppercase tracking-wider mb-3 text-slate-400">Ma'lumot</h3>
             <p className="text-xs text-slate-500 leading-relaxed">
               To'lov amalga oshirilgandan so'ng, tarifingiz avtomatik ravishda 
-              PRO holatiga o'tadi. Agar muammo yuzaga kelsa, @jaxongir_baxtiyarov ga yozing.
+              faollashadi. Agar muammo yuzaga kelsa, @jakhonku ga yozing.
             </p>
           </div>
         </div>
