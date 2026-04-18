@@ -82,46 +82,57 @@ export async function deleteBotWebhook(token: string) {
   }
 }
 
-export async function sendPhoto(token: string, chatId: string, photo: any, caption?: string) {
-  const isBuffer = photo instanceof Buffer || photo instanceof Blob;
-  const data = isBuffer ? new FormData() : { chat_id: chatId, photo, caption };
+export async function sendPhoto(token: string, chatId: string, photo: any, caption?: string, filename?: string) {
+  const isBuffer = photo instanceof Buffer || photo instanceof Blob || photo instanceof Uint8Array || (typeof photo === 'object' && photo !== null && 'arrayBuffer' in photo);
   
   if (isBuffer) {
-    (data as any).append('chat_id', chatId);
-    (data as any).append('photo', photo);
-    if (caption) (data as any).append('caption', caption);
+    const data = new FormData();
+    data.append('chat_id', chatId);
+    data.append('photo', photo, filename || 'photo.jpg');
+    if (caption) data.append('caption', caption);
+    
+    return axios.post(`${TELEGRAM_API}${token}/sendPhoto`, data);
   }
 
-  return axios.post(`${TELEGRAM_API}${token}/sendPhoto`, data, {
-    headers: isBuffer ? { 'Content-Type': 'multipart/form-data' } : undefined
+  return axios.post(`${TELEGRAM_API}${token}/sendPhoto`, {
+    chat_id: chatId,
+    photo,
+    caption,
   });
 }
 
-export async function sendDocument(token: string, chatId: string, document: any, caption?: string) {
-  const isBuffer = document instanceof Buffer || document instanceof Blob;
-  const data = isBuffer ? new FormData() : { chat_id: chatId, document, caption };
+export async function sendDocument(token: string, chatId: string, document: any, caption?: string, filename?: string) {
+  const isBuffer = document instanceof Buffer || document instanceof Blob || document instanceof Uint8Array || (typeof document === 'object' && document !== null && 'arrayBuffer' in document);
 
   if (isBuffer) {
-    (data as any).append('chat_id', chatId);
-    (data as any).append('document', document);
-    if (caption) (data as any).append('caption', caption);
+    const data = new FormData();
+    data.append('chat_id', chatId);
+    data.append('document', document, filename || 'file');
+    if (caption) data.append('caption', caption);
+    
+    return axios.post(`${TELEGRAM_API}${token}/sendDocument`, data);
   }
 
-  return axios.post(`${TELEGRAM_API}${token}/sendDocument`, data, {
-    headers: isBuffer ? { 'Content-Type': 'multipart/form-data' } : undefined
+  return axios.post(`${TELEGRAM_API}${token}/sendDocument`, {
+    chat_id: chatId,
+    document,
+    caption,
   });
 }
 
-export async function sendVoice(token: string, chatId: string, voice: any) {
-  const isBuffer = voice instanceof Buffer || voice instanceof Blob;
-  const data = isBuffer ? new FormData() : { chat_id: chatId, voice };
+export async function sendVoice(token: string, chatId: string, voice: any, filename?: string) {
+  const isBuffer = voice instanceof Buffer || voice instanceof Blob || voice instanceof Uint8Array;
 
   if (isBuffer) {
-    (data as any).append('chat_id', chatId);
-    (data as any).append('voice', voice);
+    const data = new FormData();
+    data.append('chat_id', chatId);
+    data.append('voice', voice, filename || 'voice.ogg');
+    
+    return axios.post(`${TELEGRAM_API}${token}/sendVoice`, data);
   }
 
-  return axios.post(`${TELEGRAM_API}${token}/sendVoice`, data, {
-    headers: isBuffer ? { 'Content-Type': 'multipart/form-data' } : undefined
+  return axios.post(`${TELEGRAM_API}${token}/sendVoice`, {
+    chat_id: chatId,
+    voice,
   });
 }

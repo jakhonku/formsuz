@@ -32,9 +32,9 @@ export async function POST(req: Request) {
 
     let tgRes;
     if (type === "image") {
-      tgRes = await sendPhoto(botToken, chatId, blob, file.name);
+      tgRes = await sendPhoto(botToken, chatId, blob, undefined, file.name);
     } else {
-      tgRes = await sendDocument(botToken, chatId, blob, file.name);
+      tgRes = await sendDocument(botToken, chatId, blob, undefined, file.name);
     }
 
     // Save to DB
