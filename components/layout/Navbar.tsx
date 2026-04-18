@@ -116,7 +116,7 @@ export function Navbar() {
                 <Link href="/login">Kirish</Link>
               </Button>
               <Button asChild className="rounded-full px-6">
-                <Link href="/login">Boshlash</Link>
+                <Link href="/login">Ro'yxatdan o'tish</Link>
               </Button>
             </div>
           )}
