@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bot as BotIcon, MessageSquare, ListTodo, Settings, ExternalLink } from "lucide-react";
 import { BotSettingsPanel } from "@/components/dashboard/BotSettingsPanel";
+import { ResponsesTable } from "@/components/dashboard/ResponsesTable";
 
 export default async function BotDetailPage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
@@ -105,52 +106,11 @@ export default async function BotDetailPage({ params }: { params: { id: string }
         </TabsList>
 
         <TabsContent value="responses">
-          <Card className="border-none shadow-md overflow-hidden">
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader className="bg-slate-50">
-                  <TableRow>
-                    <TableHead className="w-[180px]">Sana</TableHead>
-                    <TableHead>Foydalanuvchi (Chat ID)</TableHead>
-                    <TableHead className="w-[100px] text-right">Amal</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {bot.responses.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={3} className="text-center py-12 text-slate-400">
-                        Hali hech qanday javob kelmagan.
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    bot.responses.map((resp) => (
-                      <TableRow key={resp.id}>
-                        <TableCell className="font-medium">
-                          {new Date(resp.createdAt).toLocaleString("uz-UZ")}
-                        </TableCell>
-                        <TableCell>
-                          User: {resp.chatId}
-                          {resp.status === "in_progress" && (
-                            <Badge variant="outline" className="ml-2 text-yellow-600 bg-yellow-50">Jarayonda</Badge>
-                          )}
-                          {resp.status === "completed" && (
-                            <Badge variant="outline" className="ml-2 text-green-700 bg-green-50">Tugatildi</Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Button variant="ghost" size="sm" asChild>
-                            <Link href={`/dashboard/bot/${bot.id}/response/${resp.id}`}>
-                              Batafsil
-                            </Link>
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+          <ResponsesTable 
+            responses={bot.responses} 
+            questions={questions}
+            botName={bot.telegramBotUsername || "bot"} 
+          />
         </TabsContent>
 
         <TabsContent value="questions">
