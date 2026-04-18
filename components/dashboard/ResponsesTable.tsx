@@ -90,28 +90,34 @@ export function ResponsesTable({
       return cells;
     });
 
-    // Build HTML table for Excel — handles Unicode correctly
-    let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-<head><meta charset="utf-8"><style>td,th{border:1px solid #ccc;padding:6px 10px;font-family:Arial;font-size:12px}th{background:#f0f0f0;font-weight:bold}</style></head>
-<body><table>`;
+    // Build XML Spreadsheet for Excel — handles Unicode & columns correctly
+    const xmlEscape = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-    html += "<tr>";
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Worksheet ss:Name="Javoblar"><Table>`;
+
+    // Header row
+    xml += "<Row>";
     for (const h of headers) {
-      html += `<th>${escapeHtml(h)}</th>`;
+      xml += `<Cell><Data ss:Type="String">${xmlEscape(h)}</Data></Cell>`;
     }
-    html += "</tr>";
+    xml += "</Row>";
 
+    // Data rows
     for (const row of rows) {
-      html += "<tr>";
+      xml += "<Row>";
       for (const cell of row) {
-        html += `<td>${escapeHtml(cell)}</td>`;
+        xml += `<Cell><Data ss:Type="String">${xmlEscape(cell)}</Data></Cell>`;
       }
-      html += "</tr>";
+      xml += "</Row>";
     }
 
-    html += "</table></body></html>";
+    xml += "</Table></Worksheet></Workbook>";
 
-    const blob = new Blob(["\uFEFF" + html], { type: "application/vnd.ms-excel;charset=utf-8;" });
+    const blob = new Blob([xml], { type: "application/vnd.ms-excel;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
