@@ -79,7 +79,7 @@ const sections: Section[] = [
     items: [
       {
         q: "Bir akkauntda nechta bot ula olaman?",
-        a: "Bepul tarifda 3 ta bot. Pro tarifda cheksiz. Biznes tarifda cheksiz va qo'shimcha imkoniyatlar.",
+        a: "Bepul tarifda 1 ta bot. Professional tarifda 10 ta botgacha. Biznes tarifda 100 ta botgacha va cheksiz imkoniyatlar.",
       },
       {
         q: "Botni vaqtincha to'xtatish mumkinmi?",
@@ -87,19 +87,11 @@ const sections: Section[] = [
       },
       {
         q: "Javoblarni qayerdan ko'ra olaman?",
-        a: "Ikki joydan: 1) Dashboard'dagi bot sahifasida jadvalda, 2) Google Sheets jadvalida. Excel va CSV formatiga eksport qilsa ham bo'ladi.",
+        a: "Ikki joydan: 1) Dashboard'dagi bot sahifasida jadvalda, 2) Google Sheets jadvalida. Excel formatiga eksport qilish Professional va undan yuqori tariflarda mavjud.",
       },
       {
-        q: "Yarim qoldirilgan javoblar nima bo'ladi?",
-        a: "Foydalanuvchi /cancel yozsa yoki javob bermasa, uning javobi 'incomplete' deb belgilanadi va dashboard'dagi 'Javoblar' jadvaliga tushmaydi. Faqat to'liq javoblar hisobga olinadi.",
-      },
-      {
-        q: "Bitta foydalanuvchi bir nechta marta javob bera oladimi?",
-        a: "Ha. Har bir /start yangi javob sessiyasi boshlaydi.",
-      },
-      {
-        q: "Botni o'chirsam, javoblar yo'qoladimi?",
-        a: "Dashboard'dagi javoblar o'chadi, lekin Google Sheets'dagi ma'lumotlar o'z joyida qoladi.",
+        q: "Admin bilan real-vaqtda chat nima?",
+        a: "Bu Professional tarifdagi imkoniyat bo'lib, foydalanuvchilar botga yozganida siz platforma orqali ularga darhol javob qaytara olasiz. Bu mijozlarni qo'llab-quvvatlash uchun juda qulay.",
       },
     ],
   },
@@ -120,10 +112,6 @@ const sections: Section[] = [
         q: "Google akkauntimga qanday ruxsat beraman?",
         a: "FormBot faqat 4 ta ruxsat so'raydi: 1) Drive'dagi formalar ro'yxati, 2) Forma savollari (faqat o'qish), 3) Forma javoblari (faqat o'qish), 4) Sheets'ga yozish. Ruxsatni istalgan vaqt myaccount.google.com orqali olib tashlashingiz mumkin.",
       },
-      {
-        q: "Akkauntimni o'chira olamanmi?",
-        a: "Ha. Sozlamalar bo'limidan akkauntni butunlay o'chirish mumkin — barcha botlar, javoblar va ma'lumotlar o'chiriladi.",
-      },
     ],
   },
   {
@@ -133,23 +121,19 @@ const sections: Section[] = [
     items: [
       {
         q: "Bepul tarif haqiqatan bepulmi?",
-        a: "Ha, 100% bepul — karta talab qilinmaydi, vaqt cheklovi yo'q. 3 tagacha bot va cheksiz javoblar.",
+        a: "Ha, 100% bepul — karta talab qilinmaydi, vaqt cheklovi yo'q. 1 ta bot va 1 ta forma ulash imkoniyati mavjud.",
       },
       {
-        q: "Pro tarif qanchaga tushadi?",
-        a: "Oyiga 99 000 so'm. Cheksiz botlar, kengaytirilgan statistika va prioritet qo'llab-quvvatlash kiradi.",
+        q: "Professional tarif qanchaga tushadi?",
+        a: "Oyiga 99 000 so'm. 10 ta botgacha, real-vaqtda chat, Excel eksport va prioritet qo'llab-quvvatlash kiradi.",
+      },
+      {
+        q: "Gway.uz bilan tarifi nima?",
+        a: "Bu bizning investorlarimiz va strategik hamkorlarimiz uchun maxsus tarif. Unda barcha limitlar olib tashlangan. Ushbu tarifga o'tish uchun admin bilan bog'lanish lozim.",
       },
       {
         q: "Qanday to'lov qila olaman?",
-        a: "Click, Payme va bank karta orqali. Yuridik shaxslar uchun hisob-faktura beriladi.",
-      },
-      {
-        q: "Tarifni istalgan vaqt almashtirish mumkinmi?",
-        a: "Ha. Yuqoriga yoki pastga har qachon o'tishingiz mumkin. Obunani bekor qilsangiz ham 3 ta botgacha ishlashni davom ettirasiz.",
-      },
-      {
-        q: "Pul qaytarish mumkinmi?",
-        a: "Ha, birinchi to'lovdan so'ng 14 kun ichida pulni to'liq qaytaramiz. Sababini so'ramaymiz.",
+        a: "Click, Payme va bank karta orqali. Shuningdek, Telegram Admin orqali hisobni to'ldirish va tarifni faollashtirish mumkin.",
       },
     ],
   },
