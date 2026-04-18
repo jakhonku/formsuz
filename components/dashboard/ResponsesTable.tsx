@@ -43,6 +43,14 @@ function computeQuizScore(data: any, questions: ParsedQuestion[]) {
   return { gained, total };
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 export function ResponsesTable({
   responses,
   questions,
@@ -62,14 +70,6 @@ export function ResponsesTable({
   const exportToExcel = () => {
     if (filteredResponses.length === 0) return;
 
-    const escapeCell = (val: string) => {
-      const str = String(val);
-      if (str.includes("\t") || str.includes('"') || str.includes("\n")) {
-        return `"${str.replace(/"/g, '""')}"`;
-      }
-      return str;
-    };
-
     const headers = [
       "Sana",
       "User ID",
@@ -87,11 +87,31 @@ export function ResponsesTable({
         const { gained, total } = computeQuizScore(resp.data, questions);
         cells.push(`${gained} / ${total}`);
       }
-      return cells.map(escapeCell).join("\t");
+      return cells;
     });
 
-    const content = "\uFEFF" + [headers.map(escapeCell).join("\t"), ...rows].join("\n");
-    const blob = new Blob([content], { type: "application/vnd.ms-excel;charset=utf-8;" });
+    // Build HTML table for Excel — handles Unicode correctly
+    let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><style>td,th{border:1px solid #ccc;padding:6px 10px;font-family:Arial;font-size:12px}th{background:#f0f0f0;font-weight:bold}</style></head>
+<body><table>`;
+
+    html += "<tr>";
+    for (const h of headers) {
+      html += `<th>${escapeHtml(h)}</th>`;
+    }
+    html += "</tr>";
+
+    for (const row of rows) {
+      html += "<tr>";
+      for (const cell of row) {
+        html += `<td>${escapeHtml(cell)}</td>`;
+      }
+      html += "</tr>";
+    }
+
+    html += "</table></body></html>";
+
+    const blob = new Blob(["\uFEFF" + html], { type: "application/vnd.ms-excel;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
@@ -152,7 +172,6 @@ export function ResponsesTable({
                     Ball
                   </TableHead>
                 )}
-
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -217,7 +236,6 @@ export function ResponsesTable({
                           </Badge>
                         </TableCell>
                       )}
-
                     </TableRow>
                   );
                 })

@@ -9,6 +9,14 @@ interface ResponseDownloadButtonProps {
   date: string;
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 export function ResponseDownloadButton({
   botName,
   responseData,
@@ -17,25 +25,28 @@ export function ResponseDownloadButton({
   const handleDownload = () => {
     const data = JSON.parse(responseData);
 
-    // Google Sheets format: questions as column headers, answers as row values
-    const headers = data.map((d: any) => d.question);
-    const values = data.map((d: any) => d.answer);
+    // Build HTML table for Excel — handles Unicode correctly
+    let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><style>td,th{border:1px solid #ccc;padding:6px 10px;font-family:Arial;font-size:12px}th{background:#f0f0f0;font-weight:bold}</style></head>
+<body><table>`;
 
-    const escapeCell = (val: string) => {
-      const str = String(val);
-      if (str.includes(",") || str.includes('"') || str.includes("\n")) {
-        return `"${str.replace(/"/g, '""')}"`;
-      }
-      return str;
-    };
+    // Header row — question titles
+    html += "<tr>";
+    for (const d of data) {
+      html += `<th>${escapeHtml(d.question)}</th>`;
+    }
+    html += "</tr>";
 
-    // Tab-separated values format (.xls) — opens directly in Excel without encoding issues
-    const headerRow = headers.map(escapeCell).join("\t");
-    const valueRow = values.map(escapeCell).join("\t");
+    // Data row — answers
+    html += "<tr>";
+    for (const d of data) {
+      html += `<td>${escapeHtml(d.answer)}</td>`;
+    }
+    html += "</tr>";
 
-    const content = "\uFEFF" + headerRow + "\n" + valueRow;
+    html += "</table></body></html>";
 
-    const blob = new Blob([content], {
+    const blob = new Blob(["\uFEFF" + html], {
       type: "application/vnd.ms-excel;charset=utf-8;",
     });
     const url = URL.createObjectURL(blob);
