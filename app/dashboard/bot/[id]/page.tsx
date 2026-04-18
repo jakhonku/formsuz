@@ -21,6 +21,7 @@ import { ResponsesTable } from "@/components/dashboard/ResponsesTable";
 import { BotHeaderActions } from "@/components/dashboard/BotHeaderActions";
 import { parseForm } from "@/lib/formQuestions";
 import { RealTimeRefresh } from "@/components/dashboard/RealTimeRefresh";
+import { ResponsesList } from "@/components/dashboard/ResponsesList";
 
 const TYPE_LABEL: Record<string, string> = {
   short: "Qisqa javob",
@@ -175,33 +176,7 @@ export default async function BotDetailPage({
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-3">
-              {completedResponses.map((resp) => (
-                <Card key={resp.id} className="border-none shadow-sm hover:shadow-md transition-all">
-                  <CardContent className="p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                        <MessageSquare size={18} />
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm">
-                          Chat ID: <code className="text-xs bg-slate-100 px-2 py-0.5 rounded">{resp.chatId || "—"}</code>
-                        </p>
-                        <p className="text-xs text-slate-500 mt-0.5">
-                          {new Date(resp.createdAt).toLocaleString("uz-UZ")}
-                        </p>
-                      </div>
-                    </div>
-                    <Button variant="outline" size="sm" asChild className="rounded-lg gap-1.5">
-                      <Link href={`/dashboard/bot/${bot.id}/response/${resp.id}`}>
-                        <ExternalLink size={14} />
-                        Batafsil
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <ResponsesList responses={completedResponses} bot={bot} />
           )}
         </TabsContent>
 

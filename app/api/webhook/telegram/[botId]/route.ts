@@ -62,6 +62,25 @@ export async function POST(req: Request, { params }: { params: { botId: string }
 
     if (!body.message) return NextResponse.json({ ok: true });
 
+    // Save user message to chat history
+    try {
+      const chatId = body.message.chat.id.toString();
+      const text = body.message.text || "";
+      if (text && !text.startsWith("/")) {
+        await prisma.chatMessage.create({
+          data: {
+            botId,
+            chatId,
+            content: text,
+            sender: "user",
+            type: "text"
+          }
+        });
+      }
+    } catch (e) {
+      console.error("Failed to log chat message:", e);
+    }
+
     await handleMessage({
       botToken,
       botId,

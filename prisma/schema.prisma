@@ -81,6 +81,7 @@ model Bot {
   userId              String
   user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   responses           Response[]
+  messages            ChatMessage[]
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
@@ -95,4 +96,16 @@ model Response {
   lastQuestionIndex Int      @default(0)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  botId     String
+  bot       Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  chatId    String   // Telegram chat id
+  content   String?  @db.Text
+  type      String   @default("text") // text, voice, image, file
+  fileUrl   String?  @db.Text
+  sender    String   @default("admin") // admin, user
+  createdAt DateTime @default(now())
 }

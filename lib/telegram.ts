@@ -81,3 +81,26 @@ export async function deleteBotWebhook(token: string) {
     console.error("Telegram deleteWebhook error:", error);
   }
 }
+
+export async function sendPhoto(token: string, chatId: string, photo: string, caption?: string) {
+  return axios.post(`${TELEGRAM_API}${token}/sendPhoto`, {
+    chat_id: chatId,
+    photo,
+    caption,
+  });
+}
+
+export async function sendDocument(token: string, chatId: string, document: string, caption?: string) {
+  return axios.post(`${TELEGRAM_API}${token}/sendDocument`, {
+    chat_id: chatId,
+    document,
+    caption,
+  });
+}
+
+export async function sendVoice(token: string, chatId: string, voice: string) {
+  return axios.post(`${TELEGRAM_API}${token}/sendVoice`, {
+    chat_id: chatId,
+    voice,
+  });
+}
