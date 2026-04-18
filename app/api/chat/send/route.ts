@@ -20,6 +20,15 @@ export async function POST(req: Request) {
 
     const botToken = decrypt(bot.telegramToken);
 
+    // Check if it's the first message from admin to this user
+    const prevAdminMsg = await prisma.chatMessage.findFirst({
+      where: { botId, chatId, sender: "admin" }
+    });
+
+    if (!prevAdminMsg) {
+      await sendMessage(botToken, chatId, "🔔 <b>Admin siz bilan bog'landi.</b> Savollaringiz bo'lsa shu yerda yozishingiz mumkin.", { parse_mode: "HTML" });
+    }
+
     // Send to Telegram
     let tgRes;
     if (type === "text") {

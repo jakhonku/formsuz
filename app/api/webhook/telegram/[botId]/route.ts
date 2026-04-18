@@ -184,11 +184,8 @@ async function handleMessage(ctx: {
   }
 
   if (!response) {
-    await sendMessage(
-      botToken,
-      chatId,
-      "So'rovnomani boshlash uchun /start buyrug'ini yuboring."
-    );
+    // If no active form response, don't spam the "send /start" message
+    // This allows for free chat with the admin
     return;
   }
 
