@@ -5,7 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LayoutDashboard, LogOut, Settings } from "lucide-react";
+import { LayoutDashboard, LogOut, Settings, User2 } from "lucide-react";
 
 export function Navbar() {
   const { data: session, status } = useSession();
@@ -93,6 +93,14 @@ export function Navbar() {
                     >
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Sozlamalar</span>
+                    </Link>
+                    <Link
+                      href="/dashboard/about"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex w-full items-center rounded-md px-2 py-1.5 text-sm hover:bg-slate-100 text-primary font-medium"
+                    >
+                      <User2 className="mr-2 h-4 w-4" />
+                      <span>Dasturchi haqida</span>
                     </Link>
                     <div className="h-px bg-slate-200 my-1" />
                     <button
