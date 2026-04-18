@@ -43,8 +43,8 @@ export default function Home() {
           </h1>
 
           <p className="text-lg md:text-xl text-slate-500 max-w-2xl">
-            So'rov va testlaringizni Telegram orqali yuring. Javoblar avtomatik Google
-            Sheets'ga yoziladi va darhol xabar oling. Kod bilmaslik — muammo emas.
+            So'rovnoma va testlaringizni Telegram bot orqali o'tkazing. Javoblar avtomatik
+            ravishda Google Sheets'ga yoziladi. Dasturlash bilimi talab qilinmaydi.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 mt-6">
