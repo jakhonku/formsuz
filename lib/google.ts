@@ -38,14 +38,39 @@ export async function getFormDetails(accessToken: string, formId: string) {
   return response.data;
 }
 
-export async function appendResponseToSheet(accessToken: string, spreadsheetId: string, values: any[]) {
+export async function createSpreadsheet(accessToken: string, title: string) {
   const sheets = await getGoogleSheetsClient(accessToken);
-  await sheets.spreadsheets.values.append({
-    spreadsheetId,
-    range: "Sheet1!A1",
-    valueInputOption: "USER_ENTERED",
+  const response = await sheets.spreadsheets.create({
     requestBody: {
-      values: [values],
+      properties: {
+        title: `FormBot: ${title} (Javoblar)`,
+      },
     },
   });
+  return response.data.spreadsheetId;
+}
+
+export async function appendResponseToSheet(accessToken: string, spreadsheetId: string, values: any[]) {
+  const sheets = await getGoogleSheetsClient(accessToken);
+  try {
+    await sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range: "Sheet1!A1",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [values],
+      },
+    });
+  } catch (error: any) {
+    // If Sheet1 doesn't exist (default name might be different in other languages)
+    // Try appending without specific sheet name
+    await sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range: "A1",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [values],
+      },
+    });
+  }
 }

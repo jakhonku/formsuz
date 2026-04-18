@@ -92,7 +92,7 @@ export async function POST(req: Request, { params }: { params: { botId: string }
       try {
         const accessToken = await getAccessTokenByUserId(bot.userId);
         if (accessToken) {
-          const spreadsheetId = formMetadata?.linkedSheetId;
+          const spreadsheetId = bot.form.linkedSheetId;
           if (spreadsheetId) {
             const values = Object.values(updatedData);
             // Add date as first column

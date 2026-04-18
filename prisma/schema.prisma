@@ -64,6 +64,7 @@ model Form {
   userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   metadata     Json?    // Questions and other structure info
+  linkedSheetId String?
   bots          Bot[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

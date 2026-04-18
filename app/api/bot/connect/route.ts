@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getFormDetails } from "@/lib/google";
+import { getFormDetails, createSpreadsheet } from "@/lib/google";
 import { setWebhook, verifyBotToken } from "@/lib/telegram";
 import { encrypt } from "@/lib/crypto";
 
@@ -72,6 +72,24 @@ export async function POST(req: Request) {
         metadata: googleForm as any,
       },
     });
+
+    // Create a Google Sheet for this form if not already linked
+    if (!dbForm.linkedSheetId) {
+      try {
+        const sheetId = await createSpreadsheet(
+          session.user.accessToken!,
+          googleForm.info?.title || "Nomsiz forma"
+        );
+        if (sheetId) {
+          await prisma.form.update({
+            where: { id: dbForm.id },
+            data: { linkedSheetId: sheetId }
+          });
+        }
+      } catch (sheetErr) {
+        console.error("Failed to create spreadsheet:", sheetErr);
+      }
+    }
 
     const dbBot = await prisma.bot.create({
       data: {
