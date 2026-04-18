@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -7,7 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Bot as BotIcon, MessageSquare, ListTodo, Settings, Trash2, ExternalLink } from "lucide-react";
+import { Bot as BotIcon, MessageSquare, ListTodo, Settings, ExternalLink } from "lucide-react";
+import { BotSettingsPanel } from "@/components/dashboard/BotSettingsPanel";
 
 export default async function BotDetailPage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
@@ -124,16 +126,23 @@ export default async function BotDetailPage({ params }: { params: { id: string }
                     bot.responses.map((resp) => (
                       <TableRow key={resp.id}>
                         <TableCell className="font-medium">
-                          {new Date(resp.createdAt).toLocaleString()}
+                          {new Date(resp.createdAt).toLocaleString("uz-UZ")}
                         </TableCell>
                         <TableCell>
                           User: {resp.chatId}
                           {resp.status === "in_progress" && (
                             <Badge variant="outline" className="ml-2 text-yellow-600 bg-yellow-50">Jarayonda</Badge>
                           )}
+                          {resp.status === "completed" && (
+                            <Badge variant="outline" className="ml-2 text-green-700 bg-green-50">Tugatildi</Badge>
+                          )}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="sm">Batafsil</Button>
+                          <Button variant="ghost" size="sm" asChild>
+                            <Link href={`/dashboard/bot/${bot.id}/response/${resp.id}`}>
+                              Batafsil
+                            </Link>
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))
@@ -169,32 +178,11 @@ export default async function BotDetailPage({ params }: { params: { id: string }
         </TabsContent>
 
         <TabsContent value="settings">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="border-none shadow-md">
-              <CardHeader>
-                <CardTitle>Bot Holati</CardTitle>
-                <CardDescription>Botni vaqtincha to'xtatib qo'yishingiz mumkin.</CardDescription>
-              </CardHeader>
-              <CardContent className="flex items-center justify-between">
-                <span className="font-medium">Botni faollashtirish</span>
-                {/* Switch would go here, using a static badge for now */}
-                <Badge className="bg-green-500">Aktiv</Badge>
-              </CardContent>
-            </Card>
-
-            <Card className="border-red-100 border-2 shadow-md bg-red-50/20">
-              <CardHeader>
-                <CardTitle className="text-red-600">Xavfli hudud</CardTitle>
-                <CardDescription>Botni o'chirish qayta tiklanmaydi.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button variant="destructive" className="w-full gap-2 rounded-full h-12">
-                  <Trash2 size={18} />
-                  Botni butunlay o'chirish
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          <BotSettingsPanel
+            botId={bot.id}
+            initialStatus={bot.status}
+            currentFormTitle={bot.form.title}
+          />
         </TabsContent>
       </Tabs>
     </div>

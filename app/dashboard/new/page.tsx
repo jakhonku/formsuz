@@ -19,6 +19,8 @@ import {
   HelpCircle,
   Loader2,
   Rocket,
+  Plus,
+  Recycle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -35,6 +37,16 @@ type BotInfo = {
   first_name: string;
   username: string;
 };
+
+type ExistingBot = {
+  id: string;
+  name: string;
+  telegramBotUsername: string | null;
+  status: string;
+  form: { id: string; title: string; googleFormId: string } | null;
+};
+
+type Mode = "new" | "existing";
 
 function formatDate(iso: string | null) {
   if (!iso) return "—";
@@ -58,6 +70,11 @@ export default function NewBotPage() {
   const [formsLoading, setFormsLoading] = useState(false);
   const [formsError, setFormsError] = useState<string | null>(null);
   const [selectedForm, setSelectedForm] = useState<FormItem | null>(null);
+
+  const [mode, setMode] = useState<Mode>("new");
+  const [existingBots, setExistingBots] = useState<ExistingBot[]>([]);
+  const [existingLoading, setExistingLoading] = useState(false);
+  const [selectedExisting, setSelectedExisting] = useState<ExistingBot | null>(null);
 
   const [botToken, setBotToken] = useState("");
   const [botInfo, setBotInfo] = useState<BotInfo | null>(null);
@@ -88,7 +105,41 @@ export default function NewBotPage() {
     }
   }, [step]);
 
+  useEffect(() => {
+    async function fetchBots() {
+      setExistingLoading(true);
+      try {
+        const res = await fetch("/api/bots");
+        const data = await res.json();
+        if (res.ok && Array.isArray(data)) {
+          setExistingBots(data);
+        }
+      } catch {
+        // Ignore — existing bots are optional
+      } finally {
+        setExistingLoading(false);
+      }
+    }
+    if (step === 2) {
+      fetchBots();
+    }
+  }, [step]);
+
   const validateStep2 = async () => {
+    if (mode === "existing") {
+      if (!selectedExisting) {
+        toast.error("Iltimos, botni tanlang");
+        return;
+      }
+      setBotInfo({
+        id: 0,
+        first_name: selectedExisting.name,
+        username: selectedExisting.telegramBotUsername || selectedExisting.name,
+      });
+      setStep(3);
+      return;
+    }
+
     if (!botToken.trim()) {
       toast.error("Iltimos, Telegram Bot Tokenini kiriting");
       return;
@@ -115,10 +166,26 @@ export default function NewBotPage() {
   };
 
   const handleFinish = async () => {
-    if (!selectedForm || !botToken) return;
+    if (!selectedForm) return;
 
     setLoading(true);
     try {
+      if (mode === "existing") {
+        if (!selectedExisting) throw new Error("Bot tanlanmagan");
+        const res = await fetch(`/api/bot/${selectedExisting.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ formId: selectedForm.id, status: "active" }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Botni yangilashda xatolik");
+        toast.success("Bot yangi formaga ulandi!");
+        router.push(`/dashboard/bot/${selectedExisting.id}`);
+        router.refresh();
+        return;
+      }
+
+      if (!botToken) return;
       const res = await fetch("/api/bot/connect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -265,33 +332,142 @@ export default function NewBotPage() {
                   Telegram Bot ulash
                 </CardTitle>
                 <CardDescription>
-                  Botingizning API Tokenini kiriting. Ushbu token orqali FormBot javoblarni yuboradi.
+                  Yangi bot qo'shing yoki oldin ulangan botlardan birini qayta ishlating.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="token">Bot Token</Label>
-                  <Input
-                    id="token"
-                    placeholder="123456789:ABCdefGHI..."
-                    className="h-12 font-mono"
-                    value={botToken}
-                    onChange={(e) => setBotToken(e.target.value)}
-                  />
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setMode("new")}
+                    className={cn(
+                      "p-4 rounded-xl border-2 text-left transition flex items-start gap-3",
+                      mode === "new"
+                        ? "border-primary bg-primary/5"
+                        : "border-slate-200 hover:bg-slate-50"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "p-2 rounded-lg flex-shrink-0",
+                        mode === "new" ? "bg-primary text-white" : "bg-slate-100 text-slate-500"
+                      )}
+                    >
+                      <Plus size={18} />
+                    </div>
+                    <div>
+                      <p className="font-semibold">Yangi bot</p>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        BotFather'dan yangi token yarating
+                      </p>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMode("existing")}
+                    className={cn(
+                      "p-4 rounded-xl border-2 text-left transition flex items-start gap-3",
+                      mode === "existing"
+                        ? "border-primary bg-primary/5"
+                        : "border-slate-200 hover:bg-slate-50"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "p-2 rounded-lg flex-shrink-0",
+                        mode === "existing" ? "bg-primary text-white" : "bg-slate-100 text-slate-500"
+                      )}
+                    >
+                      <Recycle size={18} />
+                    </div>
+                    <div>
+                      <p className="font-semibold">Mavjud botni ishlatish</p>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Eski bot tokenini yangi formaga ulash
+                      </p>
+                    </div>
+                  </button>
                 </div>
 
-                <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 space-y-3">
-                  <div className="flex items-center gap-2 text-blue-700 font-semibold">
-                    <HelpCircle size={18} />
-                    <span>Bot tokenni qanday olish mumkin?</span>
+                {mode === "new" ? (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="token">Bot Token</Label>
+                      <Input
+                        id="token"
+                        placeholder="123456789:ABCdefGHI..."
+                        className="h-12 font-mono"
+                        value={botToken}
+                        onChange={(e) => setBotToken(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 space-y-3">
+                      <div className="flex items-center gap-2 text-blue-700 font-semibold">
+                        <HelpCircle size={18} />
+                        <span>Bot tokenni qanday olish mumkin?</span>
+                      </div>
+                      <ol className="text-sm text-blue-600/80 space-y-1 list-decimal list-inside">
+                        <li>Telegram'da @BotFather'ni qidiring.</li>
+                        <li>/newbot buyrug'ini bering.</li>
+                        <li>Botga nom va username bering.</li>
+                        <li>Sizga berilgan HTTP API tokenni bu yerga kiriting.</li>
+                      </ol>
+                    </div>
+                  </>
+                ) : (
+                  <div className="space-y-3">
+                    {existingLoading ? (
+                      <div className="flex items-center justify-center py-10">
+                        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                      </div>
+                    ) : existingBots.length === 0 ? (
+                      <div className="text-center py-10 space-y-2">
+                        <p className="font-semibold text-slate-700">Mavjud botlar topilmadi</p>
+                        <p className="text-sm text-slate-500">
+                          Hali bir dona ham bot ulamagansiz. Yangi bot variantini tanlang.
+                        </p>
+                      </div>
+                    ) : (
+                      existingBots.map((b) => {
+                        const isSelected = selectedExisting?.id === b.id;
+                        return (
+                          <button
+                            key={b.id}
+                            type="button"
+                            onClick={() => setSelectedExisting(b)}
+                            className={cn(
+                              "w-full text-left p-4 rounded-xl border-2 transition flex items-center gap-3",
+                              isSelected
+                                ? "border-primary bg-primary/5 shadow-md"
+                                : "border-slate-100 hover:border-slate-200"
+                            )}
+                          >
+                            <div
+                              className={cn(
+                                "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0",
+                                isSelected ? "bg-primary text-white" : "bg-slate-100 text-slate-400"
+                              )}
+                            >
+                              <Bot size={20} />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-semibold truncate">
+                                @{b.telegramBotUsername || b.name}
+                              </p>
+                              <p className="text-xs text-slate-400 truncate">
+                                Hozirgi forma: {b.form?.title || "—"}
+                              </p>
+                            </div>
+                            {isSelected && (
+                              <CheckCircle2 className="text-primary h-6 w-6 flex-shrink-0" />
+                            )}
+                          </button>
+                        );
+                      })
+                    )}
                   </div>
-                  <ol className="text-sm text-blue-600/80 space-y-1 list-decimal list-inside">
-                    <li>Telegram'da @BotFather'ni qidiring.</li>
-                    <li>/newbot buyrug'ini bering.</li>
-                    <li>Botga nom va username bering.</li>
-                    <li>Sizga berilgan HTTP API tokenni bu yerga kiriting.</li>
-                  </ol>
-                </div>
+                )}
               </CardContent>
               <CardFooter className="flex items-center justify-between p-6 border-t">
                 <Button variant="ghost" onClick={() => setStep(1)} className="rounded-full">
@@ -348,7 +524,9 @@ export default function NewBotPage() {
                     </p>
                   </div>
                   <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Telegram Bot</span>
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                      {mode === "existing" ? "Mavjud bot" : "Telegram Bot"}
+                    </span>
                     <p className="font-bold text-lg mt-1 truncate">@{botInfo?.username}</p>
                     <p className="text-sm text-slate-500">{botInfo?.first_name}</p>
                   </div>
@@ -356,7 +534,9 @@ export default function NewBotPage() {
                 <div className="flex gap-4 p-4 rounded-2xl bg-yellow-50 border border-yellow-100 text-yellow-800 text-sm">
                   <AlertCircle className="flex-shrink-0" size={20} />
                   <p>
-                    Tugmani bosganingizdan so'ng, formangiz botga ulanadi va har bir yangi javob Telegram'ga keladi.
+                    {mode === "existing"
+                      ? "Bot yangi formaga ulanadi. Eski javoblar saqlanadi, lekin endi yangi forma savollari yuboriladi."
+                      : "Tugmani bosganingizdan so'ng, formangiz botga ulanadi va har bir yangi javob Telegram'ga keladi."}
                   </p>
                 </div>
               </CardContent>
@@ -377,7 +557,7 @@ export default function NewBotPage() {
                     </>
                   ) : (
                     <>
-                      Botni faollashtirish
+                      {mode === "existing" ? "Formani yangilash" : "Botni faollashtirish"}
                       <Rocket className="ml-2 h-4 w-4" />
                     </>
                   )}
