@@ -11,7 +11,7 @@ export function Footer() {
               <img 
                 src="/logo.png" 
                 alt="FormBot Logo" 
-                className="h-10 w-auto" 
+                className="h-24 w-auto" 
               />
             </div>
             <p className="text-slate-500 max-w-sm mb-5 text-sm leading-relaxed">
