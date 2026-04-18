@@ -88,63 +88,65 @@ export default async function BotDetailPage({ params }: { params: { id: string }
         </Card>
       </div>
 
-      {/* Tabs */}
-      <Tabs defaultValue="responses" className="w-full">
-        <TabsList className="bg-slate-100 p-1 rounded-full mb-8">
-          <TabsTrigger value="responses" className="rounded-full px-6 gap-2">
-            <MessageSquare size={16} />
-            Javoblar
-          </TabsTrigger>
-          <TabsTrigger value="questions" className="rounded-full px-6 gap-2">
-            <ListTodo size={16} />
-            Savollar
-          </TabsTrigger>
-          <TabsTrigger value="settings" className="rounded-full px-6 gap-2">
-            <Settings size={16} />
-            Sozlamalar
-          </TabsTrigger>
-        </TabsList>
+      {/* Tabs Section */}
+      <Card className="border-none shadow-sm bg-slate-50/50 p-1 rounded-[2rem]">
+        <Tabs defaultValue="responses" className="w-full">
+          <div className="flex justify-center mb-6 mt-2">
+            <TabsList className="bg-white/80 backdrop-blur-sm p-1 rounded-full shadow-sm border border-white">
+              <TabsTrigger value="responses" className="rounded-full px-8 py-2.5 data-[state=active]:shadow-md transition-all gap-2">
+                <MessageSquare size={16} />
+                Javoblar
+              </TabsTrigger>
+              <TabsTrigger value="questions" className="rounded-full px-8 py-2.5 data-[state=active]:shadow-md transition-all gap-2">
+                <ListTodo size={16} />
+                Savollar
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="rounded-full px-8 py-2.5 data-[state=active]:shadow-md transition-all gap-2">
+                <Settings size={16} />
+                Sozlamalar
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-        <TabsContent value="responses">
-          <ResponsesTable 
-            responses={bot.responses} 
-            questions={questions}
-            botName={bot.telegramBotUsername || "bot"} 
-          />
-        </TabsContent>
+          <div className="p-2 md:p-6 bg-transparent">
+            <TabsContent value="responses" className="mt-0 outline-none">
+              <ResponsesTable 
+                responses={bot.responses} 
+                questions={questions}
+                botName={bot.telegramBotUsername || "bot"} 
+              />
+            </TabsContent>
 
-        <TabsContent value="questions">
-          <Card className="border-none shadow-md">
-            <CardHeader>
-              <CardTitle>Forma savollari</CardTitle>
-              <CardDescription>Ushbu bot orqali foydalanuvchilarga beriladigan savollar ro'yxati.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <TabsContent value="questions" className="mt-0 outline-none">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {questions.map((q: any, i: number) => (
-                  <div key={i} className="flex gap-4 p-4 rounded-xl border border-slate-100 bg-slate-50/50">
-                    <div className="w-8 h-8 rounded-full bg-white border flex items-center justify-center font-bold text-slate-400 flex-shrink-0">
-                      {i + 1}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-slate-900">{q.title}</p>
-                      {q.description && <p className="text-sm text-slate-500 mt-1">{q.description}</p>}
-                    </div>
-                  </div>
+                  <Card key={i} className="border-none shadow-sm transition-hover hover:shadow-md">
+                    <CardContent className="p-5 flex gap-4">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold flex-shrink-0">
+                        {i + 1}
+                      </div>
+                      <div>
+                        <p className="font-bold text-slate-800">{q.title}</p>
+                        {q.description && <p className="text-sm text-slate-500 mt-1">{q.description}</p>}
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </TabsContent>
 
-        <TabsContent value="settings">
-          <BotSettingsPanel
-            botId={bot.id}
-            initialStatus={bot.status}
-            currentFormTitle={bot.form.title}
-          />
-        </TabsContent>
-      </Tabs>
+            <TabsContent value="settings" className="mt-0 outline-none">
+              <div className="max-w-2xl mx-auto">
+                <BotSettingsPanel
+                  botId={bot.id}
+                  initialStatus={bot.status}
+                  currentFormTitle={bot.form.title}
+                />
+              </div>
+            </TabsContent>
+          </div>
+        </Tabs>
+      </Card>
     </div>
   );
 }
