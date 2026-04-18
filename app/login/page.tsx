@@ -1,11 +1,29 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Rocket } from "lucide-react";
+import { Rocket, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/dashboard");
+    }
+  }, [status, router]);
+
+  if (status === "loading" || status === "authenticated") {
+    return (
+      <div className="flex items-center justify-center min-h-[80vh]">
+        <Loader2 className="animate-spin text-primary" size={40} />
+      </div>
+    );
+  }
   return (
     <div className="flex items-center justify-center min-h-[80vh] px-4">
       <Card className="w-full max-w-md border-none shadow-2xl shadow-primary/10">
