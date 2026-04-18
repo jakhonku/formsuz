@@ -60,29 +60,32 @@ export default function PricingPage() {
   const { data: session } = useSession();
 
   return (
-    <div className="py-20 lg:py-28 px-4">
+    <div className="py-20 lg:py-28 px-4 bg-slate-50/50">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-16">
-          <Badge variant="outline" className="mb-4 rounded-full px-3 py-1">Tariflar</Badge>
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+        <div className="text-center mb-16 space-y-4">
+          <Badge variant="secondary" className="rounded-full px-4 py-1.5 bg-primary/10 text-primary border-none text-[10px] font-bold uppercase tracking-widest">
+            Tarif rejalar
+          </Badge>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tight text-slate-900 leading-[1.1]">
             Oddiy va shaffof narxlar
           </h1>
-          <p className="text-slate-500 max-w-2xl mx-auto text-lg">
+          <p className="text-slate-500 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
             O'zingizga mos tarifni tanlang va botingizni professional darajaga ko'taring.
-            Siz istalgan vaqtda tarifingizni o'zgartirishingiz mumkin.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 px-4 md:px-0">
           {tiers.map((tier) => (
             <Card 
               key={tier.id} 
-              className={`relative flex flex-col h-full border-2 transition-all hover:shadow-xl ${
-                tier.popular ? "border-primary shadow-lg scale-105 z-10" : "border-slate-100 shadow-sm"
+              className={`relative flex flex-col h-full border-none transition-all duration-300 hover:-translate-y-2 ${
+                tier.popular 
+                  ? "shadow-[0_20px_50px_rgba(37,99,235,0.15)] ring-2 ring-primary scale-105 z-10" 
+                  : "shadow-xl shadow-slate-200/50 bg-white"
               }`}
             >
               {tier.popular && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-lg z-20">
                   ENG MASHHUR
                 </div>
               )}
@@ -113,18 +116,25 @@ export default function PricingPage() {
                   ))}
                 </ul>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="pt-6">
                 <Button 
-                  className={`w-full h-12 rounded-xl text-md font-bold transition-all ${
-                    tier.popular ? "bg-primary hover:bg-primary/90" : "bg-slate-900 hover:bg-slate-800"
+                  className={`w-full h-14 rounded-2xl text-md font-black transition-all shadow-lg ${
+                    tier.popular 
+                      ? "bg-primary hover:bg-primary/90 shadow-primary/25" 
+                      : "bg-slate-900 hover:bg-slate-800 shadow-slate-900/10"
                   }`}
                   asChild
                 >
-                  <Link href={session ? "/dashboard/settings" : "/login"}>
+                  <Link href="https://t.me/jaxongir_baxtiyarov" target="_blank">
                     {tier.buttonText}
                   </Link>
                 </Button>
               </CardFooter>
+              {tier.id !== "FREE" && (
+                <p className="text-[10px] text-center pb-4 text-slate-400 font-medium px-4">
+                  * To'lovdan so'ng 5 daqiqa ichida faollashadi
+                </p>
+              )}
             </Card>
           ))}
         </div>
