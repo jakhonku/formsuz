@@ -16,14 +16,20 @@ export async function listUserForms(accessToken: string) {
   const auth = new google.auth.OAuth2();
   auth.setCredentials({ access_token: accessToken });
   const drive = google.drive({ version: "v3", auth });
-  
-  // Google Forms can be searched in Drive
+
   const response = await drive.files.list({
-    q: "mimeType='application/vnd.google-apps.form'",
-    fields: "files(id, name, createdTime)",
+    q: "mimeType='application/vnd.google-apps.form' and trashed=false",
+    fields: "files(id, name, createdTime, modifiedTime)",
+    orderBy: "modifiedTime desc",
+    pageSize: 50,
   });
 
-  return response.data.files || [];
+  return (response.data.files || []).map((f) => ({
+    id: f.id!,
+    title: f.name || "Nomsiz forma",
+    createdTime: f.createdTime || null,
+    modifiedTime: f.modifiedTime || null,
+  }));
 }
 
 export async function getFormDetails(accessToken: string, formId: string) {

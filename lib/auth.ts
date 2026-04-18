@@ -21,6 +21,7 @@ export const authOptions: NextAuthOptions = {
             "openid",
             "https://www.googleapis.com/auth/userinfo.email",
             "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/drive.metadata.readonly",
             "https://www.googleapis.com/auth/forms.body.readonly",
             "https://www.googleapis.com/auth/forms.responses.readonly",
             "https://www.googleapis.com/auth/spreadsheets",
