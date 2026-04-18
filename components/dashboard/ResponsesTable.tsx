@@ -132,27 +132,6 @@ export function ResponsesTable({
 
   return (
     <div className="space-y-6 w-full">
-      <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center">
-        <div className="relative flex-1 min-w-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <Input
-            placeholder="Javoblar yoki foydalanuvchi bo'yicha qidirish..."
-            className="pl-10 h-11 bg-white border-slate-200 rounded-xl"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        <Button
-          variant="outline"
-          onClick={exportToExcel}
-          disabled={filteredResponses.length === 0}
-          className="shrink-0 h-11 bg-white gap-2 border-slate-200 hover:bg-green-50 hover:text-green-700 hover:border-green-200 transition-all font-semibold rounded-xl shadow-sm"
-        >
-          <FileSpreadsheet size={18} />
-          Excel yuklash
-        </Button>
-      </div>
 
       <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
