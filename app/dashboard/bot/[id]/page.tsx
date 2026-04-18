@@ -20,6 +20,7 @@ import { BotSettingsPanel } from "@/components/dashboard/BotSettingsPanel";
 import { ResponsesTable } from "@/components/dashboard/ResponsesTable";
 import { BotHeaderActions } from "@/components/dashboard/BotHeaderActions";
 import { parseForm } from "@/lib/formQuestions";
+import { RealTimeRefresh } from "@/components/dashboard/RealTimeRefresh";
 
 const TYPE_LABEL: Record<string, string> = {
   short: "Qisqa javob",
@@ -83,13 +84,19 @@ export default async function BotDetailPage({
             <BotIcon size={22} />
           </div>
           <div className="min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-xl font-bold tracking-tight truncate">
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl md:text-2xl font-bold tracking-tight truncate">
                 @{bot.telegramBotUsername}
               </h1>
-              <Badge variant={bot.status === "active" ? "default" : "secondary"} className="text-xs">
-                {bot.status === "active" ? "Aktiv" : "Tohtatilgan"}
+              <Badge
+                variant={bot.status === "active" ? "default" : "secondary"}
+                className={bot.status === "active" ? "bg-blue-600" : ""}
+              >
+                {bot.status === "active" ? "Aktiv" : "To'xtatilgan"}
               </Badge>
+              <RealTimeRefresh intervalMs={10000} />
+            </div>
+            <div className="flex items-center gap-2 flex-wrap mt-1">
               {parsed.isQuiz && (
                 <Badge
                   variant="outline"

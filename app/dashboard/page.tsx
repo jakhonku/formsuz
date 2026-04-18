@@ -16,6 +16,7 @@ import {
   FileText,
 } from "lucide-react";
 import { BotCard } from "@/components/dashboard/BotCard";
+import { RealTimeRefresh } from "@/components/dashboard/RealTimeRefresh";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -52,9 +53,12 @@ export default async function DashboardPage() {
       {/* Welcome bar */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            Xush kelibsiz, {session?.user?.name?.split(" ")[0] || "Do'st"}!
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold tracking-tight">
+              Xush kelibsiz, {session?.user?.name?.split(" ")[0] || "Do'st"}!
+            </h1>
+            <RealTimeRefresh intervalMs={10000} />
+          </div>
           <p className="text-slate-500 text-sm">
             Barcha botlaringiz va javoblar bir ko'rinishda.
           </p>
