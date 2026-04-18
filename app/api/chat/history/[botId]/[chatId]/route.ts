@@ -31,7 +31,7 @@ export async function GET(
     });
 
     const meta = responseInfo?.metadata as any;
-    const responderName = meta?.message?.from ? `${meta.message.from.first_name || ""} ${meta.message.from.last_name || ""}`.trim() : null;
+    const responderName = meta?.message?.from ? `${meta.message?.from?.first_name || ""} ${meta.message?.from?.last_name || ""}`.trim() : null;
     const responderUsername = meta?.message?.from?.username || null;
 
     return NextResponse.json({
