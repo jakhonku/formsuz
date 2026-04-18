@@ -5,6 +5,9 @@ import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -27,19 +30,21 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.id = user.id;
+      }
+      if (account) {
+        token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
+      }
+      return token;
+    },
+    async session({ session, token }) {
       if (session.user) {
-        session.user.id = user.id;
-        
-        // Find the account for this user to get tokens
-        const account = await prisma.account.findFirst({
-          where: { userId: user.id, provider: "google" },
-        });
-
-        if (account) {
-          session.user.accessToken = account.access_token ?? undefined;
-          session.user.refreshToken = account.refresh_token ?? undefined;
-        }
+        session.user.id = token.id as string;
+        session.user.accessToken = token.accessToken as string | undefined;
+        session.user.refreshToken = token.refreshToken as string | undefined;
       }
       return session;
     },

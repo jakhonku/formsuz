@@ -71,7 +71,7 @@ export default function HelpPage() {
         </div>
         
         <Card className="border-none shadow-md px-6 py-4">
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion className="w-full">
             {faqs.map((faq, index) => (
               <AccordionItem key={index} value={`item-${index}`} className="border-b last:border-none">
                 <AccordionTrigger className="text-left font-semibold hover:no-underline text-lg py-6">

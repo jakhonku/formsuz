@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npx --version)",
+      "Bash(npx --yes create-next-app@14 . --typescript --tailwind --app --eslint --no-src-dir --import-alias \"@/*\" --use-npm)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"---exit---$?\")",
+      "Bash(npx next *)",
+      "Bash(npx skills *)"
+    ]
+  }
+}
