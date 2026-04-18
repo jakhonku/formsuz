@@ -29,7 +29,7 @@ export function Navbar() {
           <img 
             src="/logo.png" 
             alt="FormBot Logo" 
-            className="h-16 w-auto" 
+            className="h-20 w-auto" 
           />
         </Link>
 
