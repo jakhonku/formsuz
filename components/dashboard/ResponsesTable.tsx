@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import {
   Table,
@@ -12,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, FileSpreadsheet, Eye, Award } from "lucide-react";
+import { Search, FileSpreadsheet, Award } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   ParsedQuestion,
@@ -153,16 +152,14 @@ export function ResponsesTable({
                     Ball
                   </TableHead>
                 )}
-                <TableHead className="font-bold text-slate-900 border-b whitespace-nowrap text-right">
-                  Amallar
-                </TableHead>
+
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredResponses.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={questions.length + (isQuiz ? 4 : 3)}
+                    colSpan={questions.length + (isQuiz ? 3 : 2)}
                     className="text-center py-20 text-slate-400"
                   >
                     Hozircha javoblar mavjud emas yoki topilmadi.
@@ -220,17 +217,7 @@ export function ResponsesTable({
                           </Badge>
                         </TableCell>
                       )}
-                      <TableCell className="text-right">
-                        <Button variant="ghost" size="sm" asChild>
-                          <Link
-                            href={`/dashboard/bot/${resp.botId}/response/${resp.id}`}
-                            className="gap-1"
-                          >
-                            <Eye size={14} />
-                            Ko'rish
-                          </Link>
-                        </Button>
-                      </TableCell>
+
                     </TableRow>
                   );
                 })
