@@ -48,6 +48,51 @@ export async function POST(req: Request, { params }: { params: { botId: string }
     const parsed = parseForm(bot.form.metadata);
     const questions = parsed.questions;
 
+    // Log user activity to chat history
+    try {
+      const msg = body.message || body.callback_query?.message;
+      const from = body.message?.from || body.callback_query?.from;
+      const chatId = (body.message?.chat?.id || body.callback_query?.message?.chat?.id)?.toString();
+      
+      if (chatId) {
+        let type = "text";
+        let content = body.message?.text || "";
+        let fileUrl = null;
+
+        if (body.callback_query) {
+          content = `🔘 Tanladi: ${body.callback_query.data}`;
+        } else if (body.message?.photo) {
+          type = "image";
+          fileUrl = body.message.photo[body.message.photo.length - 1].file_id;
+          content = body.message.caption || "";
+        } else if (body.message?.voice) {
+          type = "voice";
+          fileUrl = body.message.voice.file_id;
+        } else if (body.message?.document) {
+          type = "file";
+          fileUrl = body.message.document.file_id;
+          content = body.message.caption || body.message.document.file_name || "";
+        }
+
+        if (content || type !== "text") {
+          await prisma.chatMessage.create({
+            data: {
+              botId,
+              chatId,
+              content,
+              type,
+              fileUrl,
+              sender: "user",
+              senderName: `${from?.first_name || ""} ${from?.last_name || ""}`.trim() || null,
+              senderUsername: from?.username || null
+            },
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Failed to log activity:", e);
+    }
+
     if (body.callback_query) {
       await handleCallback({
         botToken,
@@ -61,44 +106,6 @@ export async function POST(req: Request, { params }: { params: { botId: string }
     }
 
     if (!body.message) return NextResponse.json({ ok: true });
-
-    // Save user message to chat history
-    try {
-      const msg = body.message;
-      const chatId = msg.chat.id.toString();
-      let type = "text";
-      let content = msg.text || "";
-      let fileUrl = null;
-
-      if (msg.photo) {
-        type = "image";
-        fileUrl = msg.photo[msg.photo.length - 1].file_id;
-        content = msg.caption || "";
-      } else if (msg.voice) {
-        type = "voice";
-        fileUrl = msg.voice.file_id;
-      } else if (msg.document) {
-        type = "file";
-        fileUrl = msg.document.file_id;
-        content = msg.caption || msg.document.file_name || "";
-      }
-
-      // Log all user messages to history
-      await prisma.chatMessage.create({
-        data: {
-          botId,
-          chatId,
-          content,
-          type,
-          fileUrl,
-          sender: "user",
-          senderName: `${msg.from?.first_name || ""} ${msg.from?.last_name || ""}`.trim() || null,
-          senderUsername: msg.from?.username || null
-        },
-      });
-    } catch (e) {
-      console.error("Failed to log chat message:", e);
-    }
 
     await handleMessage({
       botToken,
