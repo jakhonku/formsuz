@@ -36,6 +36,7 @@ export async function GET(
 
     return NextResponse.json({
       messages,
+      debugCount: messages.length,
       user: {
         name: responderName,
         username: responderUsername,

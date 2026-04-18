@@ -8,7 +8,8 @@ import {
   FileText, 
   Bot, 
   Settings, 
-  LogOut 
+  LogOut,
+  User2
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -17,6 +18,7 @@ const menuItems = [
   { name: "Sizning botlaringiz", href: "/dashboard/bots", icon: Bot },
   { name: "Google Formlar", href: "/dashboard/forms", icon: FileText },
   { name: "Sozlamalar", href: "/dashboard/settings", icon: Settings },
+  { name: "Dasturchi haqida", href: "/dashboard/about", icon: User2 },
 ];
 
 export function DashboardSidebar() {

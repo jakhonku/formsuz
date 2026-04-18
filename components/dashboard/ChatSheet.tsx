@@ -50,6 +50,7 @@ interface ChatSheetProps {
 
 export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatSheetProps) {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [debugCount, setDebugCount] = useState<number>(0);
   const [userInfo, setUserInfo] = useState<{ name: string | null; username: string | null } | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -63,6 +64,7 @@ export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatS
       if (res.ok) {
         const data = await res.json();
         setMessages(data.messages || []);
+        setDebugCount(data.debugCount || 0);
         if (data.user) setUserInfo(data.user);
       }
     } catch (e) {
@@ -174,7 +176,7 @@ export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatS
             </div>
             <div className="text-left">
               <SheetTitle className="text-sm font-bold truncate max-w-[200px]">
-                {displayName}
+                {displayName} ({debugCount} ta xabar)
               </SheetTitle>
               <SheetDescription className="text-[10px] truncate max-w-[150px]">
                 {displayUsername}
