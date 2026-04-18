@@ -92,15 +92,32 @@ export async function POST(req: Request, { params }: { params: { botId: string }
       try {
         const accessToken = await getAccessTokenByUserId(bot.userId);
         if (accessToken) {
-          const spreadsheetId = bot.form.linkedSheetId;
+          let spreadsheetId = bot.form.linkedSheetId;
+          
+          // If no sheet is linked yet, create one now
+          if (!spreadsheetId) {
+            console.log("No linkedSheetId found, creating a new one...");
+            const newSheetId = await createSpreadsheet(accessToken, bot.form.title);
+            if (newSheetId) {
+              spreadsheetId = newSheetId;
+              // Save it for future use
+              await prisma.form.update({
+                where: { id: bot.form.id },
+                data: { linkedSheetId: newSheetId }
+              });
+              console.log("New sheet created and linked:", newSheetId);
+            }
+          }
+
           if (spreadsheetId) {
             const values = Object.values(updatedData);
             // Add date as first column
             await appendResponseToSheet(accessToken, spreadsheetId, [new Date().toLocaleString(), ...values]);
+            console.log("Data successfully written to sheet:", spreadsheetId);
           }
         }
-      } catch (sheetError) {
-        console.error("Google Sheets writing error:", sheetError);
+      } catch (sheetError: any) {
+        console.error("Google Sheets writing error:", sheetError?.message || sheetError);
       }
     } else {
       // Next question
