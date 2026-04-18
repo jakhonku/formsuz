@@ -45,8 +45,8 @@ export function ResponsesTable({ responses, questions, botName }: ResponsesTable
       return rowData.map(val => `"${String(val).replace(/"/g, '""')}"`).join(",");
     });
 
-    // UTF-8 BOM (\uFEFF) helps Excel recognize special characters and columns
-    const csvContent = "\uFEFF" + [headers.join(","), ...rows].join("\n");
+    // 'sep=,' tells Excel to use comma as the delimiter
+    const csvContent = "\uFEFFsep=,\n" + [headers.join(","), ...rows].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
