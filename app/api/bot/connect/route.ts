@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getFormDetails } from "@/lib/google";
 import { setWebhook, verifyBotToken } from "@/lib/telegram";
+import { encrypt } from "@/lib/crypto";
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -46,7 +47,7 @@ export async function POST(req: Request) {
     const dbBot = await prisma.bot.create({
       data: {
         name: botInfo.first_name,
-        telegramToken: botToken,
+        telegramToken: encrypt(botToken),
         telegramBotUsername: botInfo.username,
         formId: dbForm.id,
         userId: session.user.id,

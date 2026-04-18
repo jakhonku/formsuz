@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { sendMessage } from "@/lib/telegram";
 import { getAccessTokenByUserId } from "@/lib/auth-utils";
 import { appendResponseToSheet } from "@/lib/google";
+import { decrypt } from "@/lib/crypto";
 
 export async function POST(req: Request, { params }: { params: { botId: string } }) {
   try {
@@ -21,6 +22,8 @@ export async function POST(req: Request, { params }: { params: { botId: string }
     });
 
     if (!bot || bot.status !== "active") return NextResponse.json({ ok: true });
+    
+    const botToken = decrypt(bot.telegramToken);
 
     const formMetadata = bot.form.metadata as any;
     const questions = formMetadata?.items || [];
@@ -51,13 +54,13 @@ export async function POST(req: Request, { params }: { params: { botId: string }
         },
       });
 
-      await sendMessage(bot.telegramToken, chatId, `Xush kelibsiz! "${bot.form.title}" so'rovnomasini boshlaymiz.`);
-      await sendQuestion(bot.telegramToken, chatId, questions[0]);
+      await sendMessage(botToken, chatId, `Xush kelibsiz! "${bot.form.title}" so'rovnomasini boshlaymiz.`);
+      await sendQuestion(botToken, chatId, questions[0]);
       return NextResponse.json({ ok: true });
     }
 
     if (!response) {
-      await sendMessage(bot.telegramToken, chatId, "Iltimos, so'rovnomani boshlash uchun /start buyrug'ini bering.");
+      await sendMessage(botToken, chatId, "Iltimos, so'rovnomani boshlash uchun /start buyrug'ini bering.");
       return NextResponse.json({ ok: true });
     }
 
@@ -83,7 +86,7 @@ export async function POST(req: Request, { params }: { params: { botId: string }
         },
       });
 
-      await sendMessage(bot.telegramToken, chatId, "Rahmat! Javoblaringiz qabul qilindi. ✅");
+      await sendMessage(botToken, chatId, "Rahmat! Javoblaringiz qabul qilindi. ✅");
       
       // Write to Google Sheets
       try {
@@ -109,7 +112,7 @@ export async function POST(req: Request, { params }: { params: { botId: string }
         },
       });
 
-      await sendQuestion(bot.telegramToken, chatId, questions[nextIndex]);
+      await sendQuestion(botToken, chatId, questions[nextIndex]);
     }
 
     return NextResponse.json({ ok: true });
