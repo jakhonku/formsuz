@@ -39,7 +39,7 @@ export default function Home() {
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 max-w-4xl leading-[1.05]">
             Google Form'ni <br className="hidden md:block" />
-            Telegram botga <span className="text-primary italic">2 daqiqada</span> ulang
+            Telegram botga <span className="text-primary italic whitespace-nowrap">2 daqiqada</span> ulang
           </h1>
 
           <p className="text-lg md:text-xl text-slate-500 max-w-2xl">
