@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { SignOutButton } from "@/components/dashboard/SignOutButton";
 import { User, Mail, Bot, FileText, Calendar } from "lucide-react";
 
 export default async function SettingsPage() {
@@ -89,15 +88,7 @@ export default async function SettingsPage() {
         </Card>
       </div>
 
-      <Card className="border-red-100 border-2 shadow-md bg-red-50/20">
-        <CardHeader>
-          <CardTitle className="text-red-600">Hisobdan chiqish</CardTitle>
-          <CardDescription>Keyin qaytadan Google bilan kirishingiz mumkin.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <SignOutButton />
-        </CardContent>
-      </Card>
+
     </div>
   );
 }
