@@ -99,13 +99,16 @@ model Response {
 }
 
 model ChatMessage {
-  id        String   @id @default(cuid())
-  botId     String
-  bot       Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
-  chatId    String   // Telegram chat id
-  content   String?  @db.Text
-  type      String   @default("text") // text, voice, image, file
-  fileUrl   String?  @db.Text
-  sender    String   @default("admin") // admin, user
-  createdAt DateTime @default(now())
+  id             String   @id @default(cuid())
+  botId          String
+  bot            Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  chatId         String   // Telegram chat id
+  content        String?  @db.Text
+  type           String   @default("text") // text, voice, image, file
+  fileUrl        String?  @db.Text
+  sender         String   @default("admin") // admin, user
+  senderName     String?
+  senderUsername String?
+  senderPhoto    String?
+  createdAt      DateTime @default(now())
 }
