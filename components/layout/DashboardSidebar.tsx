@@ -8,8 +8,7 @@ import {
   FileText, 
   Bot, 
   Settings, 
-  LogOut, 
-  PlusCircle 
+  LogOut 
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 

@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bot as BotIcon, MessageSquare, ListTodo, Settings, Trash2, ExternalLink } from "lucide-react";
-import Link from "next/link";
 
 export default async function BotDetailPage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);

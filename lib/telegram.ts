@@ -6,7 +6,7 @@ export async function verifyBotToken(token: string) {
   try {
     const response = await axios.get(`${TELEGRAM_API}${token}/getMe`);
     return response.data.ok ? response.data.result : null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -15,7 +15,7 @@ export async function setWebhook(token: string, url: string) {
   try {
     const response = await axios.post(`${TELEGRAM_API}${token}/setWebhook`, { url });
     return response.data;
-  } catch (error) {
+  } catch {
     return null;
   }
 }

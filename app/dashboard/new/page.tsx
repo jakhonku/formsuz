@@ -31,20 +31,29 @@ export default function NewBotPage() {
 
   // Step 2 Data: Telegram Bot
   const [botToken, setBotToken] = useState("");
-  const [botInfo, setBotInfo] = useState<{ name: string; username: string } | null>(null);
+  const [botInfo, setBotInfo] = useState<{ id: number; first_name: string; username: string } | null>(null);
 
   const totalSteps = 3;
   const progress = (step / totalSteps) * 100;
 
-  // Step 1: Fetch Forms (Mock for now, will connect API in next phase)
+  // Step 1: Fetch real Forms
   useEffect(() => {
-    if (step === 1) {
-      // We will implement API fetch here
-      setForms([
-        { id: "1", title: "Mijozlar so'rovnomasi", questions: 5, date: "2024-04-01" },
-        { id: "2", title: "Ishga qabul formasi", questions: 12, date: "2024-03-25" },
-      ]);
+    async function fetchForms() {
+      if (step === 1) {
+        setLoading(true);
+        try {
+          const res = await fetch("/api/forms/list");
+          if (!res.ok) throw new Error("Formalarni yuklashda xatolik");
+          const data = await res.json();
+          setForms(data);
+        } catch (error: any) {
+          toast.error(error.message || "Tizimga kirishda xatolik yuz berdi");
+        } finally {
+          setLoading(false);
+        }
+      }
     }
+    fetchForms();
   }, [step]);
 
   const validateStep2 = async () => {
@@ -54,29 +63,44 @@ export default function NewBotPage() {
     }
     setLoading(true);
     try {
-      // In Bosqich 6 we will implement the real API
-      // For now, let's simulate
-      if (botToken.includes(":")) {
-        setBotInfo({ name: "Mening Botim", username: "my_form_bot" });
-        setStep(3);
-      } else {
-        toast.error("Noto'g'ri bot tokeni. Qayta tekshiring.");
-      }
-    } catch (e) {
-      toast.error("Botni tekshirishda xatolik yuz berdi");
+      const res = await fetch("/api/bot/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: botToken }),
+      });
+      
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Token noto'g'ri");
+      
+      setBotInfo(data);
+      setStep(3);
+      toast.success("Bot topildi: @" + data.username);
+    } catch (error: any) {
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleFinish = async () => {
+    if (!selectedForm || !botToken) return;
+    
     setLoading(true);
     try {
-      // Final connection logic will be in Bosqich 6
-      toast.success("Bot muvaffaqiyatli ulandi!");
+      const res = await fetch("/api/bot/connect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ formId: selectedForm, botToken }),
+      });
+      
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Ulashda xatolik yuz berdi");
+      
+      toast.success("Bot muvaffaqiyatli ulandi! Webhook faollashtirildi.");
       router.push("/dashboard");
-    } catch (e) {
-      toast.error("Xatolik yuz berdi");
+      router.refresh();
+    } catch (error: any) {
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -246,7 +270,7 @@ export default function NewBotPage() {
                   <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
                     <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Telegram Bot</span>
                     <p className="font-bold text-lg mt-1 truncate">@{botInfo?.username}</p>
-                    <p className="text-sm text-slate-500">{botInfo?.name}</p>
+                    <p className="text-sm text-slate-500">{botInfo?.first_name}</p>
                   </div>
                 </div>
                 <div className="flex gap-4 p-4 rounded-2xl bg-yellow-50 border border-yellow-100 text-yellow-800 text-sm">

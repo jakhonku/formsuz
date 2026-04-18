@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Zap, ShieldCheck, Rocket, CheckCircle2 } from "lucide-react";
+import { Zap, ShieldCheck, Rocket } from "lucide-react";
 
 export default function Home() {
   return (
