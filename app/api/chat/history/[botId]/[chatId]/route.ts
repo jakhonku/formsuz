@@ -24,7 +24,23 @@ export async function GET(
       orderBy: { createdAt: "asc" },
     });
 
-    return NextResponse.json(messages);
+    // Try to find responder info from existing responses
+    const responseInfo = await prisma.response.findFirst({
+      where: { botId, chatId },
+      select: { metadata: true }
+    });
+
+    const meta = responseInfo?.metadata as any;
+    const responderName = meta?.message?.from ? `${meta.message.from.first_name || ""} ${meta.message.from.last_name || ""}`.trim() : null;
+    const responderUsername = meta?.message?.from?.username || null;
+
+    return NextResponse.json({
+      messages,
+      user: {
+        name: responderName,
+        username: responderUsername,
+      }
+    });
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
   }

@@ -50,6 +50,7 @@ interface ChatSheetProps {
 
 export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatSheetProps) {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [userInfo, setUserInfo] = useState<{ name: string | null; username: string | null } | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -57,12 +58,12 @@ export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatS
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchHistory = async () => {
-    setIsLoading(true);
     try {
       const res = await fetch(`/api/chat/history/${botId}/${chatId}`);
       if (res.ok) {
         const data = await res.json();
-        setMessages(data);
+        setMessages(data.messages || []);
+        if (data.user) setUserInfo(data.user);
       }
     } catch (e) {
       console.error(e);
@@ -154,8 +155,10 @@ export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatS
   };
 
   const lastUserMsg = [...messages].reverse().find(m => m.sender === "user");
-  const displayName = lastUserMsg?.senderName || `Chat #${chatId}`;
-  const displayUsername = lastUserMsg?.senderUsername ? `@${lastUserMsg.senderUsername}` : `@${botUsername} orqali`;
+  const displayName = lastUserMsg?.senderName || userInfo?.name || `Chat #${chatId}`;
+  const displayUsername = lastUserMsg?.senderUsername 
+    ? `@${lastUserMsg.senderUsername}` 
+    : (userInfo?.username ? `@${userInfo.username}` : `@${botUsername} orqali`);
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
