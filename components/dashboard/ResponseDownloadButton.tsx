@@ -1,7 +1,12 @@
 "use client";
 
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileSpreadsheet } from "lucide-react";
+import { FileSpreadsheet, Lock } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ResponseDownloadButtonProps {
   botName: string;
@@ -14,7 +19,22 @@ export function ResponseDownloadButton({
   responseData,
   date,
 }: ResponseDownloadButtonProps) {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const isFree = !session?.user?.plan || session.user.plan === "FREE";
+
   const handleDownload = () => {
+    if (isFree) {
+      toast.error("Ushbu imkoniyatdan foydalanish uchun tarifingizni yangilang!", {
+        description: "Excel yuklash faqat Professional tarifda mavjud.",
+        action: {
+          label: "Yangilash",
+          onClick: () => router.push("/pricing"),
+        },
+      });
+      return;
+    }
+
     const data = JSON.parse(responseData);
     const xmlEscape = (s: string) =>
       s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -60,10 +80,20 @@ export function ResponseDownloadButton({
     <Button
       variant="outline"
       onClick={handleDownload}
-      className="gap-2 shrink-0 rounded-xl border-slate-200 hover:bg-green-50 hover:text-green-700 hover:border-green-200"
+      className={cn(
+        "gap-2 shrink-0 rounded-xl border-slate-200 transition-all",
+        isFree 
+          ? "opacity-80 hover:bg-slate-50 hover:text-slate-500" 
+          : "hover:bg-green-50 hover:text-green-700 hover:border-green-200"
+      )}
     >
-      <FileSpreadsheet size={16} />
+      {isFree ? <Lock size={14} className="text-slate-400" /> : <FileSpreadsheet size={16} />}
       Excel yuklash
+      {isFree && (
+        <Badge variant="secondary" className="bg-primary/5 text-primary border-none text-[8px] px-1 h-3 font-black">
+          PRO
+        </Badge>
+      )}
     </Button>
   );
 }

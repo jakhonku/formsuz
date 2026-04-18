@@ -2,10 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MessageSquare, ExternalLink } from "lucide-react";
+import { MessageSquare, ExternalLink, Lock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChatSheet } from "./ChatSheet";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { getPlanLimit } from "@/lib/plans";
+import { Badge } from "@/components/ui/badge";
 
 interface ResponsesListProps {
   responses: any[];
@@ -13,7 +18,26 @@ interface ResponsesListProps {
 }
 
 export function ResponsesList({ responses, bot }: ResponsesListProps) {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const isChatEnabled = getPlanLimit(session?.user?.plan || "FREE").chatEnabled;
   const [activeChat, setActiveChat] = useState<{ chatId: string } | null>(null);
+
+  const handleOpenChat = (chatId: string) => {
+    if (!isChatEnabled) {
+      toast.error("Ushbu imkoniyatdan foydalanish uchun tarifingizni yangilang!", {
+        description: "Mijozlar bilan jonli chat faqat Professional tarifda mavjud.",
+        action: {
+          label: "Yangilash",
+          onClick: () => router.push("/pricing"),
+        },
+      });
+      // Optionally still open the sheet to show the lock screen
+      setActiveChat({ chatId });
+      return;
+    }
+    setActiveChat({ chatId });
+  };
 
   return (
     <div className="space-y-3">
@@ -38,11 +62,16 @@ export function ResponsesList({ responses, bot }: ResponsesListProps) {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="rounded-lg gap-1.5 border-primary/20 hover:bg-primary/5 text-primary"
-                onClick={() => setActiveChat({ chatId: resp.chatId })}
+                className={`rounded-lg gap-1.5 border-primary/20 hover:bg-primary/5 text-primary ${!isChatEnabled ? "opacity-70" : ""}`}
+                onClick={() => handleOpenChat(resp.chatId)}
               >
-                <MessageSquare size={14} />
+                {!isChatEnabled ? <Lock size={14} /> : <MessageSquare size={14} />}
                 Chat ochish
+                {!isChatEnabled && (
+                  <Badge variant="secondary" className="bg-primary/5 text-primary border-none text-[8px] px-1 h-3 font-black">
+                    PRO
+                  </Badge>
+                )}
               </Button>
               <Button variant="ghost" size="sm" asChild className="rounded-lg gap-1.5 h-9">
                 <Link href={`/dashboard/bot/${bot.id}/response/${resp.id}`}>
