@@ -161,12 +161,41 @@ export default async function BotDetailPage({
         </div>
 
         <TabsContent value="responses" className="w-full mt-5">
-          <ResponsesTable
-            responses={completedResponses}
-            questions={questions}
-            botName={bot.telegramBotUsername || "bot"}
-            isQuiz={parsed.isQuiz}
-          />
+          {completedResponses.length === 0 ? (
+            <Card className="border-dashed border-2 bg-transparent">
+              <CardContent className="py-14 text-center text-slate-500 text-sm">
+                Hozircha javoblar mavjud emas.
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-3">
+              {completedResponses.map((resp) => (
+                <Card key={resp.id} className="border-none shadow-sm hover:shadow-md transition-all">
+                  <CardContent className="p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                        <MessageSquare size={18} />
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">
+                          Chat ID: <code className="text-xs bg-slate-100 px-2 py-0.5 rounded">{resp.chatId || "—"}</code>
+                        </p>
+                        <p className="text-xs text-slate-500 mt-0.5">
+                          {new Date(resp.createdAt).toLocaleString("uz-UZ")}
+                        </p>
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm" asChild className="rounded-lg gap-1.5">
+                      <Link href={`/dashboard/bot/${bot.id}/response/${resp.id}`}>
+                        <ExternalLink size={14} />
+                        Batafsil
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="questions" className="w-full mt-5">
