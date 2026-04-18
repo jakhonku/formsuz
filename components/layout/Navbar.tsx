@@ -32,6 +32,13 @@ export function Navbar() {
           <span className="text-xl font-bold tracking-tight text-slate-900">FormBot</span>
         </Link>
 
+        <div className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600">
+          <Link href="/features" className="hover:text-primary transition">Imkoniyatlar</Link>
+          <Link href="/pricing" className="hover:text-primary transition">Tariflar</Link>
+          <Link href="/faq" className="hover:text-primary transition">Savol-javob</Link>
+          <Link href="/help" className="hover:text-primary transition">Yordam</Link>
+        </div>
+
         <div className="flex items-center gap-4">
           {status === "loading" ? (
             <div className="w-8 h-8 bg-slate-100 animate-pulse rounded-full" />

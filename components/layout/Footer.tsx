@@ -1,39 +1,77 @@
 import Link from "next/link";
+import { Send, Mail } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t bg-slate-50 py-12">
+    <footer className="border-t bg-slate-50 py-14">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="col-span-1 md:col-span-2">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+          <div className="col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">
                 F
               </div>
               <span className="text-xl font-bold tracking-tight">FormBot</span>
             </div>
-            <p className="text-slate-500 max-w-xs">
+            <p className="text-slate-500 max-w-sm mb-5 text-sm leading-relaxed">
               Google Form'larni Telegram botga ulashning eng oson va tezkor usuli.
+              Kodsiz, 2 daqiqada.
             </p>
+            <div className="flex items-center gap-3">
+              <a
+                href="https://t.me/formbot_support"
+                target="_blank"
+                rel="noreferrer"
+                className="w-9 h-9 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary/30 transition"
+                aria-label="Telegram"
+              >
+                <Send size={16} />
+              </a>
+              <a
+                href="mailto:support@formbot.uz"
+                className="w-9 h-9 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary/30 transition"
+                aria-label="Email"
+              >
+                <Mail size={16} />
+              </a>
+            </div>
           </div>
+
           <div>
-            <h4 className="font-semibold mb-4">Platforma</h4>
-            <ul className="space-y-2 text-slate-500">
-              <li><Link href="/#how-it-works">Qanday ishlaydi?</Link></li>
-              <li><Link href="/#features">Xususiyatlar</Link></li>
-              <li><Link href="/#pricing">Narxlar</Link></li>
+            <h4 className="font-semibold mb-4 text-sm text-slate-900">Platforma</h4>
+            <ul className="space-y-2.5 text-slate-500 text-sm">
+              <li><Link href="/features" className="hover:text-primary transition">Imkoniyatlar</Link></li>
+              <li><Link href="/pricing" className="hover:text-primary transition">Tariflar</Link></li>
+              <li><Link href="/#how-it-works" className="hover:text-primary transition">Qanday ishlaydi?</Link></li>
+              <li><Link href="/login" className="hover:text-primary transition">Boshlash</Link></li>
             </ul>
           </div>
+
           <div>
-            <h4 className="font-semibold mb-4">Bog'lanish</h4>
-            <ul className="space-y-2 text-slate-500">
-              <li><Link href="/help">Yordam markazi</Link></li>
-              <li><a href="https://t.me/formbot_support" target="_blank" rel="noreferrer">Telegram yordam</a></li>
+            <h4 className="font-semibold mb-4 text-sm text-slate-900">Yordam</h4>
+            <ul className="space-y-2.5 text-slate-500 text-sm">
+              <li><Link href="/faq" className="hover:text-primary transition">Savol-javob</Link></li>
+              <li><Link href="/help" className="hover:text-primary transition">Yordam markazi</Link></li>
+              <li>
+                <a href="https://t.me/formbot_support" target="_blank" rel="noreferrer" className="hover:text-primary transition">
+                  Telegram qo'llab-quvvatlash
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-4 text-sm text-slate-900">Huquqiy</h4>
+            <ul className="space-y-2.5 text-slate-500 text-sm">
+              <li><Link href="/#" className="hover:text-primary transition">Maxfiylik siyosati</Link></li>
+              <li><Link href="/#" className="hover:text-primary transition">Foydalanish shartlari</Link></li>
             </ul>
           </div>
         </div>
-        <div className="mt-12 pt-8 border-t text-center text-slate-400 text-sm">
-          © {new Date().getFullYear()} FormBot. Barcha huquqlar himoyalangan.
+
+        <div className="mt-12 pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-3 text-slate-400 text-sm">
+          <p>© {new Date().getFullYear()} FormBot. Barcha huquqlar himoyalangan.</p>
+          <p>Made with care in Uzbekistan</p>
         </div>
       </div>
     </footer>
