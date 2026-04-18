@@ -9,7 +9,7 @@ import Link from "next/link";
 
 const tiers = [
   {
-    name: "Free",
+    name: "Bepul",
     id: "FREE",
     price: "Bepul",
     description: "Yangi boshlayotganlar uchun eng yaxshi tanlov.",
@@ -19,15 +19,15 @@ const tiers = [
     popular: false,
   },
   {
-    name: "Pro",
+    name: "Professional",
     id: "PRO",
     price: "99,000 so'm",
     unit: "/oy",
-    description: "Kichik va o'rta biznes egalari uchun professional imkoniyatlar.",
+    description: "Kichik va o'rta biznes egalari uchun kengaytirilgan imkoniyatlar.",
     features: [
       "10 tagacha bot",
-      "Barcha Free imkoniyatlar",
-      "Admin real-time chat",
+      "Barcha bepul imkoniyatlar",
+      "Admin bilan real-vaqtda chat",
       "Media fayllar (Rasm, PDF, Fayl)",
       "Eksport (Excel/CSV)",
       "Tezkor yordam",
@@ -37,21 +37,21 @@ const tiers = [
     popular: true,
   },
   {
-    name: "Business",
+    name: "Biznes",
     id: "BUSINESS",
     price: "299,000 so'm",
     unit: "/oy",
     description: "Katta loyihalar va cheksiz imkoniyatlar qidirganlar uchun.",
     features: [
       "Cheksiz botlar",
-      "Shaxsiy branding",
-      "O'lmas kesh (Infinite history)",
-      "API orqali ulanish",
-      "24/7 Priority support",
+      "Shaxsiy brending (Branding)",
+      "Cheksiz chat tarixi",
+      "API orqali ulanish imkoniyati",
+      "24/7 Ustuvor qo'llab-quvvatlash",
       "Shaxsiy menejer",
     ],
     icon: Building2,
-    buttonText: "Business'ni tanlang",
+    buttonText: "Biznesni tanlang",
     popular: false,
   },
 ];
@@ -74,7 +74,7 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 px-4 md:px-0">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-16 px-4 md:px-0">
           {tiers.map((tier) => (
             <Card 
               key={tier.id} 
@@ -85,7 +85,7 @@ export default function PricingPage() {
               }`}
             >
               {tier.popular && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-lg z-20">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-lg z-20">
                   ENG MASHHUR
                 </div>
               )}
