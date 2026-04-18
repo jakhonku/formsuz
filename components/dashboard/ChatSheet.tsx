@@ -70,7 +70,7 @@ export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatS
   useEffect(() => {
     if (isOpen) {
       fetchHistory();
-      const interval = setInterval(fetchHistory, 5000); // Poll every 5 seconds
+      const interval = setInterval(fetchHistory, 3000); // Poll every 3 seconds
       return () => clearInterval(interval);
     }
   }, [isOpen, botId, chatId]);

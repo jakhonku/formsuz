@@ -64,19 +64,36 @@ export async function POST(req: Request, { params }: { params: { botId: string }
 
     // Save user message to chat history
     try {
-      const chatId = body.message.chat.id.toString();
-      const text = body.message.text || "";
-      if (text && !text.startsWith("/")) {
-        await prisma.chatMessage.create({
-          data: {
-            botId,
-            chatId,
-            content: text,
-            sender: "user",
-            type: "text"
-          }
-        });
+      const msg = body.message;
+      const chatId = msg.chat.id.toString();
+      let type = "text";
+      let content = msg.text || "";
+      let fileUrl = null;
+
+      if (msg.photo) {
+        type = "image";
+        fileUrl = msg.photo[msg.photo.length - 1].file_id;
+        content = msg.caption || "";
+      } else if (msg.voice) {
+        type = "voice";
+        fileUrl = msg.voice.file_id;
+      } else if (msg.document) {
+        type = "file";
+        fileUrl = msg.document.file_id;
+        content = msg.caption || msg.document.file_name || "";
       }
+
+      // Log all user messages to history
+      await prisma.chatMessage.create({
+        data: {
+          botId,
+          chatId,
+          content,
+          type,
+          fileUrl,
+          sender: "user",
+        },
+      });
     } catch (e) {
       console.error("Failed to log chat message:", e);
     }
