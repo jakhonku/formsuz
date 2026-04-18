@@ -92,6 +92,8 @@ export async function POST(req: Request, { params }: { params: { botId: string }
           type,
           fileUrl,
           sender: "user",
+          senderName: `${msg.from?.first_name || ""} ${msg.from?.last_name || ""}`.trim() || null,
+          senderUsername: msg.from?.username || null
         },
       });
     } catch (e) {

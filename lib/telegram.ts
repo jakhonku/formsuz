@@ -82,25 +82,46 @@ export async function deleteBotWebhook(token: string) {
   }
 }
 
-export async function sendPhoto(token: string, chatId: string, photo: string, caption?: string) {
-  return axios.post(`${TELEGRAM_API}${token}/sendPhoto`, {
-    chat_id: chatId,
-    photo,
-    caption,
+export async function sendPhoto(token: string, chatId: string, photo: any, caption?: string) {
+  const isBuffer = photo instanceof Buffer || photo instanceof Blob;
+  const data = isBuffer ? new FormData() : { chat_id: chatId, photo, caption };
+  
+  if (isBuffer) {
+    (data as any).append('chat_id', chatId);
+    (data as any).append('photo', photo);
+    if (caption) (data as any).append('caption', caption);
+  }
+
+  return axios.post(`${TELEGRAM_API}${token}/sendPhoto`, data, {
+    headers: isBuffer ? { 'Content-Type': 'multipart/form-data' } : undefined
   });
 }
 
-export async function sendDocument(token: string, chatId: string, document: string, caption?: string) {
-  return axios.post(`${TELEGRAM_API}${token}/sendDocument`, {
-    chat_id: chatId,
-    document,
-    caption,
+export async function sendDocument(token: string, chatId: string, document: any, caption?: string) {
+  const isBuffer = document instanceof Buffer || document instanceof Blob;
+  const data = isBuffer ? new FormData() : { chat_id: chatId, document, caption };
+
+  if (isBuffer) {
+    (data as any).append('chat_id', chatId);
+    (data as any).append('document', document);
+    if (caption) (data as any).append('caption', caption);
+  }
+
+  return axios.post(`${TELEGRAM_API}${token}/sendDocument`, data, {
+    headers: isBuffer ? { 'Content-Type': 'multipart/form-data' } : undefined
   });
 }
 
-export async function sendVoice(token: string, chatId: string, voice: string) {
-  return axios.post(`${TELEGRAM_API}${token}/sendVoice`, {
-    chat_id: chatId,
-    voice,
+export async function sendVoice(token: string, chatId: string, voice: any) {
+  const isBuffer = voice instanceof Buffer || voice instanceof Blob;
+  const data = isBuffer ? new FormData() : { chat_id: chatId, voice };
+
+  if (isBuffer) {
+    (data as any).append('chat_id', chatId);
+    (data as any).append('voice', voice);
+  }
+
+  return axios.post(`${TELEGRAM_API}${token}/sendVoice`, data, {
+    headers: isBuffer ? { 'Content-Type': 'multipart/form-data' } : undefined
   });
 }
