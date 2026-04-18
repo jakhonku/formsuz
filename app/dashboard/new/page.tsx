@@ -248,12 +248,24 @@ export default function NewBotPage() {
                 {!formsLoading && formsError && (
                   <div className="flex items-start gap-3 p-4 rounded-xl bg-red-50 border border-red-100 text-red-700">
                     <AlertCircle className="flex-shrink-0 mt-0.5" size={18} />
-                    <div>
+                    <div className="flex-1">
                       <p className="font-semibold">Formalarni yuklab bo'lmadi</p>
                       <p className="text-sm text-red-600/80 mt-1">{formsError}</p>
                       <p className="text-sm text-red-600/80 mt-2">
                         Iltimos, qaytadan tizimga kiring — Google akkauntingiz uchun Drive ruxsatini qayta berish kerak bo'lishi mumkin.
                       </p>
+                      <div className="mt-4">
+                        <Button 
+                          variant="destructive" 
+                          size="sm" 
+                          onClick={() => {
+                            import("next-auth/react").then(m => m.signOut({ callbackUrl: "/login" }));
+                          }}
+                          className="rounded-full px-6"
+                        >
+                          Tizimdan chiqish va qayta kirish
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}
