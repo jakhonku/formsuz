@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +14,7 @@ import {
   Settings,
   ExternalLink,
   Award,
+  ArrowLeft,
 } from "lucide-react";
 import { BotSettingsPanel } from "@/components/dashboard/BotSettingsPanel";
 import { ResponsesTable } from "@/components/dashboard/ResponsesTable";
@@ -59,6 +62,14 @@ export default async function BotDetailPage({
 
   return (
     <div className="flex flex-col gap-5 w-full min-w-0">
+      {/* Back button */}
+      <Button variant="ghost" asChild className="gap-2 w-fit -ml-2">
+        <Link href="/dashboard/bots">
+          <ArrowLeft size={16} />
+          Orqaga
+        </Link>
+      </Button>
+
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
