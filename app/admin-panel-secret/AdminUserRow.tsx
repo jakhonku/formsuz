@@ -92,6 +92,7 @@ export default function AdminUserRow({ user }: { user: UserWithCount }) {
               <SelectItem value="FREE">FREE</SelectItem>
               <SelectItem value="PRO">PRO</SelectItem>
               <SelectItem value="BUSINESS">BUSINESS</SelectItem>
+              <SelectItem value="GWAY">GWAY</SelectItem>
             </SelectContent>
           </Select>
           <Button 

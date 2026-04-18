@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { Check, Zap, Rocket, Building2, ArrowRight } from "lucide-react";
+import { Check, Zap, Rocket, Building2, ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +13,7 @@ const tiers = [
     id: "FREE",
     price: "Bepul",
     description: "Yangi boshlayotganlar uchun eng yaxshi tanlov.",
-    features: ["3 tagacha bot", "Google Form ulanish", "Telegram bot orqali javoblar", "Asosiy qo'llab-quvvatlash"],
+    features: ["1 tagacha bot", "1 tagacha Google Form ulanish", "Telegram bot orqali javoblar", "Asosiy qo'llab-quvvatlash"],
     icon: Zap,
     buttonText: "Hozir boshlang",
     popular: false,
@@ -54,6 +54,22 @@ const tiers = [
     buttonText: "Biznesni tanlang",
     popular: false,
   },
+  {
+    name: "Gway.uz bilan",
+    id: "GWAY",
+    price: "Maxsus",
+    description: "Hamkorlar, investorlar va Gway.uz ekotizimi uchun eksklyuziv tarif.",
+    features: [
+      "Barcha narsa cheksiz",
+      "Gway platformasi imtiyozlari",
+      "Shaxsiy texnik yordam",
+      "Hamkorlik imkoniyatlari",
+    ],
+    icon: ShieldCheck,
+    buttonText: "Admin bilan bog'lanish",
+    popular: false,
+    special: true,
+  },
 ];
 
 export default function PricingPage() {
@@ -61,7 +77,7 @@ export default function PricingPage() {
 
   return (
     <div className="py-20 lg:py-28 px-4 bg-slate-50/50">
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-16 space-y-4">
           <Badge variant="secondary" className="rounded-full px-4 py-1.5 bg-primary/10 text-primary border-none text-[10px] font-bold uppercase tracking-widest">
             Tarif rejalar
@@ -74,14 +90,16 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pt-16 px-4 md:px-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pt-16 px-4 md:px-0">
           {tiers.map((tier) => (
             <Card 
               key={tier.id} 
               className={`relative flex flex-col h-full border-none transition-all duration-300 hover:-translate-y-2 overflow-visible ${
                 tier.popular 
                   ? "shadow-[0_20px_50px_rgba(37,99,235,0.15)] ring-2 ring-primary scale-105 z-10" 
-                  : "shadow-xl shadow-slate-200/50 bg-white"
+                  : (tier as any).special
+                    ? "shadow-xl shadow-orange-200/50 bg-gradient-to-b from-white to-orange-50/30 border-2 border-orange-100"
+                    : "shadow-xl shadow-slate-200/50 bg-white"
               }`}
             >
               {tier.popular && (
@@ -92,23 +110,25 @@ export default function PricingPage() {
               
               <CardHeader>
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
-                  tier.popular ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
+                  tier.popular ? "bg-primary text-white" : (tier as any).special ? "bg-orange-500 text-white" : "bg-slate-100 text-slate-600"
                 }`}>
                   <tier.icon size={24} />
                 </div>
-                <CardTitle className="text-2xl font-bold">{tier.name}</CardTitle>
-                <CardDescription className="min-h-[40px]">{tier.description}</CardDescription>
+                <CardTitle className="text-xl font-bold">{tier.name}</CardTitle>
+                <CardDescription className="min-h-[40px] text-xs line-clamp-2">{tier.description}</CardDescription>
               </CardHeader>
               <CardContent className="flex-1">
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-3xl font-extrabold tracking-tight">{tier.price}</span>
-                  {tier.unit && <span className="text-slate-500 text-sm font-medium">{tier.unit}</span>}
+                  <span className="text-2xl font-extrabold tracking-tight">{tier.price}</span>
+                  {tier.unit && <span className="text-slate-500 text-xs font-medium">{tier.unit}</span>}
                 </div>
                 
                 <ul className="space-y-3">
                   {tier.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
-                      <div className="mt-0.5 w-4 h-4 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+                    <li key={i} className="flex items-start gap-3 text-[13px] text-slate-600">
+                      <div className={`mt-0.5 w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${
+                        (tier as any).special ? "bg-orange-100 text-orange-600" : "bg-green-100 text-green-600"
+                      }`}>
                         <Check size={10} strokeWidth={3} />
                       </div>
                       {feature}
@@ -118,14 +138,16 @@ export default function PricingPage() {
               </CardContent>
               <CardFooter className="pt-6">
                 <Button 
-                  className={`w-full h-14 rounded-2xl text-md font-black transition-all shadow-lg ${
+                  className={`w-full h-12 rounded-xl text-sm font-black transition-all shadow-lg ${
                     tier.popular 
                       ? "bg-primary hover:bg-primary/90 shadow-primary/25" 
-                      : "bg-slate-900 hover:bg-slate-800 shadow-slate-900/10"
+                      : (tier as any).special
+                        ? "bg-orange-500 hover:bg-orange-600 shadow-orange-500/10"
+                        : "bg-slate-900 hover:bg-slate-800 shadow-slate-900/10"
                   }`}
                   asChild
                 >
-                  <Link href={`/dashboard/checkout/${tier.id}`}>
+                  <Link href={tier.id === "GWAY" || tier.id === "FREE" && session ? (tier.id === "GWAY" ? "https://t.me/jakhonku" : "/dashboard") : `/dashboard/checkout/${tier.id}`}>
                     {tier.buttonText}
                   </Link>
                 </Button>

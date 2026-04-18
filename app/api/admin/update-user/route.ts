@@ -20,11 +20,12 @@ export async function POST(req: Request) {
 
   // Set expiration date (e.g., 30 days if upgrading to PRO/BUSINESS)
   let expiresAt = null;
-  if (plan !== "FREE") {
+  if (plan === "PRO" || plan === "BUSINESS") {
     const d = new Date();
     d.setDate(d.getDate() + 30);
     expiresAt = d;
   }
+  // GWAY and FREE have no expiration (FREE is unlimited, GWAY is special)
 
   try {
     const updated = await prisma.user.update({
