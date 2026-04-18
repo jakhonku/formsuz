@@ -71,7 +71,12 @@ export function Navbar() {
                   >
                     <div className="flex items-center justify-start gap-2 p-2">
                       <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{session.user?.name}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-medium leading-none">{session.user?.name}</p>
+                          <Badge variant="secondary" className="text-[9px] px-1.5 py-0 h-4 bg-primary/10 text-primary border-none">
+                            {session.user?.plan}
+                          </Badge>
+                        </div>
                         <p className="text-xs leading-none text-slate-500">
                           {session.user?.email}
                         </p>

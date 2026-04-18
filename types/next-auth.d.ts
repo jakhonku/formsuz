@@ -8,6 +8,8 @@ declare module "next-auth" {
       refreshToken?: string;
       accessTokenExpires?: number;
       error?: string;
+      plan?: string;
+      planExpiresAt?: string | null;
     } & DefaultSession["user"];
   }
 }
@@ -19,5 +21,7 @@ declare module "next-auth/jwt" {
     refreshToken?: string;
     accessTokenExpires?: number;
     error?: string;
+    plan?: string;
+    planExpiresAt?: string | null;
   }
 }

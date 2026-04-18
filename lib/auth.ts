@@ -73,6 +73,12 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account }) {
       // Initial sign in
       if (account && user) {
+        // Fetch fresh plan info from DB even on sign in (since adapter creates the user)
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { plan: true, planExpiresAt: true }
+        });
+
         return {
           accessToken: account.access_token,
           accessTokenExpires: (account.expires_at ?? 0) * 1000,
@@ -81,8 +87,14 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           image: user.image,
+          plan: dbUser?.plan || "FREE",
+          planExpiresAt: dbUser?.planExpiresAt?.toISOString() || null
         };
       }
+
+      // If we already have a plan in the token, keep it. 
+      // Note: This won't update if plan changes in DB until next login.
+      // To fix that, we can fetch on every JWT call, but it adds DB load.
 
       // Return previous token if the access token has not expired yet
       if (Date.now() < (token.accessTokenExpires as number)) {
@@ -99,6 +111,8 @@ export const authOptions: NextAuthOptions = {
         session.user.refreshToken = token.refreshToken as string | undefined;
         session.user.accessTokenExpires = token.accessTokenExpires as number | undefined;
         session.user.error = token.error as string | undefined;
+        session.user.plan = token.plan as string | undefined;
+        session.user.planExpiresAt = token.planExpiresAt as string | null | undefined;
       }
       return session;
     },

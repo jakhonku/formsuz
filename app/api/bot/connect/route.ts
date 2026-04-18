@@ -16,6 +16,8 @@ function resolvePublicBaseUrl(req: Request) {
   return "";
 }
 
+import { getPlanLimit } from "@/lib/plans";
+
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.accessToken || !session.user?.id) {
@@ -23,6 +25,19 @@ export async function POST(req: Request) {
   }
 
   try {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { plan: true, _count: { select: { bots: true } } }
+    });
+
+    const planData = getPlanLimit(user?.plan || "FREE");
+    if (user && user._count.bots >= planData.maxBots) {
+      return NextResponse.json(
+        { error: `Sizning tarifingizda maksimal botlar soni: ${planData.maxBots}. Bot qo'shish uchun tarifingizni oshiring.` },
+        { status: 403 }
+      );
+    }
+
     const { formId, botToken } = await req.json();
 
     if (!formId || !botToken) {

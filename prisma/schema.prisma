@@ -43,6 +43,8 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  plan          String    @default("FREE") // FREE, PRO, BUSINESS
+  planExpiresAt DateTime?
   accounts      Account[]
   sessions      Session[]
   bots          Bot[]
