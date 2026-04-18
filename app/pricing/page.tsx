@@ -125,7 +125,7 @@ export default function PricingPage() {
                   }`}
                   asChild
                 >
-                  <Link href="https://t.me/jaxongir_baxtiyarov" target="_blank">
+                  <Link href={`/dashboard/checkout/${tier.id}`}>
                     {tier.buttonText}
                   </Link>
                 </Button>
