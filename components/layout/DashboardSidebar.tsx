@@ -9,9 +9,12 @@ import {
   Bot, 
   Settings, 
   LogOut,
-  User2
+  User2,
+  ShieldCheck
 } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+
+const ADMIN_EMAILS = ["jakhongirbakhtiyarov0130@gmail.com", "jakhonku@gmail.com"];
 
 const menuItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -23,6 +26,8 @@ const menuItems = [
 
 export function DashboardSidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.email && ADMIN_EMAILS.includes(session.user.email);
 
   return (
     <aside className="w-64 border-r bg-white h-[calc(100vh-64px)] overflow-y-auto flex flex-col">
@@ -43,6 +48,21 @@ export function DashboardSidebar() {
               {item.name}
             </Link>
           ))}
+
+          {isAdmin && (
+            <Link
+              href="/admin-panel-secret"
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors mt-4 bg-slate-100/50 border border-slate-200",
+                pathname === "/admin-panel-secret"
+                  ? "bg-slate-900 text-white"
+                  : "text-slate-900 hover:bg-slate-200"
+              )}
+            >
+              <ShieldCheck className="h-4 w-4" />
+              Super Admin
+            </Link>
+          )}
         </div>
       </div>
       <div className="p-4 border-t">
