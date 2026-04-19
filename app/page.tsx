@@ -26,6 +26,7 @@ import {
   Database,
   LayoutDashboard
 } from "lucide-react";
+import { ReviewSection } from "@/components/home/ReviewSection";
 
 export default function Home() {
   const { data: session, status } = useSession();
