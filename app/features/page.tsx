@@ -36,7 +36,7 @@ export default function FeaturesPage() {
             <Sparkles size={12} className="mr-1.5" /> Imkoniyatlar
           </Badge>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-            FormBot'ning to'liq imkoniyatlari
+            Gway.uz'ning to'liq imkoniyatlari
           </h1>
           <p className="text-slate-500 text-lg max-w-2xl mx-auto">
             Google Forms + Telegram birikmasidan eng yaxshi foydalaning. Har bir

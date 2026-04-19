@@ -3,9 +3,9 @@ import Link from "next/link";
 import { ScrollText, Mail } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Foydalanish shartlari — FormBot",
+  title: "Foydalanish shartlari — Gway.uz",
   description:
-    "FormBot xizmatidan foydalanishning shartlari, cheklovlari va javobgarliklari.",
+    "Gway.uz xizmatidan foydalanishning shartlari, cheklovlari va javobgarliklari.",
 };
 
 const LAST_UPDATED = "19-aprel, 2026";
@@ -29,12 +29,12 @@ export default function TermsPage() {
 
       <div className="prose prose-slate max-w-none">
         <p className="text-slate-600 text-base leading-relaxed">
-          FormBot platformasidan foydalanganingiz uchun rahmat. Ushbu shartlar <b>FormBot</b> ("Xizmat") va Siz ("Foydalanuvchi") o'rtasidagi munosabatlarni tartibga soladi. Platforma <b>Gway.uz</b> tomonidan boshqariladi.
+          Gway.uz platformasidan foydalanganingiz uchun rahmat. Ushbu shartlar <b>Gway.uz</b> ("Xizmat") va Siz ("Foydalanuvchi") o'rtasidagi munosabatlarni tartibga soladi. Platforma <b>Gway.uz</b> tomonidan boshqariladi.
         </p>
 
         <Section title="1. Xizmat tavsifi">
           <p>
-            FormBot — Google Forms'dagi savollarni Telegram bot orqali yuborish, javoblarni yig'ish va ularni tahlil qilish imkonini beruvchi no-code platformadir.
+            Gway.uz — Google Forms'dagi savollarni Telegram bot orqali yuborish, javoblarni yig'ish va ularni tahlil qilish imkonini beruvchi no-code platformadir.
           </p>
         </Section>
 
@@ -81,7 +81,7 @@ export default function TermsPage() {
       </div>
 
       <div className="mt-20 pt-10 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-        <p>© {new Date().getFullYear()} FormBot (Gway.uz). Barcha huquqlar himoyalangan.</p>
+        <p>© {new Date().getFullYear()} Gway.uz. Barcha huquqlar himoyalangan.</p>
         <Link href="/privacy" className="text-primary font-bold hover:underline flex items-center gap-1">
           Maxfiylik siyosati
         </Link>

@@ -10,7 +10,7 @@ export function Footer() {
             <div className="flex items-center gap-2 mb-4">
               <img 
                 src="/logo.png" 
-                alt="FormBot Logo" 
+                alt="Gway.uz Logo" 
                 className="h-32 w-auto" 
               />
             </div>
@@ -29,7 +29,7 @@ export function Footer() {
                 <Send size={16} />
               </a>
               <a
-                href="mailto:support@formbot.uz"
+                href="mailto:support@gway.uz"
                 className="w-9 h-9 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary/30 transition"
                 aria-label="Email"
               >
@@ -71,7 +71,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-3 text-slate-400 text-sm">
-          <p>© {new Date().getFullYear()} FormBot. Barcha huquqlar himoyalangan.</p>
+          <p>© {new Date().getFullYear()} Gway.uz. Barcha huquqlar himoyalangan.</p>
           <p>Made with care in Uzbekistan</p>
         </div>
       </div>

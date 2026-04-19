@@ -24,8 +24,8 @@ const sections: Section[] = [
     icon: <Rocket size={18} />,
     items: [
       {
-        q: "FormBot nima va u qanday ishlaydi?",
-        a: "FormBot — bu Google Form'ingizni Telegram botga ulab beruvchi platforma. Siz botga savol-javob formaligini bog'laysiz, foydalanuvchi Telegram'da botga /start bersa, bot unga savollarni ketma-ket yuboradi. Har bir javob Google Sheets jadvalga avtomatik yoziladi.",
+        q: "Gway.uz nima va u qanday ishlaydi?",
+        a: "Gway.uz — bu Google Form'ingizni Telegram botga ulab beruvchi platforma. Siz botga savol-javob formaligini bog'laysiz, foydalanuvchi Telegram'da botga /start bersa, bot unga savollarni ketma-ket yuboradi. Har bir javob Google Sheets jadvalga avtomatik yoziladi.",
       },
       {
         q: "Qanday ro'yxatdan o'taman?",
@@ -37,11 +37,11 @@ const sections: Section[] = [
       },
       {
         q: "Telegram bot tokenni qayerdan olaman?",
-        a: "Telegram'da @BotFather chatiga kiring, /newbot buyrug'ini yuboring, bot nomi va foydalanuvchi nomini tanlang. BotFather sizga HTTP API tokenini beradi — shu tokenni FormBot'ga joylashtiring.",
+        a: "Telegram'da @BotFather chatiga kiring, /newbot buyrug'ini yuboring, bot nomi va foydalanuvchi nomini tanlang. BotFather sizga HTTP API tokenini beradi — shu tokenni Gway.uz'ga joylashtiring.",
       },
       {
         q: "Kod bilmasam foydalana olamanmi?",
-        a: "Ha, albatta. FormBot aynan kod yoza olmaydigan foydalanuvchilar uchun ishlab chiqilgan. Hech qanday dasturlash bilimi talab qilinmaydi.",
+        a: "Ha, albatta. Gway.uz aynan kod yoza olmaydigan foydalanuvchilar uchun ishlab chiqilgan. Hech qanday dasturlash bilimi talab qilinmaydi.",
       },
     ],
   },
@@ -64,7 +64,7 @@ const sections: Section[] = [
       },
       {
         q: "Test (Quiz) rejimi qanday ishlaydi?",
-        a: "Google Forms'da formani Quiz sifatida sozlasangiz, FormBot buni avtomatik aniqlaydi. Har bir savoldan keyin foydalanuvchiga javob to'g'ri yoki noto'g'riligi ko'rsatiladi, oxirida esa umumiy ball chiqadi.",
+        a: "Google Forms'da formani Quiz sifatida sozlasangiz, Gway.uz buni avtomatik aniqlaydi. Har bir savoldan keyin foydalanuvchiga javob to'g'ri yoki noto'g'riligi ko'rsatiladi, oxirida esa umumiy ball chiqadi.",
       },
       {
         q: "Fayl yuklash savollari qanday ishlaydi?",
@@ -105,12 +105,12 @@ const sections: Section[] = [
         a: "Ha. Bot tokenlari AES-256-CBC algoritmi bilan shifrlanadi. Google tokenlari faqat zarur bo'lganda yangilanadi va sessiyalar JWT orqali boshqariladi.",
       },
       {
-        q: "FormBot mening Google Forms javoblarimni saqlaydimi?",
+        q: "Gway.uz mening Google Forms javoblarimni saqlaydimi?",
         a: "Biz faqat bot orqali kelgan javoblarni vaqtinchalik saqlaymiz (dashboard ko'rsatish uchun). Asosiy ma'lumotlar Google Sheets'ingizda qoladi va sizning nazoratingizda.",
       },
       {
         q: "Google akkauntimga qanday ruxsat beraman?",
-        a: "FormBot faqat 4 ta ruxsat so'raydi: 1) Drive'dagi formalar ro'yxati, 2) Forma savollari (faqat o'qish), 3) Forma javoblari (faqat o'qish), 4) Sheets'ga yozish. Ruxsatni istalgan vaqt myaccount.google.com orqali olib tashlashingiz mumkin.",
+        a: "Gway.uz faqat 4 ta ruxsat so'raydi: 1) Drive'dagi formalar ro'yxati, 2) Forma savollari (faqat o'qish), 3) Forma javoblari (faqat o'qish), 4) Sheets'ga yozish. Ruxsatni istalgan vaqt myaccount.google.com orqali olib tashlashingiz mumkin.",
       },
     ],
   },
@@ -152,7 +152,7 @@ export default function FaqPage() {
             Tez-tez so'raladigan savollar
           </h1>
           <p className="text-slate-500 text-lg">
-            FormBot'dan qanday foydalanish haqida to'liq yo'riqnoma. Kerakli savolni
+            Gway.uz'dan qanday foydalanish haqida to'liq yo'riqnoma. Kerakli savolni
             pastdagi ro'yxatdan toping yoki to'g'ridan-to'g'ri qidiring.
           </p>
         </div>

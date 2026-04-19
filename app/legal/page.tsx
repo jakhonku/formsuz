@@ -4,8 +4,8 @@ import { Shield, ScrollText, ArrowRight, Gavel } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata: Metadata = {
-  title: "Huquqiy ma'lumotlar — FormBot",
-  description: "FormBot platformasining huquqiy hujjatlari va qoidalari.",
+  title: "Huquqiy ma'lumotlar — Gway.uz",
+  description: "Gway.uz platformasining huquqiy hujjatlari va qoidalari.",
 };
 
 export default function LegalPage() {
@@ -19,7 +19,7 @@ export default function LegalPage() {
           Huquqiy ma'lumotlar
         </h1>
         <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-          FormBot platformasidan foydalanish qoidalari va xavfsizlik siyosati bilan tanishing.
+          Gway.uz platformasidan foydalanish qoidalari va xavfsizlik siyosati bilan tanishing.
         </p>
       </div>
 

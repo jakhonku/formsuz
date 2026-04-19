@@ -3,9 +3,9 @@ import Link from "next/link";
 import { Shield, Mail } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Maxfiylik siyosati — FormBot",
+  title: "Maxfiylik siyosati — Gway.uz",
   description:
-    "FormBot foydalanuvchi ma'lumotlarini qanday to'playdi, ishlatadi va himoya qiladi.",
+    "Gway.uz foydalanuvchi ma'lumotlarini qanday to'playdi, ishlatadi va himoya qiladi.",
 };
 
 const LAST_UPDATED = "19-aprel, 2026";
@@ -29,7 +29,7 @@ export default function PrivacyPage() {
 
       <div className="prose prose-slate max-w-none">
         <p className="text-slate-600 text-base leading-relaxed">
-          Ushbu Maxfiylik siyosati <b>FormBot</b> (keyingi o'rinlarda "Xizmat", "Biz") tomonidan foydalanuvchilarning shaxsiy ma'lumotlarini qanday to'planishi, ishlatilishi va himoya qilinishini belgilaydi. Platforma rasmiy ravishda <b>Gway.uz</b> loyihasi hisoblanadi.
+          Ushbu Maxfiylik siyosati <b>Gway.uz</b> (keyingi o'rinlarda "Xizmat", "Biz") tomonidan foydalanuvchilarning shaxsiy ma'lumotlarini qanday to'planishi, ishlatilishi va himoya qilinishini belgilaydi. Platforma rasmiy ravishda <b>Gway.uz</b> loyihasi hisoblanadi.
         </p>
 
         <Section title="1. To'planadigan ma'lumotlar">
@@ -67,7 +67,7 @@ export default function PrivacyPage() {
           <p>Siz har qanday vaqtda quyidagi huquqlarga egasiz:</p>
           <ul className="list-disc list-inside space-y-2 mt-3">
             <li>O'z ma'lumotlaringizni ko'rish va ularni o'zgartirish.</li>
-            <li>FormBot platformasidan o'z hisobingizni butunlay o'chirish.</li>
+            <li>Gway.uz platformasidan o'z hisobingizni butunlay o'chirish.</li>
             <li>Google akkauntingizga berilgan ruxsatnomalarni bekor qilish.</li>
           </ul>
         </Section>
@@ -86,7 +86,7 @@ export default function PrivacyPage() {
       </div>
 
       <div className="mt-20 pt-10 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-        <p>© {new Date().getFullYear()} FormBot (Gway.uz). Barcha huquqlar himoyalangan.</p>
+        <p>© {new Date().getFullYear()} Gway.uz. Barcha huquqlar himoyalangan.</p>
         <Link href="/terms" className="text-primary font-bold hover:underline flex items-center gap-1">
           Foydalanish shartlari
         </Link>

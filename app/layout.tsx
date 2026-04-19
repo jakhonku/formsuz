@@ -13,8 +13,8 @@ import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FormBot - Google Form'ni Telegram botga 2 daqiqada ulang",
-  description: "FormBot orqali Google Form javoblarini Telegram botingizga avtomatik tarzda qabul qiling.",
+  title: "Gway.uz - Google Form'ni Telegram botga 2 daqiqada ulang",
+  description: "Gway.uz orqali Google Form javoblarini Telegram botingizga avtomatik tarzda qabul qiling.",
 };
 
 export default function RootLayout({

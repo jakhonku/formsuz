@@ -111,7 +111,7 @@ export default function Home() {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-14">
             <Badge variant="outline" className="mb-4 rounded-full px-3 py-1">Imkoniyatlar</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">Nega aynan FormBot?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-3">Nega aynan Gway.uz?</h2>
             <p className="text-slate-500 max-w-2xl mx-auto">
               Bir nechta tugma bosish bilan Telegram botingizni professional so'rov
               platformasiga aylantiring.
@@ -186,7 +186,7 @@ export default function Home() {
             <Badge variant="outline" className="mb-4 rounded-full px-3 py-1 bg-white">Kim foydalanadi?</Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-3">Har qanday so'rov uchun</h2>
             <p className="text-slate-500 max-w-xl mx-auto">
-              FormBot turli sohalardagi mijozlarga yordam beradi.
+              Gway.uz turli sohalardagi mijozlarga yordam beradi.
             </p>
           </div>
 
@@ -296,7 +296,7 @@ export default function Home() {
             {[
               {
                 q: "Men dasturchi emasman — foydalanaolamanmi?",
-                a: "Albatta. FormBot aynan kod yoza olmaydigan foydalanuvchilar uchun yaratilgan. Telegram'da BotFather orqali bot olib, bizning saytda uni ulang — tamom.",
+                a: "Albatta. Gway.uz aynan kod yoza olmaydigan foydalanuvchilar uchun yaratilgan. Telegram'da BotFather orqali bot olib, bizning saytda uni ulang — tamom.",
               },
               {
                 q: "Mavjud Google Form'larim ishlaydimi?",
@@ -304,7 +304,7 @@ export default function Home() {
               },
               {
                 q: "Bepul tarifga nima kiradi?",
-                a: "3 ta bot, cheksiz javoblar, dashboard, Google Sheets'ga yozish va Excel eksport bepul. Qo'shimcha botlar uchun Pro tarifga o'tishingiz mumkin.",
+                a: "1 ta bot, cheksiz javoblar, dashboard, Google Sheets'ga yozish bepul. Qo'shimcha imkoniyatlar uchun Pro tarifga o'tishingiz mumkin.",
               },
               {
                 q: "Ma'lumotlarim xavfsizmi?",

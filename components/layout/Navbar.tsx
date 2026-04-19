@@ -29,7 +29,7 @@ export function Navbar() {
         <Link href="/" className="flex items-center gap-2">
           <img 
             src="/logo.png" 
-            alt="FormBot Logo" 
+            alt="Gway.uz Logo" 
             className="h-20 w-auto" 
           />
         </Link>
@@ -60,7 +60,7 @@ export function Navbar() {
                   <Avatar className="h-10 w-10 border-2 border-primary/10">
                     <AvatarImage src={session.user?.image || ""} alt={session.user?.name || ""} />
                     <AvatarFallback className="bg-primary/5 text-primary text-xs">
-                      {session.user?.name?.substring(0, 2).toUpperCase() || "FB"}
+                      {session.user?.name?.substring(0, 2).toUpperCase() || "G"}
                     </AvatarFallback>
                   </Avatar>
                 </button>

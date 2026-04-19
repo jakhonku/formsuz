@@ -76,7 +76,7 @@ export default function AboutPage() {
             <p className="text-slate-600 leading-relaxed text-sm">
               IT sohasida 10 yillik tajribaga ega bo'lgan Full Stack dasturchi sifatida loyihalarni 
               mukammal darajaga yetkazishga intiladi. Sun'iy intellekt, murakkab tizimlar va 
-              foydalanuvchi interfeyslari ustida ishlash bo'yicha katta tajribaga ega. FormBot 
+              foydalanuvchi interfeyslari ustida ishlash bo'yicha katta tajribaga ega. Gway.uz 
               loyihasini yaratishdan maqsad — tadbirkorlar va bot egalari uchun eng qulay chat 
               ekotizimini yaratishdir.
             </p>
