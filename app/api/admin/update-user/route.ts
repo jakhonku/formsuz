@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { revalidatePath } from "next/cache";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -32,11 +33,17 @@ export async function POST(req: Request) {
   try {
     const updated = await prisma.user.update({
       where: { id: userId },
-      data: { 
+      data: {
         plan,
         planExpiresAt: finalExpiresAt
       }
     });
+
+    revalidatePath("/admin-panel-secret");
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/voting-bots");
+    revalidatePath("/dashboard/voting-bots/new");
+    revalidatePath("/dashboard/settings");
 
     return NextResponse.json(updated);
   } catch (error) {

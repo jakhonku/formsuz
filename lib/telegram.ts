@@ -126,8 +126,8 @@ export async function sendVoice(token: string, chatId: string, voice: any, filen
   if (isBuffer) {
     const data = new FormData();
     data.append('chat_id', chatId);
-    data.append('voice', voice, filename || 'voice.ogg');
-    
+    data.append('voice', voice as Blob, filename || 'voice.ogg');
+
     return axios.post(`${TELEGRAM_API}${token}/sendVoice`, data);
   }
 

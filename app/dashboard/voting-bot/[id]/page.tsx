@@ -4,6 +4,8 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { VotingBotDetail } from "@/components/dashboard/voting/VotingBotDetail";
 
+export const dynamic = "force-dynamic";
+
 export default async function VotingBotPage({
   params,
 }: {

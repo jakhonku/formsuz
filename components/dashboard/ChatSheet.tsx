@@ -27,7 +27,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import { getPlanLimit, PLANS } from "@/lib/plans";
-import { Lock, ArrowRight, ShieldAlert } from "lucide-react";
+import { Lock, ArrowRight, ShieldAlert, Check } from "lucide-react";
 import Link from "next/link";
 
 interface Message {

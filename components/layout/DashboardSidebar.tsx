@@ -16,20 +16,28 @@ import {
 import { signOut, useSession } from "next-auth/react";
 
 const ADMIN_EMAILS = ["jakhongirbakhtiyarov0130@gmail.com", "jakhonku@gmail.com"];
-
-const menuItems = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Sizning botlaringiz", href: "/dashboard/bots", icon: Bot },
-  { name: "Konkurs botlari", href: "/dashboard/voting-bots", icon: Vote, badge: "PRO" },
-  { name: "Google Formlar", href: "/dashboard/forms", icon: FileText },
-  { name: "Sozlamalar", href: "/dashboard/settings", icon: Settings },
-  { name: "Dasturchi haqida", href: "/dashboard/about", icon: User2 },
-];
+const VOTING_PLANS = ["PRO", "BUSINESS", "GWAY"];
 
 export function DashboardSidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const isAdmin = session?.user?.email && ADMIN_EMAILS.includes(session.user.email);
+  const userPlan = session?.user?.plan || "FREE";
+  const hasVotingAccess = VOTING_PLANS.includes(userPlan);
+
+  const menuItems = [
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Sizning botlaringiz", href: "/dashboard/bots", icon: Bot },
+    {
+      name: "Konkurs botlari",
+      href: "/dashboard/voting-bots",
+      icon: Vote,
+      badge: hasVotingAccess ? undefined : "PRO",
+    },
+    { name: "Google Formlar", href: "/dashboard/forms", icon: FileText },
+    { name: "Sozlamalar", href: "/dashboard/settings", icon: Settings },
+    { name: "Dasturchi haqida", href: "/dashboard/about", icon: User2 },
+  ];
 
   return (
     <aside className="w-64 border-r bg-white h-[calc(100vh-64px)] overflow-y-auto flex flex-col">

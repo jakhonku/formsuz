@@ -24,15 +24,9 @@ export async function GET(
       orderBy: { createdAt: "asc" },
     });
 
-    // Try to find responder info from existing responses
-    const responseInfo = await prisma.response.findFirst({
-      where: { botId, chatId },
-      select: { metadata: true }
-    });
-
-    const meta = responseInfo?.metadata as any;
-    const responderName = meta?.message?.from ? `${meta.message?.from?.first_name || ""} ${meta.message?.from?.last_name || ""}`.trim() : null;
-    const responderUsername = meta?.message?.from?.username || null;
+    const firstIncoming = messages.find((m) => m.sender === "user");
+    const responderName = firstIncoming?.senderName || null;
+    const responderUsername = firstIncoming?.senderUsername || null;
 
     return NextResponse.json({
       messages,

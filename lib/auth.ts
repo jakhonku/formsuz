@@ -92,16 +92,23 @@ export const authOptions: NextAuthOptions = {
         };
       }
 
-      // If we already have a plan in the token, keep it. 
-      // Note: This won't update if plan changes in DB until next login.
-      // To fix that, we can fetch on every JWT call, but it adds DB load.
+      // Always re-read plan/expiry from DB so admin upgrades take effect
+      // on the next request without waiting for token refresh or re-login.
+      if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { plan: true, planExpiresAt: true }
+        });
+        if (dbUser) {
+          token.plan = dbUser.plan;
+          token.planExpiresAt = dbUser.planExpiresAt?.toISOString() || null;
+        }
+      }
 
-      // Return previous token if the access token has not expired yet
       if (Date.now() < (token.accessTokenExpires as number)) {
         return token;
       }
 
-      // Access token has expired, try to update it
       return refreshAccessToken(token);
     },
     async session({ session, token }) {

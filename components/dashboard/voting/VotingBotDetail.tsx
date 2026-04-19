@@ -320,12 +320,14 @@ export function VotingBotDetail({ bot, recentVotes }: Props) {
               Nomzodlar & natijalar
             </h2>
             <Dialog open={addOpen} onOpenChange={setAddOpen}>
-              <DialogTrigger asChild>
-                <Button size="sm" className="rounded-full gap-1">
-                  <Plus size={14} />
-                  Nomzod qo'shish
-                </Button>
-              </DialogTrigger>
+              <DialogTrigger
+                render={
+                  <Button size="sm" className="rounded-full gap-1">
+                    <Plus size={14} />
+                    Nomzod qo'shish
+                  </Button>
+                }
+              />
               <DialogContent>
                 <form onSubmit={handleAddCandidate}>
                   <DialogHeader>
