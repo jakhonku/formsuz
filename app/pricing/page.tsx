@@ -147,7 +147,7 @@ export default function PricingPage() {
                   }`}
                   asChild
                 >
-                  <Link href={tier.id === "GWAY" || tier.id === "FREE" && session ? (tier.id === "GWAY" ? "https://t.me/jakhonku" : "/dashboard") : `/dashboard/checkout/${tier.id}`}>
+                  <Link href={tier.id === "GWAY" || tier.id === "FREE" && session ? (tier.id === "GWAY" ? "https://t.me/Gwayuz_support_bot" : "/dashboard") : `/dashboard/checkout/${tier.id}`}>
                     {tier.buttonText}
                   </Link>
                 </Button>
@@ -168,7 +168,7 @@ export default function PricingPage() {
             biz bilan bevosita bog'laning. Biz sizga mos moslashuvchan narxlarni taklif qilamiz.
           </p>
           <Button variant="outline" size="lg" className="rounded-full gap-2 px-8" asChild>
-            <Link href="https://t.me/jakhonku" target="_blank">
+            <Link href="https://t.me/Gwayuz_support_bot" target="_blank">
               Biz bilan bog'lanish <ArrowRight size={18} />
             </Link>
           </Button>

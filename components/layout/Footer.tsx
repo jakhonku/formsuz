@@ -20,7 +20,7 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-3">
               <a
-                href="https://t.me/formbot_support"
+                href="https://t.me/Gwayuz_support_bot"
                 target="_blank"
                 rel="noreferrer"
                 className="w-9 h-9 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-500 hover:text-primary hover:border-primary/30 transition"
@@ -54,7 +54,7 @@ export function Footer() {
               <li><Link href="/faq" className="hover:text-primary transition">Savol-javob</Link></li>
               <li><Link href="/help" className="hover:text-primary transition">Yordam markazi</Link></li>
               <li>
-                <a href="https://t.me/formbot_support" target="_blank" rel="noreferrer" className="hover:text-primary transition">
+                <a href="https://t.me/Gwayuz_support_bot" target="_blank" rel="noreferrer" className="hover:text-primary transition">
                   Telegram qo'llab-quvvatlash
                 </a>
               </li>

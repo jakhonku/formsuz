@@ -223,9 +223,9 @@ export default function FaqPage() {
                   Telegram qo'llab-quvvatlash guruhiga qo'shiling — jamoa va mutaxassislar
                   darhol yordam beradi.
                 </p>
-                <Button asChild className="rounded-full gap-2 bg-green-600 hover:bg-green-700">
-                  <a href="https://t.me/formbot_support" target="_blank" rel="noreferrer">
-                    <Send size={16} /> Telegram guruhi
+                <Button asChild className="rounded-full gap-2 bg-blue-600 hover:bg-blue-700">
+                  <a href="https://t.me/Gwayuz_support_bot" target="_blank" rel="noreferrer">
+                    <Send size={16} /> Telegram qo'llab-quvvatlash
                   </a>
                 </Button>
               </CardContent>

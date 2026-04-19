@@ -75,11 +75,11 @@ export default function PrivacyPage() {
         <Section title="6. Biz bilan bog'lanish">
           <p>Ushbu siyosat bo'yicha savollaringiz bo'lsa, quyidagi manzillarga murojaat qiling:</p>
           <div className="mt-5 flex flex-col gap-3">
-            <a href="https://t.me/jakhonku" className="flex items-center gap-2 text-primary font-bold hover:underline">
-              <Mail size={16} /> Telegram: @jakhonku
+            <a href="https://t.me/Gwayuz_support_bot" className="flex items-center gap-2 text-primary font-bold hover:underline">
+              <Mail size={16} /> Telegram: @Gwayuz_support_bot
             </a>
-            <a href="mailto:support@formbot.uz" className="flex items-center gap-2 text-primary font-bold hover:underline">
-              <Mail size={16} /> support@formbot.uz
+            <a href="mailto:support@gway.uz" className="flex items-center gap-2 text-primary font-bold hover:underline">
+              <Mail size={16} /> support@gway.uz
             </a>
           </div>
         </Section>

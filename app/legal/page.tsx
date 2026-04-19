@@ -59,10 +59,10 @@ export default function LegalPage() {
         <h3 className="text-xl font-bold mb-2">Savollaringiz bormi?</h3>
         <p className="text-slate-500 mb-6">Huquqiy masalalar bo'yicha biz bilan bog'laning.</p>
         <a 
-            href="mailto:support@formbot.uz" 
+            href="mailto:support@gway.uz" 
             className="inline-flex items-center gap-2 text-primary font-black hover:underline text-lg"
         >
-          support@formbot.uz
+          support@gway.uz
         </a>
       </div>
     </div>

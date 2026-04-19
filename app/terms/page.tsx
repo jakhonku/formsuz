@@ -73,8 +73,8 @@ export default function TermsPage() {
         <Section title="6. Biz bilan bog'lanish">
           <p>Savollaringiz bo'lsa, Telegram orqali murojaat qilishingiz mumkin:</p>
           <div className="mt-5 flex flex-col gap-3">
-            <a href="https://t.me/jakhonku" className="flex items-center gap-2 text-primary font-bold hover:underline">
-              <Mail size={16} /> @jakhonku
+            <a href="https://t.me/Gwayuz_support_bot" className="flex items-center gap-2 text-primary font-bold hover:underline">
+              <Mail size={16} /> @Gwayuz_support_bot
             </a>
           </div>
         </Section>
