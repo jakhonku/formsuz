@@ -92,9 +92,11 @@ export const authOptions: NextAuthOptions = {
         };
       }
 
-      // Always re-read plan/expiry from DB so admin upgrades take effect
-      // on the next request without waiting for token refresh or re-login.
-      if (token.id) {
+      // Re-read plan/expiry from DB with a short TTL so admin upgrades
+      // take effect within ~60s without hammering the DB on every request.
+      const PLAN_TTL_MS = 60_000;
+      const lastCheck = (token.planCheckedAt as number | undefined) ?? 0;
+      if (token.id && Date.now() - lastCheck > PLAN_TTL_MS) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
           select: { plan: true, planExpiresAt: true }
@@ -103,6 +105,7 @@ export const authOptions: NextAuthOptions = {
           token.plan = dbUser.plan;
           token.planExpiresAt = dbUser.planExpiresAt?.toISOString() || null;
         }
+        token.planCheckedAt = Date.now();
       }
 
       if (Date.now() < (token.accessTokenExpires as number)) {

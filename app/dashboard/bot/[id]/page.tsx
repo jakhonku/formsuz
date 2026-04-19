@@ -49,7 +49,12 @@ export default async function BotDetailPage({
     where: { id: params.id, userId: session?.user?.id },
     include: {
       form: true,
-      responses: { orderBy: { createdAt: "desc" } },
+      responses: {
+        where: { status: "completed" },
+        orderBy: { createdAt: "desc" },
+        take: 200,
+      },
+      _count: { select: { responses: { where: { status: "completed" } } } },
     },
   });
 
@@ -57,7 +62,8 @@ export default async function BotDetailPage({
 
   const parsed = parseForm(bot.form.metadata);
   const questions = parsed.questions;
-  const completedResponses = bot.responses.filter((r) => r.status === "completed");
+  const completedResponses = bot.responses;
+  const totalCompleted = bot._count.responses;
   const activeTab = ["responses", "questions", "settings"].includes(searchParams?.tab || "")
     ? searchParams!.tab!
     : "responses";
@@ -95,7 +101,7 @@ export default async function BotDetailPage({
               >
                 {bot.status === "active" ? "Aktiv" : "To'xtatilgan"}
               </Badge>
-              <RealTimeRefresh intervalMs={10000} />
+              <RealTimeRefresh intervalMs={60000} />
             </div>
             <div className="flex items-center gap-2 flex-wrap mt-1">
               {parsed.isQuiz && (
@@ -122,7 +128,7 @@ export default async function BotDetailPage({
 
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <MiniStat label="Jami javoblar" value={completedResponses.length} />
+        <MiniStat label="Jami javoblar" value={totalCompleted} />
         <MiniStat label="Savollar" value={questions.length} />
         <MiniStat
           label="Oxirgi faollik"
@@ -154,7 +160,7 @@ export default async function BotDetailPage({
             <TabsTrigger value="responses" className="rounded-full px-5 gap-2 text-sm">
               <MessageSquare size={14} />
               Javoblar
-              <span className="text-xs text-slate-400">({completedResponses.length})</span>
+              <span className="text-xs text-slate-400">({totalCompleted})</span>
             </TabsTrigger>
             <TabsTrigger value="questions" className="rounded-full px-5 gap-2 text-sm">
               <ListTodo size={14} />
@@ -169,7 +175,7 @@ export default async function BotDetailPage({
         </div>
 
         <TabsContent value="responses" className="w-full mt-5">
-          {completedResponses.length === 0 ? (
+          {totalCompleted === 0 ? (
             <Card className="border-dashed border-2 bg-transparent">
               <CardContent className="py-14 text-center text-slate-500 text-sm">
                 Hozircha javoblar mavjud emas.

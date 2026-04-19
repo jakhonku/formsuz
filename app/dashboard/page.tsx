@@ -66,7 +66,7 @@ export default async function DashboardPage() {
             <h1 className="text-2xl font-bold tracking-tight">
               Xush kelibsiz, {session?.user?.name?.split(" ")[0] || "Do'st"}!
             </h1>
-            <RealTimeRefresh intervalMs={10000} />
+            <RealTimeRefresh intervalMs={60000} />
           </div>
           <p className="text-slate-500 text-sm">
             Barcha botlaringiz va javoblar bir ko'rinishda.

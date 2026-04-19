@@ -79,11 +79,12 @@ export function ChatSheet({ isOpen, onClose, botId, chatId, botUsername }: ChatS
   };
 
   useEffect(() => {
-    if (isOpen) {
-      fetchHistory();
-      const interval = setInterval(fetchHistory, 3000); // Poll every 3 seconds
-      return () => clearInterval(interval);
-    }
+    if (!isOpen) return;
+    fetchHistory();
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") fetchHistory();
+    }, 8000);
+    return () => clearInterval(interval);
   }, [isOpen, botId, chatId]);
 
   useEffect(() => {
