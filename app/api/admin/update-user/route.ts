@@ -12,27 +12,29 @@ export async function POST(req: Request) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const { userId, plan } = await req.json();
+  const { userId, plan, expiresAt } = await req.json();
 
   if (!userId || !plan) {
     return new NextResponse("Missing fields", { status: 400 });
   }
 
-  // Set expiration date (e.g., 30 days if upgrading to PRO/BUSINESS)
-  let expiresAt = null;
-  if (plan === "PRO" || plan === "BUSINESS") {
+  // Determine expiration date
+  let finalExpiresAt = null;
+  if (expiresAt) {
+    finalExpiresAt = new Date(expiresAt);
+  } else if (plan === "PRO" || plan === "BUSINESS") {
+    // Default to 30 days if not specified but upgrading
     const d = new Date();
     d.setDate(d.getDate() + 30);
-    expiresAt = d;
+    finalExpiresAt = d;
   }
-  // GWAY and FREE have no expiration (FREE is unlimited, GWAY is special)
 
   try {
     const updated = await prisma.user.update({
       where: { id: userId },
       data: { 
         plan,
-        planExpiresAt: expiresAt
+        planExpiresAt: finalExpiresAt
       }
     });
 

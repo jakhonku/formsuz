@@ -104,7 +104,7 @@ export default async function SettingsPage() {
           
           <div className="flex flex-col items-center md:items-end gap-1">
             <p className="text-sm font-medium text-slate-500">
-              Tugash sanasi: <span className="text-slate-900">{user?.planExpiresAt ? new Date(user.planExpiresAt).toLocaleDateString("uz-UZ") : "Cheksiz"}</span>
+              Tugash sanasi: <span className="text-slate-900">{user?.planExpiresAt ? new Date(user.planExpiresAt).toLocaleString("uz-UZ", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "Cheksiz"}</span>
             </p>
             <Link href="/pricing" className="text-xs text-primary font-bold hover:underline flex items-center gap-1">
               Tarifni o'zgartirish <ArrowRight size={10} />

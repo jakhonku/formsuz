@@ -49,6 +49,7 @@ model User {
   sessions      Session[]
   bots          Bot[]
   forms         Form[]
+  votingBots    VotingBot[]
 }
 
 model VerificationToken {
@@ -113,4 +114,48 @@ model ChatMessage {
   senderUsername String?
   senderPhoto    String?
   createdAt      DateTime @default(now())
+}
+
+model VotingBot {
+  id                  String      @id @default(cuid())
+  name                String
+  title               String      // Konkurs nomi (masalan: "Eng yaxshi sanatkor 2026")
+  description         String?     @db.Text
+  telegramToken       String      @unique
+  telegramBotUsername String?
+  status              String      @default("active") // active, inactive
+  oneVotePerUser      Boolean     @default(true)
+  userId              String
+  user                User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  candidates          Candidate[]
+  votes               Vote[]
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+}
+
+model Candidate {
+  id           String    @id @default(cuid())
+  name         String
+  description  String?   @db.Text
+  photoUrl     String?   @db.Text
+  votingBotId  String
+  votingBot    VotingBot @relation(fields: [votingBotId], references: [id], onDelete: Cascade)
+  votes        Vote[]
+  order        Int       @default(0)
+  createdAt    DateTime  @default(now())
+}
+
+model Vote {
+  id             String    @id @default(cuid())
+  votingBotId    String
+  votingBot      VotingBot @relation(fields: [votingBotId], references: [id], onDelete: Cascade)
+  candidateId    String
+  candidate      Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  chatId         String    // Telegram chat id of voter
+  voterName      String?
+  voterUsername  String?
+  createdAt      DateTime  @default(now())
+
+  @@unique([votingBotId, chatId])
+  @@index([candidateId])
 }

@@ -14,6 +14,8 @@ import {
   ArrowRight,
   Eye,
   FileText,
+  Vote,
+  Sparkles,
 } from "lucide-react";
 import { BotCard } from "@/components/dashboard/BotCard";
 import { RealTimeRefresh } from "@/components/dashboard/RealTimeRefresh";
@@ -21,6 +23,13 @@ import { RealTimeRefresh } from "@/components/dashboard/RealTimeRefresh";
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
+
+  const userInfo = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { plan: true },
+  });
+  const userPlan = userInfo?.plan || "FREE";
+  const canUseVoting = ["PRO", "BUSINESS", "GWAY"].includes(userPlan);
 
   const [bots, recentResponses, totalResponses, activeBotsCount, formCount] =
     await Promise.all([
@@ -78,6 +87,37 @@ export default async function DashboardPage() {
         <StatCard icon={<Activity size={18} />} label="Bugun" value={todayResponses} hint="ta javob" accent />
         <StatCard icon={<FileText size={18} />} label="Formalar" value={formCount} hint="ulangan" />
       </div>
+
+      {/* Voting bots promo / link */}
+      <Link
+        href={canUseVoting ? "/dashboard/voting-bots" : "/pricing"}
+        className="block"
+      >
+        <Card className="border-none shadow-sm bg-gradient-to-r from-primary to-primary/80 text-white hover:shadow-md transition-shadow">
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+              <Vote size={22} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="font-bold">Ovoz toplash boti</p>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-300 text-amber-900">
+                  {canUseVoting ? "FAOL" : "PRO"}
+                </span>
+              </div>
+              <p className="text-xs text-white/80 mt-0.5">
+                {canUseVoting
+                  ? "Konkurs, reyting va sanatkorlar uchun ovoz toplash boti yarating."
+                  : "Professional tarifida ochiladi — konkurs botini yarating va ovoz toplang."}
+              </p>
+            </div>
+            <div className="flex items-center gap-1 text-sm font-semibold">
+              {canUseVoting ? "Ochish" : <><Sparkles size={14} />Yangilash</>}
+              <ArrowRight size={14} />
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
 
       {/* Main content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 flex-1 min-h-0">

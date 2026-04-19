@@ -3,14 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Bot, 
-  Settings, 
+import {
+  LayoutDashboard,
+  FileText,
+  Bot,
+  Settings,
   LogOut,
   User2,
-  ShieldCheck
+  ShieldCheck,
+  Vote
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
@@ -19,6 +20,7 @@ const ADMIN_EMAILS = ["jakhongirbakhtiyarov0130@gmail.com", "jakhonku@gmail.com"
 const menuItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Sizning botlaringiz", href: "/dashboard/bots", icon: Bot },
+  { name: "Konkurs botlari", href: "/dashboard/voting-bots", icon: Vote, badge: "PRO" },
   { name: "Google Formlar", href: "/dashboard/forms", icon: FileText },
   { name: "Sozlamalar", href: "/dashboard/settings", icon: Settings },
   { name: "Dasturchi haqida", href: "/dashboard/about", icon: User2 },
@@ -39,13 +41,18 @@ export function DashboardSidebar() {
               href={item.href}
               className={cn(
                 "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                pathname === item.href
+                pathname === item.href || pathname.startsWith(item.href + "/")
                   ? "bg-primary/10 text-primary"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
               )}
             >
               <item.icon className="h-4 w-4" />
-              {item.name}
+              <span className="flex-1">{item.name}</span>
+              {item.badge && (
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">
+                  {item.badge}
+                </span>
+              )}
             </Link>
           ))}
 

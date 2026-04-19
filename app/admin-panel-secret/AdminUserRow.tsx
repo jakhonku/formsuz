@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Loader2, Zap, Save, Calendar as CalendarIcon } from "lucide-react";
 
@@ -21,6 +22,11 @@ interface UserWithCount {
 
 export default function AdminUserRow({ user }: { user: UserWithCount }) {
   const [plan, setPlan] = useState(user.plan);
+  const [expiresAt, setExpiresAt] = useState(
+    user.planExpiresAt 
+      ? new Date(user.planExpiresAt).toISOString().slice(0, 16) 
+      : ""
+  );
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleUpdate = async () => {
@@ -29,7 +35,7 @@ export default function AdminUserRow({ user }: { user: UserWithCount }) {
       const res = await fetch("/api/admin/update-user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, plan }),
+        body: JSON.stringify({ userId: user.id, plan, expiresAt }),
       });
 
       if (res.ok) {
@@ -77,9 +83,14 @@ export default function AdminUserRow({ user }: { user: UserWithCount }) {
         </div>
       </TableCell>
       <TableCell>
-        <div className="flex items-center gap-1.5 text-[10px] text-slate-500">
-           <CalendarIcon size={12} />
-           {user.planExpiresAt ? new Date(user.planExpiresAt).toLocaleDateString("uz-UZ") : "Cheksiz"}
+        <div className="flex flex-col gap-1">
+          <Input 
+            type="datetime-local" 
+            value={expiresAt} 
+            onChange={(e) => setExpiresAt(e.target.value)}
+            className="h-8 text-[10px] w-[160px] rounded-lg"
+          />
+          {!expiresAt && <span className="text-[10px] text-slate-400 px-1 italic">Muddatsiz (FREE/GWAY)</span>}
         </div>
       </TableCell>
       <TableCell className="text-right">
@@ -100,7 +111,7 @@ export default function AdminUserRow({ user }: { user: UserWithCount }) {
             variant="ghost" 
             className="h-8 w-8 p-0 rounded-lg hover:bg-slate-100"
             onClick={handleUpdate}
-            disabled={isUpdating || plan === user.plan}
+            disabled={isUpdating || (plan === user.plan && (expiresAt || "") === (user.planExpiresAt ? new Date(user.planExpiresAt).toISOString().slice(0, 16) : ""))}
           >
             {isUpdating ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
           </Button>
