@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { User, ShieldCheck, Mail, Calendar, Bot, Zap, Clock } from "lucide-react";
 import AdminUserRow from "./AdminUserRow"; // Client component for actions
+import { AdminReviewList } from "./AdminReviewList";
 
 const ADMIN_EMAILS = ["jakhongirbakhtiyarov0130@gmail.com", "jakhonku@gmail.com"];
 
@@ -92,6 +93,8 @@ export default async function SuperAdminPage() {
           </Table>
         </CardContent>
       </Card>
+
+      <AdminReviewList />
     </div>
   );
 }

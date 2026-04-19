@@ -281,55 +281,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Social proof */}
-      <section className="w-full py-20 bg-slate-50">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-14">
-            <Badge variant="outline" className="mb-4 rounded-full px-3 py-1 bg-white">Fikr-mulohazalar</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold mb-3">Foydalanuvchilar nima deydi?</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              {
-                name: "Aziz K.",
-                role: "O'qituvchi, Toshkent",
-                text: "O'quvchilarga Telegram'da test yuborishim juda oson bo'ldi. Ballar avtomatik chiqadi, qog'ozga yozish kerak emas.",
-              },
-              {
-                name: "Madina R.",
-                role: "HR menejer",
-                text: "Xodimlar so'rovlari uchun a'lo vosita. Avvallari Google Forms linkini yuborardik, endi bot orqali qulay.",
-              },
-              {
-                name: "Jasur T.",
-                role: "Biznes egasi",
-                text: "Mijozlardan fikr to'plash juda soddalashdi. Dashboard'da hamma narsa ko'rinib turibdi.",
-              },
-            ].map((t, i) => (
-              <Card key={i} className="border-none shadow-sm bg-white">
-                <CardContent className="p-6">
-                  <div className="flex gap-1 mb-3 text-amber-400">
-                    {[...Array(5)].map((_, j) => (
-                      <Star key={j} size={14} fill="currentColor" />
-                    ))}
-                  </div>
-                  <p className="text-slate-700 text-sm leading-relaxed mb-4">"{t.text}"</p>
-                  <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
-                    <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
-                      {t.name[0]}
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold">{t.name}</p>
-                      <p className="text-xs text-slate-500">{t.role}</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ReviewSection />
 
       {/* Mini FAQ teaser */}
       <section className="w-full py-20 bg-white">
