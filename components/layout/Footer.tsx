@@ -64,8 +64,8 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4 text-sm text-slate-900">Huquqiy</h4>
             <ul className="space-y-2.5 text-slate-500 text-sm">
-              <li><Link href="/#" className="hover:text-primary transition">Maxfiylik siyosati</Link></li>
-              <li><Link href="/#" className="hover:text-primary transition">Foydalanish shartlari</Link></li>
+              <li><Link href="/privacy" className="hover:text-primary transition">Maxfiylik siyosati</Link></li>
+              <li><Link href="/terms" className="hover:text-primary transition">Foydalanish shartlari</Link></li>
             </ul>
           </div>
         </div>
