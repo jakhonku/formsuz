@@ -29,7 +29,7 @@ export default function TermsPage() {
 
       <div className="prose prose-slate max-w-none">
         <p className="text-slate-600 text-base leading-relaxed">
-          FormBot platformasidan foydalanganingiz uchun rahmat. Ushbu shartlar **FormBot** ("Xizmat") va Siz ("Foydalanuvchi") o'rtasidagi munosabatlarni tartibga soladi. Platforma **Gway.uz** tomonidan boshqariladi.
+          FormBot platformasidan foydalanganingiz uchun rahmat. Ushbu shartlar <b>FormBot</b> ("Xizmat") va Siz ("Foydalanuvchi") o'rtasidagi munosabatlarni tartibga soladi. Platforma <b>Gway.uz</b> tomonidan boshqariladi.
         </p>
 
         <Section title="1. Xizmat tavsifi">

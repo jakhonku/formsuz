@@ -29,7 +29,7 @@ export default function PrivacyPage() {
 
       <div className="prose prose-slate max-w-none">
         <p className="text-slate-600 text-base leading-relaxed">
-          Ushbu Maxfiylik siyosati **FormBot** (keyingi o'rinlarda "Xizmat", "Biz") tomonidan foydalanuvchilarning shaxsiy ma'lumotlarini qanday to'planishi, ishlatilishi va himoya qilinishini belgilaydi. Platforma rasmiy ravishda **Gway.uz** loyihasi hisoblanadi.
+          Ushbu Maxfiylik siyosati <b>FormBot</b> (keyingi o'rinlarda "Xizmat", "Biz") tomonidan foydalanuvchilarning shaxsiy ma'lumotlarini qanday to'planishi, ishlatilishi va himoya qilinishini belgilaydi. Platforma rasmiy ravishda <b>Gway.uz</b> loyihasi hisoblanadi.
         </p>
 
         <Section title="1. To'planadigan ma'lumotlar">
@@ -53,7 +53,7 @@ export default function PrivacyPage() {
 
         <Section title="3. Ma'lumotlar xavfsizligi">
           <p>
-            Biz foydalanuvchi ma'lumotlarini himoya qilish uchun zamonaviy xavfsizlik choralaridan foydalanamiz. Bot tokenlari va maxfiy ma'lumotlar shifrlangan. Ma'lumotlar bazasi **Supabase** (Yaponiya serverlari) platformasida joylashgan va dunyo standartlariga muvofiq himoyalangan.
+            Biz foydalanuvchi ma'lumotlarini himoya qilish uchun zamonaviy xavfsizlik choralaridan foydalanamiz. Bot tokenlari va maxfiy ma'lumotlar shifrlangan. Ma'lumotlar bazasi <b>Supabase</b> (Yaponiya serverlari) platformasida joylashgan va dunyo standartlariga muvofiq himoyalangan.
           </p>
         </Section>
 
