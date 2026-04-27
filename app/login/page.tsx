@@ -1,15 +1,27 @@
 "use client";
 
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Rocket, Loader2 } from "lucide-react";
 
+const ERROR_MESSAGES: Record<string, string> = {
+  OAuthCallback: "Google bilan bog'liq muammo. Database ulanishini tekshiring.",
+  OAuthSignin: "Google OAuth sozlamasida xato. Client ID / Secret ni tekshiring.",
+  Callback: "Server xatosi. DATABASE_URL yoki DIRECT_URL Vercel'da to'g'ri sozlanganmi?",
+  Configuration: "NextAuth sozlamasi xato. NEXTAUTH_SECRET to'g'rimi?",
+  AccessDenied: "Kirish rad etildi.",
+  Verification: "Token muddati o'tgan.",
+  Default: "Kirishda xato yuz berdi. Qayta urinib ko'ring.",
+};
+
 export default function LoginPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -39,8 +51,13 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-6 pt-6 pb-10">
-          <Button 
-            size="lg" 
+          {error && (
+            <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+              {ERROR_MESSAGES[error] ?? ERROR_MESSAGES.Default}
+            </div>
+          )}
+          <Button
+            size="lg"
             className="w-full h-14 rounded-full text-lg font-semibold gap-3"
             onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
           >
