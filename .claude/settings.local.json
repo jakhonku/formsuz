@@ -20,5 +20,12 @@
       "Bash(node -e \"const d=require\\('@auth/prisma-adapter/package.json'\\); console.log\\('version:', d.version\\); console.log\\('peerDeps:', JSON.stringify\\(d.peerDependencies, null, 2\\)\\)\")",
       "Bash(npm view *)"
     ]
+  },
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "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",
+    "ANTHROPIC_BASE_URL": "https://openrouter.ai/api",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "nvidia/nemotron-3-super-120b-a12b:free",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "nvidia/nemotron-3-super-120b-a12b:free",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "nvidia/nemotron-3-super-120b-a12b:free"
   }
 }
