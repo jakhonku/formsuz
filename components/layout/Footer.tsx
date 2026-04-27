@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Send, Mail } from "lucide-react";
 
 export function Footer() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/admin-panel-secret")) return null;
   return (
     <footer className="border-t bg-slate-50 py-14">
       <div className="container mx-auto px-4">
