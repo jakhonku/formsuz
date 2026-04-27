@@ -26,7 +26,6 @@ import { RealTimeRefresh } from "@/components/dashboard/RealTimeRefresh";
 import { ResponsesList } from "@/components/dashboard/ResponsesList";
 import { WorkspaceSettingsPanel } from "@/components/dashboard/WorkspaceSettingsPanel";
 import { WorkspaceManager } from "@/components/dashboard/WorkspaceManager";
-import { toast } from "sonner";
 
 const TYPE_LABEL: Record<string, string> = {
   short: "Qisqa javob",
@@ -329,6 +328,7 @@ export default async function BotDetailPage({
               botId={bot.id}
               initialStatus={bot.status}
               currentFormTitle={bot.form?.title || "Workspace Bot"}
+              isWorkspace={isWorkspaceBot}
             />
           </div>
         </TabsContent>

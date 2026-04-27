@@ -14,9 +14,10 @@ type Props = {
   botId: string;
   initialStatus: string;
   currentFormTitle: string;
+  isWorkspace?: boolean;
 };
 
-export function BotSettingsPanel({ botId, initialStatus, currentFormTitle }: Props) {
+export function BotSettingsPanel({ botId, initialStatus, currentFormTitle, isWorkspace }: Props) {
   const router = useRouter();
   const [status, setStatus] = useState(initialStatus);
   const [toggling, setToggling] = useState(false);
@@ -86,23 +87,25 @@ export function BotSettingsPanel({ botId, initialStatus, currentFormTitle }: Pro
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-md">
-          <CardHeader>
-            <CardTitle>Google Forma</CardTitle>
-            <CardDescription>Ulangan formani boshqasiga almashtirish.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="font-medium truncate">{currentFormTitle}</p>
-            <Button
-              variant="outline"
-              className="gap-2 rounded-full"
-              onClick={() => setChangeFormOpen(true)}
-            >
-              <RefreshCw size={16} />
-              Formani almashtirish
-            </Button>
-          </CardContent>
-        </Card>
+        {!isWorkspace && (
+          <Card className="border-none shadow-md">
+            <CardHeader>
+              <CardTitle>Google Forma</CardTitle>
+              <CardDescription>Ulangan formani boshqasiga almashtirish.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="font-medium truncate">{currentFormTitle}</p>
+              <Button
+                variant="outline"
+                className="gap-2 rounded-full"
+                onClick={() => setChangeFormOpen(true)}
+              >
+                <RefreshCw size={16} />
+                Formani almashtirish
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="border-red-100 border-2 shadow-md bg-red-50/20 md:col-span-2">
           <CardHeader>
