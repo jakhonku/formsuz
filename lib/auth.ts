@@ -72,30 +72,45 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user, account }) {
       // Initial sign in
-      if (account && user) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
-          select: { plan: true, planExpiresAt: true }
-        });
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { plan: true, planExpiresAt: true }
+          });
 
-        // Safely calculate expiry: use expires_at if available, fallback to expires_in (Google always sends 3599)
-        const accessTokenExpires = account.expires_at
-          ? account.expires_at * 1000
-          : Date.now() + ((account.expires_in as number || 3600) * 1000);
+          // Safely calculate expiry: use expires_at if available, fallback to expires_in (Google always sends 3599)
+          const accessTokenExpires = account.expires_at
+            ? account.expires_at * 1000
+            : Date.now() + ((account.expires_in as number || 3600) * 1000);
 
-        return {
-          sub: user.id,          // Required by NextAuth v4 to build session.user
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-          accessToken: account.access_token,
-          accessTokenExpires,
-          refreshToken: account.refresh_token,
-          plan: dbUser?.plan || "FREE",
-          planExpiresAt: dbUser?.planExpiresAt?.toISOString() || null,
-          planCheckedAt: Date.now(),
-        };
+          return {
+            sub: user.id,          // Required by NextAuth v4 to build session.user
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            image: user.image,
+            accessToken: account.access_token,
+            accessTokenExpires,
+            refreshToken: account.refresh_token,
+            plan: dbUser?.plan || "FREE",
+            planExpiresAt: dbUser?.planExpiresAt?.toISOString() || null,
+            planCheckedAt: Date.now(),
+          };
+        } catch (error) {
+          console.error("Error in JWT initial sign-in:", error);
+          // Fallback to basic user info if DB query fails
+          return {
+            sub: user.id,
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            image: user.image,
+            accessToken: account.access_token,
+            refreshToken: account.refresh_token,
+            plan: "FREE",
+            planCheckedAt: Date.now(),
+          };
+        }
       }
 
       // Re-read plan/expiry from DB with a short TTL so admin upgrades
@@ -103,15 +118,19 @@ export const authOptions: NextAuthOptions = {
       const PLAN_TTL_MS = 60_000;
       const lastCheck = (token.planCheckedAt as number | undefined) ?? 0;
       if (token.id && Date.now() - lastCheck > PLAN_TTL_MS) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { plan: true, planExpiresAt: true }
-        });
-        if (dbUser) {
-          token.plan = dbUser.plan;
-          token.planExpiresAt = dbUser.planExpiresAt?.toISOString() || null;
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: { plan: true, planExpiresAt: true }
+          });
+          if (dbUser) {
+            token.plan = dbUser.plan;
+            token.planExpiresAt = dbUser.planExpiresAt?.toISOString() || null;
+          }
+          token.planCheckedAt = Date.now();
+        } catch (error) {
+          console.error("Error updating user plan in JWT:", error);
         }
-        token.planCheckedAt = Date.now();
       }
 
       if (Date.now() < (token.accessTokenExpires as number)) {
@@ -133,13 +152,23 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Normalize baseUrl by removing trailing slash if present
+      const normalizedBaseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
+      
+      // If relative URL, prepend normalized base URL
+      if (url.startsWith("/")) return `${normalizedBaseUrl}${url}`;
+      
       try {
-        if (new URL(url).origin === baseUrl) return url;
+        const urlObj = new URL(url);
+        // If it's on the same base domain (e.g. gway.uz or www.gway.uz)
+        if (urlObj.hostname.includes("gway.uz")) {
+          return url;
+        }
       } catch {
         // ignore invalid URL
       }
-      return `${baseUrl}/dashboard`;
+      
+      return `${normalizedBaseUrl}/dashboard`;
     },
   },
   pages: {
