@@ -36,7 +36,7 @@ export function Navbar() {
 
         <div className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600">
           <Link href="/features" className="hover:text-primary transition">Imkoniyatlar</Link>
-          <Link href="/pricing" className="hover:text-primary transition">Tariflar</Link>
+          <Link href="/pricing" className="hover:text-primary transition">Obunalar</Link>
           <Link href="/faq" className="hover:text-primary transition">Savol-javob</Link>
           <Link href="/help" className="hover:text-primary transition">Yordam</Link>
         </div>

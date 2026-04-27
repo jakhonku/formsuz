@@ -47,7 +47,7 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-sm text-slate-900">Platforma</h4>
             <ul className="space-y-2.5 text-slate-500 text-sm">
               <li><Link href="/features" className="hover:text-primary transition">Imkoniyatlar</Link></li>
-              <li><Link href="/pricing" className="hover:text-primary transition">Tariflar</Link></li>
+              <li><Link href="/pricing" className="hover:text-primary transition">Obunalar</Link></li>
               <li><Link href="/#how-it-works" className="hover:text-primary transition">Qanday ishlaydi?</Link></li>
               <li><Link href="/login" className="hover:text-primary transition">Boshlash</Link></li>
             </ul>

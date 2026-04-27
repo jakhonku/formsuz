@@ -58,7 +58,7 @@ const tiers = [
     name: "Gway.uz bilan",
     id: "GWAY",
     price: "Maxsus",
-    description: "Hamkorlar, investorlar va Gway.uz ekotizimi uchun eksklyuziv tarif.",
+    description: "Hamkorlar, investorlar va Gway.uz ekotizimi uchun eksklyuziv obuna.",
     features: [
       "Barcha narsa cheksiz",
       "Gway platformasi imtiyozlari",
@@ -80,13 +80,13 @@ export default function PricingPage() {
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-16 space-y-4">
           <Badge variant="secondary" className="rounded-full px-4 py-1.5 bg-primary/10 text-primary border-none text-[10px] font-bold uppercase tracking-widest">
-            Tarif rejalar
+            Obuna rejalari
           </Badge>
           <h1 className="text-4xl md:text-6xl font-black tracking-tight text-slate-900 leading-[1.1]">
             Oddiy va shaffof narxlar
           </h1>
           <p className="text-slate-500 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
-            O'zingizga mos tarifni tanlang va botingizni professional darajaga ko'taring.
+            O'zingizga mos obunani tanlang va botingizni professional darajaga ko'taring.
           </p>
         </div>
 
