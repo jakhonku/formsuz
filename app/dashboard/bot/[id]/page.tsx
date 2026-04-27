@@ -24,7 +24,6 @@ import { BotHeaderActions } from "@/components/dashboard/BotHeaderActions";
 import { parseForm } from "@/lib/formQuestions";
 import { RealTimeRefresh } from "@/components/dashboard/RealTimeRefresh";
 import { ResponsesList } from "@/components/dashboard/ResponsesList";
-import { WorkspaceSettingsPanel } from "@/components/dashboard/WorkspaceSettingsPanel";
 import { WorkspaceManager } from "@/components/dashboard/WorkspaceManager";
 
 const TYPE_LABEL: Record<string, string> = {
@@ -56,7 +55,7 @@ export default async function BotDetailPage({
       responses: {
         where: { status: "completed" },
         orderBy: { createdAt: "desc" },
-        take: 200,
+        take: 10,
       },
       _count: { select: { responses: { where: { status: "completed" } } } },
     },
@@ -74,6 +73,15 @@ export default async function BotDetailPage({
     : isWorkspaceBot ? "workspace" : "responses";
 
   const ownerEmail = session?.user?.email || null;
+
+  // Xavfsiz sana formati
+  const formatDate = (date: Date) => {
+    try {
+      return new Date(date).toISOString().split('T')[0];
+    } catch {
+      return "---";
+    }
+  };
 
   return (
     <div className="flex flex-col gap-5 w-full min-w-0">
@@ -178,21 +186,14 @@ export default async function BotDetailPage({
           label="Oxirgi faollik"
           value={
             bot.responses.length > 0
-              ? new Date(bot.responses[0].createdAt).toLocaleDateString("uz-UZ", {
-                  month: "short",
-                  day: "numeric",
-                })
-              : "—"
+              ? formatDate(bot.responses[0].createdAt)
+              : "---"
           }
           small
         />
         <MiniStat
           label="Yaratilgan"
-          value={new Date(bot.createdAt).toLocaleDateString("uz-UZ", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
+          value={formatDate(bot.createdAt)}
           small
         />
       </div>
