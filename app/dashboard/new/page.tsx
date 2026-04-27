@@ -80,6 +80,12 @@ export default function NewBotPage() {
   const [botToken, setBotToken] = useState("");
   const [botInfo, setBotInfo] = useState<BotInfo | null>(null);
 
+  const filteredForms = searchQuery.trim()
+    ? forms.filter((f) =>
+        (f.title || "").toLowerCase().includes(searchQuery.trim().toLowerCase())
+      )
+    : forms;
+
   const totalSteps = 3;
   const progress = (step / totalSteps) * 100;
 

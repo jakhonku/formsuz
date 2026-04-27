@@ -60,10 +60,24 @@ export const authOptions: NextAuthOptions = {
             "openid",
             "https://www.googleapis.com/auth/userinfo.email",
             "https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/drive.metadata.readonly",
+            // Drive (full) — file upload + metadata
+            "https://www.googleapis.com/auth/drive",
+            // Forms
             "https://www.googleapis.com/auth/forms.body.readonly",
             "https://www.googleapis.com/auth/forms.responses.readonly",
+            // Sheets
             "https://www.googleapis.com/auth/spreadsheets",
+            // Calendar (events + Meet conference creation)
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/calendar.events",
+            // Docs
+            "https://www.googleapis.com/auth/documents",
+            // Slides
+            "https://www.googleapis.com/auth/presentations",
+            // Gmail (send only)
+            "https://www.googleapis.com/auth/gmail.send",
+            // Tasks
+            "https://www.googleapis.com/auth/tasks",
           ].join(" "),
         },
       },

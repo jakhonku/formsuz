@@ -100,6 +100,8 @@ model Bot {
   user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   responses           Response[]
   messages            ChatMessage[]
+  // Per-bot toggles for Google integrations: { calendar, docs, slides, drive, gmail, meet, tasks }
+  integrations        Json?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 

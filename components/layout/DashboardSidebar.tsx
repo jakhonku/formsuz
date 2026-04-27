@@ -11,7 +11,8 @@ import {
   LogOut,
   User2,
   ShieldCheck,
-  Vote
+  Vote,
+  Sparkles
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
@@ -35,6 +36,7 @@ export function DashboardSidebar() {
       badge: hasVotingAccess ? undefined : "PRO",
     },
     { name: "Google Formlar", href: "/dashboard/forms", icon: FileText },
+    { name: "Google integratsiyalar", href: "/dashboard/integrations", icon: Sparkles, badge: "YANGI" },
     { name: "Sozlamalar", href: "/dashboard/settings", icon: Settings },
     { name: "Dasturchi haqida", href: "/dashboard/about", icon: User2 },
   ];
