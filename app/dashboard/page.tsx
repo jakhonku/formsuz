@@ -100,16 +100,10 @@ export default async function DashboardPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button asChild variant="outline" size="sm" className="rounded-full h-10 gap-2 border-primary/20 hover:bg-primary/5">
-            <Link href="/dashboard/new-workspace">
-              <Globe size={16} className="text-primary" />
-              Workspace Bot
-            </Link>
-          </Button>
           <Button asChild size="sm" className="rounded-full h-10 gap-2 shadow-md shadow-primary/20">
             <Link href="/dashboard/new">
               <PlusCircle size={16} />
-              Form Bot
+              Yangi bot
             </Link>
           </Button>
         </div>

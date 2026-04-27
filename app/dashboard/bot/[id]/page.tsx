@@ -57,7 +57,7 @@ export default async function BotDetailPage({
   const completedResponses = bot.responses || [];
   const totalCompleted = bot._count?.responses || 0;
   const ownerEmail = session?.user?.email || null;
-  const activeTab = ["responses", "workspace", "integrations", "settings"].includes(searchParams?.tab || "")
+  const activeTab = ["responses", "workspace", "settings"].includes(searchParams?.tab || "")
     ? searchParams!.tab!
     : isWorkspaceBot ? "workspace" : "responses";
 
@@ -155,11 +155,6 @@ export default async function BotDetailPage({
               </TabsTrigger>
             )}
 
-            <TabsTrigger value="integrations" className="rounded-full px-5 gap-2 text-sm">
-              <Zap size={14} />
-              Integratsiyalar
-            </TabsTrigger>
-
             <TabsTrigger value="settings" className="rounded-full px-5 gap-2 text-sm">
               <Settings size={14} />
               Sozlamalar
@@ -181,10 +176,6 @@ export default async function BotDetailPage({
               botType={bot.type}
               config={(bot.workspaceConfig as any) || {}}
            />
-        </TabsContent>
-
-        <TabsContent value="integrations" className="w-full mt-5">
-          <BotIntegrationsPanel botId={bot.id} ownerEmail={ownerEmail} />
         </TabsContent>
 
         <TabsContent value="settings" className="w-full mt-5">

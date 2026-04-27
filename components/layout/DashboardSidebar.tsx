@@ -37,8 +37,6 @@ export function DashboardSidebar() {
       badge: hasVotingAccess ? undefined : "PRO",
     },
     { name: "Google Formlar", href: "/dashboard/forms", icon: FileText },
-    { name: "Google integratsiyalar", href: "/dashboard/integrations", icon: Sparkles, badge: "YANGI" },
-    { name: "Workspace Botlari", href: "/dashboard/new-workspace", icon: Globe, badge: "YANGI" },
     { name: "Sozlamalar", href: "/dashboard/settings", icon: Settings },
     { name: "Dasturchi haqida", href: "/dashboard/about", icon: User2 },
   ];
