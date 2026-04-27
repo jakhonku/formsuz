@@ -21,7 +21,7 @@ export default async function BotsPage() {
     name: b.name,
     status: b.status,
     responsesCount: b._count.responses,
-    formTitle: b.form.title,
+    formTitle: b.form?.title || `${b.type} Bot`,
   }));
 
   return <BotsListClient bots={data} />;

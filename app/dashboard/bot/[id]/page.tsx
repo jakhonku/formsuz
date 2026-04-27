@@ -62,7 +62,8 @@ export default async function BotDetailPage({
 
   if (!bot) notFound();
 
-  const parsed = parseForm(bot.form.metadata);
+  const isWorkspaceBot = !bot.formId;
+  const parsed = bot.form ? parseForm(bot.form.metadata) : { questions: [], isQuiz: false };
   const questions = parsed.questions;
   const completedResponses = bot.responses;
   const totalCompleted = bot._count.responses;
@@ -118,8 +119,17 @@ export default async function BotDetailPage({
               )}
             </div>
             <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5 truncate">
-              <ExternalLink size={12} />
-              {bot.form.title}
+              {bot.form ? (
+                <>
+                  <ExternalLink size={12} />
+                  {bot.form.title}
+                </>
+              ) : (
+                <>
+                  <Sparkles size={12} className="text-primary" />
+                  {bot.type} Bot
+                </>
+              )}
             </p>
           </div>
         </div>
@@ -272,7 +282,7 @@ export default async function BotDetailPage({
             <BotSettingsPanel
               botId={bot.id}
               initialStatus={bot.status}
-              currentFormTitle={bot.form.title}
+              currentFormTitle={bot.form?.title || "Workspace Bot"}
             />
           </div>
         </TabsContent>
