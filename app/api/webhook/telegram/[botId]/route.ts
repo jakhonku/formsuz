@@ -18,6 +18,7 @@ import {
   formatAnswerForDisplay,
   isAnswerCorrect,
 } from "@/lib/formQuestions";
+import { runIntegrationsForResponse } from "@/lib/runIntegrations";
 import {
   sendQuestion,
   CB_PICK,
@@ -479,6 +480,27 @@ async function advance(
       }
     } catch (sheetError: any) {
       console.error("Google Sheets writing error:", sheetError?.message || sheetError);
+    }
+
+    // Run per-bot Google integrations (Calendar, Docs, Slides, Drive, Gmail, Meet, Tasks)
+    try {
+      const ownerEmail = await prisma.user
+        .findUnique({ where: { id: bot.userId }, select: { email: true } })
+        .then((u) => u?.email || null);
+      // Strip _state from saved answers
+      const { _state: _omit, ...cleanAnswers } = nextData as ResponseData;
+      await runIntegrationsForResponse({
+        botId: bot.id,
+        userId: bot.userId,
+        responseId: response.id,
+        formTitle: bot.form.title,
+        chatId,
+        questions,
+        answers: cleanAnswers,
+        ownerEmail,
+      });
+    } catch (integErr: any) {
+      console.error("Integrations run failed:", integErr?.message || integErr);
     }
     return;
   }

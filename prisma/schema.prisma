@@ -102,11 +102,29 @@ model Bot {
   messages            ChatMessage[]
   // Per-bot toggles for Google integrations: { calendar, docs, slides, drive, gmail, meet, tasks }
   integrations        Json?
+  integrationLogs     IntegrationLog[]
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
   @@index([userId])
   @@index([formId])
+}
+
+model IntegrationLog {
+  id         String   @id @default(cuid())
+  botId      String
+  bot        Bot      @relation(fields: [botId], references: [id], onDelete: Cascade)
+  responseId String?
+  service    String   // calendar | docs | slides | drive | gmail | meet | tasks
+  success    Boolean  @default(false)
+  resultUrl  String?  @db.Text
+  resultId   String?
+  error      String?  @db.Text
+  payload    Json?    // metadata about the run (e.g., title, recipient)
+  createdAt  DateTime @default(now())
+
+  @@index([botId, createdAt])
+  @@index([responseId])
 }
 
 model Response {

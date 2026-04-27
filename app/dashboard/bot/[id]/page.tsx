@@ -15,8 +15,10 @@ import {
   ExternalLink,
   Award,
   ArrowLeft,
+  Sparkles,
 } from "lucide-react";
 import { BotSettingsPanel } from "@/components/dashboard/BotSettingsPanel";
+import { BotIntegrationsPanel } from "@/components/dashboard/BotIntegrationsPanel";
 import { ResponsesTable } from "@/components/dashboard/ResponsesTable";
 import { BotHeaderActions } from "@/components/dashboard/BotHeaderActions";
 import { parseForm } from "@/lib/formQuestions";
@@ -64,9 +66,11 @@ export default async function BotDetailPage({
   const questions = parsed.questions;
   const completedResponses = bot.responses;
   const totalCompleted = bot._count.responses;
-  const activeTab = ["responses", "questions", "settings"].includes(searchParams?.tab || "")
+  const activeTab = ["responses", "questions", "integrations", "settings"].includes(searchParams?.tab || "")
     ? searchParams!.tab!
     : "responses";
+
+  const ownerEmail = session?.user?.email || null;
 
   return (
     <div className="flex flex-col gap-5 w-full min-w-0">
@@ -167,6 +171,10 @@ export default async function BotDetailPage({
               Savollar
               <span className="text-xs text-slate-400">({questions.length})</span>
             </TabsTrigger>
+            <TabsTrigger value="integrations" className="rounded-full px-5 gap-2 text-sm">
+              <Sparkles size={14} />
+              Integratsiyalar
+            </TabsTrigger>
             <TabsTrigger value="settings" className="rounded-full px-5 gap-2 text-sm">
               <Settings size={14} />
               Sozlamalar
@@ -251,6 +259,12 @@ export default async function BotDetailPage({
               ))}
             </div>
           )}
+        </TabsContent>
+
+        <TabsContent value="integrations" className="w-full mt-5">
+          <div className="max-w-4xl mx-auto">
+            <BotIntegrationsPanel botId={bot.id} ownerEmail={ownerEmail} />
+          </div>
         </TabsContent>
 
         <TabsContent value="settings" className="w-full mt-5">
