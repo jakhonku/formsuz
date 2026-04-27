@@ -16,6 +16,7 @@ import {
   FileText,
   Vote,
   Sparkles,
+  Globe,
 } from "lucide-react";
 import { BotCard } from "@/components/dashboard/BotCard";
 import { RealTimeRefresh } from "@/components/dashboard/RealTimeRefresh";
@@ -72,12 +73,20 @@ export default async function DashboardPage() {
             Barcha botlaringiz va javoblar bir ko'rinishda.
           </p>
         </div>
-        <Button asChild size="sm" className="rounded-full h-10 gap-2 shadow-md shadow-primary/20">
-          <Link href="/dashboard/new">
-            <PlusCircle size={16} />
-            Yangi bot ulash
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild variant="outline" size="sm" className="rounded-full h-10 gap-2 border-primary/20 hover:bg-primary/5">
+            <Link href="/dashboard/new-workspace">
+              <Globe size={16} className="text-primary" />
+              Workspace Bot
+            </Link>
+          </Button>
+          <Button asChild size="sm" className="rounded-full h-10 gap-2 shadow-md shadow-primary/20">
+            <Link href="/dashboard/new">
+              <PlusCircle size={16} />
+              Form Bot
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Stats row */}
@@ -159,7 +168,7 @@ export default async function DashboardPage() {
                     name: bot.name,
                     status: bot.status,
                     responsesCount: bot._count.responses,
-                    formTitle: bot.form.title,
+                    formTitle: bot.form?.title || "Workspace Bot",
                   }}
                 />
               ))}

@@ -94,8 +94,10 @@ model Bot {
   telegramToken       String   @unique
   telegramBotUsername String?
   status              String   @default("active") // active, inactive
-  formId              String
-  form                Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  type                String   @default("FORM") // FORM, UNIVERSAL, DRIVE, CALENDAR, TASKS
+  workspaceConfig     Json?
+  formId              String?
+  form                Form?    @relation(fields: [formId], references: [id], onDelete: Cascade)
   userId              String
   user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   responses           Response[]

@@ -76,7 +76,7 @@ export default async function IntegrationsPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Google integratsiyalar</h1>
         <p className="text-slate-500">
-          Botlaringizga 7 ta Google xizmatini ulang. Javob keladi — avtomatik ishga tushadi.
+          Botlaringizni Google xizmatlariga ulang. Form botlari uchun javob kelganda, Workspace botlari esa interaktiv tarzda ishlaydi.
         </p>
       </div>
 
@@ -143,7 +143,7 @@ export default async function IntegrationsPage() {
                         <p className="font-semibold text-sm truncate">
                           @{b.telegramBotUsername || b.name}
                         </p>
-                        <p className="text-xs text-slate-500 truncate">{b.form.title}</p>
+                          <p className="text-xs text-slate-500 truncate">{b.form?.title || "Workspace Bot"}</p>
                       </div>
                       <div className="flex items-center gap-1 flex-wrap justify-end">
                         {enabled.length === 0 ? (
@@ -201,9 +201,8 @@ export default async function IntegrationsPage() {
                       <XCircle size={16} className="text-rose-500 shrink-0" />
                     )}
                     <div
-                      className={`w-7 h-7 rounded-md flex items-center justify-center shrink-0 ${
-                        meta?.color || "bg-slate-100"
-                      }`}
+                      className={`w-7 h-7 rounded-md flex items-center justify-center shrink-0 ${meta?.color || "bg-slate-100"
+                        }`}
                     >
                       <Icon size={13} />
                     </div>

@@ -12,7 +12,8 @@ import {
   User2,
   ShieldCheck,
   Vote,
-  Sparkles
+  Sparkles,
+  Globe
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
@@ -37,6 +38,7 @@ export function DashboardSidebar() {
     },
     { name: "Google Formlar", href: "/dashboard/forms", icon: FileText },
     { name: "Google integratsiyalar", href: "/dashboard/integrations", icon: Sparkles, badge: "YANGI" },
+    { name: "Workspace Botlari", href: "/dashboard/new-workspace", icon: Globe, badge: "YANGI" },
     { name: "Sozlamalar", href: "/dashboard/settings", icon: Settings },
     { name: "Dasturchi haqida", href: "/dashboard/about", icon: User2 },
   ];

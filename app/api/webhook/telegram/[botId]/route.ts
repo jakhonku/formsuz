@@ -11,6 +11,12 @@ import {
   createSpreadsheet,
   writeSheetHeaders,
 } from "@/lib/google";
+  createGoogleTask,
+  listGoogleTasks,
+  listUpcomingEvents,
+  listDriveFiles,
+  uploadFileToDrive,
+} from "@/lib/googleServices";
 import { decrypt } from "@/lib/crypto";
 import {
   parseForm,
@@ -46,6 +52,15 @@ export async function POST(req: Request, { params }: { params: { botId: string }
     if (!bot || bot.status !== "active") return NextResponse.json({ ok: true });
 
     const botToken = decrypt(bot.telegramToken);
+
+    // Agar bot oddiy Form bo'lmasa, Workspace logikasiga o'tamiz
+    if (bot.type !== "FORM") {
+      await handleWorkspaceBotMessage(req, body, bot, botToken);
+      return NextResponse.json({ ok: true });
+    }
+
+    if (!bot.form) return NextResponse.json({ ok: true });
+    
     const parsed = parseForm(bot.form.metadata);
     const questions = parsed.questions;
 
@@ -126,6 +141,117 @@ async function getOrCreateInProgress(botId: string, chatId: string) {
     where: { botId, chatId, status: "in_progress" },
     orderBy: { createdAt: "desc" },
   });
+}
+
+// Yangi Workspace Bot logikasi (Skelet/Asos)
+async function handleWorkspaceBotMessage(req: Request, body: any, bot: any, botToken: string) {
+  const message = body.message || body.callback_query?.message;
+  if (!message) return;
+  const chatId = message.chat.id.toString();
+  const text = body.message?.text || "";
+
+  // Get user access token
+  const accessToken = await getAccessTokenByUserId(bot.userId);
+  if (!accessToken) {
+    await sendMessage(botToken, chatId, "Xatolik: Google akkauntingizga ulanib bo'lmadi. Dashboard'ga kirib qayta ulaning.");
+    return;
+  }
+
+  // Common Reply Keyboard
+  const mainKb = {
+    keyboard: [
+      [{ text: "📅 Calendar" }, { text: "✅ Tasks" }],
+      [{ text: "📁 Drive" }]
+    ],
+    resize_keyboard: true,
+  };
+
+  if (text === "/start") {
+    let welcome = `Salom! Men sizning shaxsiy Google Workspace yordamchingizman.\n`;
+    welcome += `Men orqali kalendar rejalari, vazifalar va Drive fayllarini boshqarishingiz mumkin.`;
+    await sendMessage(botToken, chatId, welcome, { reply_markup: mainKb });
+    return;
+  }
+
+  // --- CALENDAR LOGIC ---
+  if (text === "📅 Calendar") {
+    try {
+      const events = await listUpcomingEvents(accessToken);
+      if (events.length === 0) {
+        await sendMessage(botToken, chatId, "Yaqin orada rejalar yo'q.");
+      } else {
+        let msg = "📅 <b>Yaqin oradagi rejalar:</b>\n\n";
+        events.forEach((ev: any, i: number) => {
+          const start = new Date(ev.start).toLocaleString("uz-UZ", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+          msg += `${i + 1}. <b>${escapeHtml(ev.summary || "Nomsiz")}</b>\n   🕒 ${start}\n\n`;
+        });
+        await sendMessage(botToken, chatId, msg, { parse_mode: "HTML" });
+      }
+    } catch (e) {
+      await sendMessage(botToken, chatId, "Kalendarni o'qishda xatolik yuz berdi.");
+    }
+    return;
+  }
+
+  // --- TASKS LOGIC ---
+  if (text === "✅ Tasks") {
+    try {
+      const tasks = await listGoogleTasks(accessToken);
+      if (tasks.length === 0) {
+        await sendMessage(botToken, chatId, "Vazifalar ro'yxati bo'sh.");
+      } else {
+        let msg = "✅ <b>Vazifalar ro'yxati:</b>\n\n";
+        tasks.forEach((t: any, i: number) => {
+          msg += `${i + 1}. ${t.status === "completed" ? "<s>" : ""}${escapeHtml(t.title || "Nomsiz")}${t.status === "completed" ? "</s>" : ""}\n`;
+        });
+        await sendMessage(botToken, chatId, msg, { parse_mode: "HTML" });
+      }
+    } catch (e) {
+      await sendMessage(botToken, chatId, "Vazifalarni o'qishda xatolik yuz berdi.");
+    }
+    return;
+  }
+
+  // --- DRIVE LOGIC ---
+  if (text === "📁 Drive") {
+    try {
+      const files = await listDriveFiles(accessToken);
+      if (files.length === 0) {
+        await sendMessage(botToken, chatId, "Drive'da fayllar topilmadi.");
+      } else {
+        let msg = "📁 <b>Oxirgi fayllar:</b>\n\n";
+        files.forEach((f: any, i: number) => {
+          msg += `${i + 1}. <a href="${f.webViewLink}">${escapeHtml(f.name)}</a>\n`;
+        });
+        await sendMessage(botToken, chatId, msg, { parse_mode: "HTML", disable_web_page_preview: true });
+      }
+    } catch (e) {
+      await sendMessage(botToken, chatId, "Drive'ni o'qishda xatolik yuz berdi.");
+    }
+    return;
+  }
+
+  // --- FILE UPLOAD LOGIC ---
+  if (body.message?.document || body.message?.photo) {
+    await sendMessage(botToken, chatId, "⏳ Fayl Google Drive'ga yuklanmoqda...");
+    // Here we would need to download from Telegram and upload to Google
+    // For now, let's just acknowledge
+    await sendMessage(botToken, chatId, "✅ Faylni yuklash funksiyasi tez orada ishga tushadi!");
+    return;
+  }
+
+  // Default fallback: assume it's a task if nothing else matches
+  if (text && !text.startsWith("/")) {
+    try {
+      await createGoogleTask(accessToken, { title: text });
+      await sendMessage(botToken, chatId, `✅ Vazifa qo'shildi: "${text}"`);
+    } catch (e) {
+      await sendMessage(botToken, chatId, "Vazifa qo'shishda xatolik yuz berdi.");
+    }
+    return;
+  }
+
+  await sendMessage(botToken, chatId, "Tushunmadim. Marhamat, menyudan foydalaning.", { reply_markup: mainKb });
 }
 
 async function handleMessage(ctx: {
