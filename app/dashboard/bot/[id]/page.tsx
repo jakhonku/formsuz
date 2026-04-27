@@ -24,6 +24,7 @@ import { BotHeaderActions } from "@/components/dashboard/BotHeaderActions";
 import { parseForm } from "@/lib/formQuestions";
 import { RealTimeRefresh } from "@/components/dashboard/RealTimeRefresh";
 import { ResponsesList } from "@/components/dashboard/ResponsesList";
+import { WorkspaceSettingsPanel } from "@/components/dashboard/WorkspaceSettingsPanel";
 
 const TYPE_LABEL: Record<string, string> = {
   short: "Qisqa javob",
@@ -67,9 +68,9 @@ export default async function BotDetailPage({
   const questions = parsed.questions;
   const completedResponses = bot.responses;
   const totalCompleted = bot._count.responses;
-  const activeTab = ["responses", "questions", "integrations", "settings"].includes(searchParams?.tab || "")
+  const activeTab = ["responses", "questions", "workspace", "integrations", "settings"].includes(searchParams?.tab || "")
     ? searchParams!.tab!
-    : "responses";
+    : isWorkspaceBot ? "workspace" : "responses";
 
   const ownerEmail = session?.user?.email || null;
 
@@ -173,18 +174,30 @@ export default async function BotDetailPage({
           <TabsList className="bg-slate-100 p-1 rounded-full h-11">
             <TabsTrigger value="responses" className="rounded-full px-5 gap-2 text-sm">
               <MessageSquare size={14} />
-              Javoblar
+              {isWorkspaceBot ? "Faollik" : "Javoblar"}
               <span className="text-xs text-slate-400">({totalCompleted})</span>
             </TabsTrigger>
-            <TabsTrigger value="questions" className="rounded-full px-5 gap-2 text-sm">
-              <ListTodo size={14} />
-              Savollar
-              <span className="text-xs text-slate-400">({questions.length})</span>
-            </TabsTrigger>
-            <TabsTrigger value="integrations" className="rounded-full px-5 gap-2 text-sm">
-              <Sparkles size={14} />
-              Integratsiyalar
-            </TabsTrigger>
+            
+            {isWorkspaceBot ? (
+              <TabsTrigger value="workspace" className="rounded-full px-5 gap-2 text-sm">
+                <Sparkles size={14} />
+                Bot Sozlamalari
+              </TabsTrigger>
+            ) : (
+              <TabsTrigger value="questions" className="rounded-full px-5 gap-2 text-sm">
+                <ListTodo size={14} />
+                Savollar
+                <span className="text-xs text-slate-400">({questions.length})</span>
+              </TabsTrigger>
+            )}
+
+            {!isWorkspaceBot && (
+              <TabsTrigger value="integrations" className="rounded-full px-5 gap-2 text-sm">
+                <Sparkles size={14} />
+                Integratsiyalar
+              </TabsTrigger>
+            )}
+            
             <TabsTrigger value="settings" className="rounded-full px-5 gap-2 text-sm">
               <Settings size={14} />
               Sozlamalar
@@ -204,14 +217,18 @@ export default async function BotDetailPage({
           )}
         </TabsContent>
 
-        <TabsContent value="questions" className="w-full mt-5">
-          {questions.length === 0 ? (
-            <Card className="border-dashed border-2 bg-transparent">
-              <CardContent className="py-14 text-center text-slate-500 text-sm">
-                Bu formada hali savollar yo'q.
-              </CardContent>
-            </Card>
-          ) : (
+        <TabsContent value="workspace" className="w-full mt-5">
+          <div className="max-w-3xl mx-auto">
+            <WorkspaceSettingsPanel 
+              botId={bot.id} 
+              botType={bot.type} 
+              initialConfig={(bot.workspaceConfig as any) || {}} 
+            />
+          </div>
+        </TabsContent>
+
+        {!isWorkspaceBot && (
+          <TabsContent value="questions" className="w-full mt-5">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
               {questions.map((q, i) => (
                 <Card key={q.questionId || i} className="border-none shadow-sm h-full">
@@ -268,8 +285,8 @@ export default async function BotDetailPage({
                 </Card>
               ))}
             </div>
-          )}
-        </TabsContent>
+          </TabsContent>
+        )}
 
         <TabsContent value="integrations" className="w-full mt-5">
           <div className="max-w-4xl mx-auto">

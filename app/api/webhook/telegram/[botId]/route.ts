@@ -4,6 +4,7 @@ import {
   sendMessage,
   answerCallbackQuery,
   editMessageReplyMarkup,
+  getFile,
 } from "@/lib/telegram";
 import { getAccessTokenByUserId } from "@/lib/auth-utils";
 import {
@@ -232,14 +233,28 @@ async function handleWorkspaceBotMessage(req: Request, body: any, bot: any, botT
     return;
   }
 
-  // --- FILE UPLOAD LOGIC ---
-  if (body.message?.document || body.message?.photo) {
-    await sendMessage(botToken, chatId, "⏳ Fayl Google Drive'ga yuklanmoqda...");
-    // Here we would need to download from Telegram and upload to Google
-    // For now, let's just acknowledge
-    await sendMessage(botToken, chatId, "✅ Faylni yuklash funksiyasi tez orada ishga tushadi!");
-    return;
-  }
+    // Fayl yuborilganda (Document, Photo)
+    const document = message.document || (message.photo ? message.photo[message.photo.length - 1] : null);
+    if (document) {
+      try {
+        await sendMessage(botToken, chatId, "⏳ Fayl Google Drive'ga yuklanmoqda...");
+        const file = await getFile(botToken, document.file_id);
+        if (!file) throw new Error("File download failed");
+
+        const upload = await uploadFileToDrive(accessToken, {
+          name: document.file_name || file.fileName || "telegram_file",
+          mimeType: file.mimeType || "application/octet-stream",
+          data: file.buffer,
+        });
+
+        await sendMessage(botToken, chatId, `✅ Fayl muvaffaqiyatli yuklandi!\n\n📁 Nomi: ${upload.name}\n🔗 Havola: ${upload.webViewLink}`);
+        return;
+      } catch (error) {
+        console.error("Drive upload error:", error);
+        await sendMessage(botToken, chatId, "❌ Faylni yuklashda xatolik yuz berdi.");
+        return;
+      }
+    }
 
   // Default fallback: assume it's a task if nothing else matches
   if (text && !text.startsWith("/")) {

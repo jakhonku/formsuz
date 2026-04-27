@@ -141,3 +141,21 @@ export async function sendVoice(token: string, chatId: string, voice: any, filen
     voice,
   });
 }
+
+export async function getFile(token: string, fileId: string) {
+  try {
+    const res = await axios.get(`${TELEGRAM_API}${token}/getFile?file_id=${fileId}`);
+    if (!res.data.ok) return null;
+    const filePath = res.data.result.file_path;
+    const fileUrl = `https://api.telegram.org/file/bot${token}/${filePath}`;
+    const fileRes = await axios.get(fileUrl, { responseType: "arraybuffer" });
+    return {
+      buffer: Buffer.from(fileRes.data),
+      fileName: filePath.split("/").pop(),
+      mimeType: fileRes.headers["content-type"],
+    };
+  } catch (error) {
+    console.error("Telegram getFile error:", error);
+    return null;
+  }
+}
