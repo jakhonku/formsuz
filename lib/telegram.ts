@@ -2,13 +2,18 @@ import axios from "axios";
 
 const TELEGRAM_API = "https://api.telegram.org/bot";
 
-export async function verifyBotToken(token: string) {
+export async function getMe(token: string) {
   try {
     const response = await axios.get(`${TELEGRAM_API}${token}/getMe`);
-    return response.data.ok ? response.data.result : null;
+    return response.data;
   } catch {
     return null;
   }
+}
+
+export async function verifyBotToken(token: string) {
+  const data = await getMe(token);
+  return data?.ok ? data.result : null;
 }
 
 export async function setWebhook(token: string, url: string) {
