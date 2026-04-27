@@ -70,6 +70,7 @@ export default function NewBotPage() {
   const [formsLoading, setFormsLoading] = useState(false);
   const [formsError, setFormsError] = useState<string | null>(null);
   const [selectedForm, setSelectedForm] = useState<FormItem | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [mode, setMode] = useState<Mode>("new");
   const [existingBots, setExistingBots] = useState<ExistingBot[]>([]);
@@ -238,6 +239,17 @@ export default function NewBotPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                {!formsLoading && !formsError && forms.length > 5 && (
+                  <div className="relative mb-4">
+                    <Input
+                      placeholder="Forma nomini yozing..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10 h-11 rounded-xl bg-slate-50 border-slate-200"
+                    />
+                    <FileText className="absolute left-3.5 top-3.5 text-slate-400" size={16} />
+                  </div>
+                )}
                 {formsLoading && (
                   <div className="flex items-center justify-center py-16">
                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -283,35 +295,41 @@ export default function NewBotPage() {
                 )}
 
                 {!formsLoading && !formsError && forms.length > 0 && (
-                  <div className="grid gap-3">
-                    {forms.map((f) => (
-                      <div
-                        key={f.id}
-                        onClick={() => setSelectedForm(f)}
-                        className={cn(
-                          "flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all",
-                          selectedForm?.id === f.id
-                            ? "border-primary bg-primary/5 shadow-md"
-                            : "border-slate-100 hover:border-slate-200"
-                        )}
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className={cn(
-                            "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0",
-                            selectedForm?.id === f.id ? "bg-primary text-white" : "bg-slate-100 text-slate-400"
-                          )}>
-                            <FileText size={20} />
+                  <div className="max-h-[400px] overflow-y-auto pr-1 space-y-3 custom-scrollbar">
+                    {filteredForms.length > 0 ? (
+                      filteredForms.map((f) => (
+                        <div
+                          key={f.id}
+                          onClick={() => setSelectedForm(f)}
+                          className={cn(
+                            "flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all mb-3",
+                            selectedForm?.id === f.id
+                              ? "border-primary bg-primary/5 shadow-md"
+                              : "border-slate-100 hover:border-slate-200"
+                          )}
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className={cn(
+                              "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0",
+                              selectedForm?.id === f.id ? "bg-primary text-white" : "bg-slate-100 text-slate-400"
+                            )}>
+                              <FileText size={20} />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-semibold truncate">{f.title}</p>
+                              <p className="text-xs text-slate-400">
+                                Yangilangan: {formatDate(f.modifiedTime || f.createdTime)}
+                              </p>
+                            </div>
                           </div>
-                          <div className="min-w-0">
-                            <p className="font-semibold truncate">{f.title}</p>
-                            <p className="text-xs text-slate-400">
-                              Yangilangan: {formatDate(f.modifiedTime || f.createdTime)}
-                            </p>
-                          </div>
+                          {selectedForm?.id === f.id && <CheckCircle2 className="text-primary h-6 w-6 flex-shrink-0" />}
                         </div>
-                        {selectedForm?.id === f.id && <CheckCircle2 className="text-primary h-6 w-6 flex-shrink-0" />}
+                      ))
+                    ) : (
+                      <div className="text-center py-10">
+                        <p className="text-slate-500 italic">"{searchQuery}" bo'yicha hech narsa topilmadi.</p>
                       </div>
-                    ))}
+                    )}
                   </div>
                 )}
               </CardContent>
