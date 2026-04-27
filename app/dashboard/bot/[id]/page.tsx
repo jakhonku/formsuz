@@ -25,6 +25,8 @@ import { parseForm } from "@/lib/formQuestions";
 import { RealTimeRefresh } from "@/components/dashboard/RealTimeRefresh";
 import { ResponsesList } from "@/components/dashboard/ResponsesList";
 import { WorkspaceSettingsPanel } from "@/components/dashboard/WorkspaceSettingsPanel";
+import { WorkspaceManager } from "@/components/dashboard/WorkspaceManager";
+import { toast } from "sonner";
 
 const TYPE_LABEL: Record<string, string> = {
   short: "Qisqa javob",
@@ -68,7 +70,7 @@ export default async function BotDetailPage({
   const questions = parsed.questions;
   const completedResponses = bot.responses;
   const totalCompleted = bot._count.responses;
-  const activeTab = ["responses", "questions", "workspace", "integrations", "settings"].includes(searchParams?.tab || "")
+  const activeTab = ["responses", "workspace", "integrations", "settings"].includes(searchParams?.tab || "")
     ? searchParams!.tab!
     : isWorkspaceBot ? "workspace" : "responses";
 
@@ -138,8 +140,36 @@ export default async function BotDetailPage({
           botId={bot.id}
           initialStatus={bot.status}
           telegramUsername={bot.telegramBotUsername}
+          isWorkspace={isWorkspaceBot}
         />
       </div>
+
+      {/* Workspace Dashboard Header */}
+      {isWorkspaceBot && (
+        <Card className="border-none shadow-sm bg-gradient-to-r from-primary/10 via-primary/5 to-transparent">
+          <CardContent className="p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-3xl bg-white shadow-xl flex items-center justify-center text-primary border border-primary/10">
+                <Sparkles size={32} />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-slate-800">Workspace Dashboard</h2>
+                <p className="text-sm text-slate-500">Google mahsulotlarini bevosita shu yerdan boshqaring va sozlang.</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="text-right hidden md:block">
+                <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Bot Turi</p>
+                <p className="text-sm font-bold text-primary">{bot.type}</p>
+              </div>
+              <div className="w-px h-8 bg-slate-200 hidden md:block mx-2" />
+              <Badge variant="outline" className="bg-white px-3 py-1 text-xs font-semibold border-slate-200">
+                Aktiv Integratsiya
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -172,23 +202,24 @@ export default async function BotDetailPage({
       <Tabs defaultValue={activeTab} className="w-full">
         <div className="flex justify-start">
           <TabsList className="bg-slate-100 p-1 rounded-full h-11">
-            <TabsTrigger value="responses" className="rounded-full px-5 gap-2 text-sm">
-              <MessageSquare size={14} />
-              {isWorkspaceBot ? "Faollik" : "Javoblar"}
-              <span className="text-xs text-slate-400">({totalCompleted})</span>
-            </TabsTrigger>
-            
             {isWorkspaceBot ? (
               <TabsTrigger value="workspace" className="rounded-full px-5 gap-2 text-sm">
-                <Sparkles size={14} />
-                Bot Sozlamalari
+                <HardDrive size={14} />
+                Fayllar va Boshqaruv
               </TabsTrigger>
             ) : (
-              <TabsTrigger value="questions" className="rounded-full px-5 gap-2 text-sm">
-                <ListTodo size={14} />
-                Savollar
-                <span className="text-xs text-slate-400">({questions.length})</span>
-              </TabsTrigger>
+              <>
+                <TabsTrigger value="responses" className="rounded-full px-5 gap-2 text-sm">
+                  <MessageSquare size={14} />
+                  Javoblar
+                  <span className="text-xs text-slate-400">({totalCompleted})</span>
+                </TabsTrigger>
+                <TabsTrigger value="questions" className="rounded-full px-5 gap-2 text-sm">
+                  <ListTodo size={14} />
+                  Savollar
+                  <span className="text-xs text-slate-400">({questions.length})</span>
+                </TabsTrigger>
+              </>
             )}
 
             {!isWorkspaceBot && (
@@ -200,7 +231,7 @@ export default async function BotDetailPage({
             
             <TabsTrigger value="settings" className="rounded-full px-5 gap-2 text-sm">
               <Settings size={14} />
-              Sozlamalar
+              {isWorkspaceBot ? "Bot Sozlamalari" : "Sozlamalar"}
             </TabsTrigger>
           </TabsList>
         </div>
@@ -218,13 +249,19 @@ export default async function BotDetailPage({
         </TabsContent>
 
         <TabsContent value="workspace" className="w-full mt-5">
-          <div className="max-w-3xl mx-auto">
-            <WorkspaceSettingsPanel 
+           <WorkspaceManager 
               botId={bot.id} 
               botType={bot.type} 
-              initialConfig={(bot.workspaceConfig as any) || {}} 
-            />
-          </div>
+              config={(bot.workspaceConfig as any) || {}} 
+              onConfigUpdate={async (newConfig: any) => {
+                // This is a client-side update via API
+                await fetch(`/api/bot/${bot.id}/workspace-config`, {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ workspaceConfig: newConfig }),
+                });
+              }}
+           />
         </TabsContent>
 
         {!isWorkspaceBot && (

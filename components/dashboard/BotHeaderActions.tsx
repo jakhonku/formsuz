@@ -25,9 +25,10 @@ type Props = {
   botId: string;
   initialStatus: string;
   telegramUsername: string | null;
+  isWorkspace?: boolean;
 };
 
-export function BotHeaderActions({ botId, initialStatus, telegramUsername }: Props) {
+export function BotHeaderActions({ botId, initialStatus, telegramUsername, isWorkspace }: Props) {
   const router = useRouter();
   const [statusNow, setStatusNow] = useState(initialStatus);
   const [busy, startTransition] = useTransition();
@@ -115,20 +116,22 @@ export function BotHeaderActions({ botId, initialStatus, telegramUsername }: Pro
           {isActive ? "So'rovni tohtatish" : "So'rovni yoqish"}
         </Button>
 
-        <Button
-          variant="outline"
-          onClick={refreshForm}
-          disabled={refreshing}
-          title="Formani Google'dan qayta yuklash"
-          className="rounded-full gap-2 h-10"
-        >
-          {refreshing ? (
-            <Loader2 size={16} className="animate-spin" />
-          ) : (
-            <RefreshCw size={16} />
-          )}
-          Formani yangilash
-        </Button>
+        {!isWorkspace && (
+          <Button
+            variant="outline"
+            onClick={refreshForm}
+            disabled={refreshing}
+            title="Formani Google'dan qayta yuklash"
+            className="rounded-full gap-2 h-10"
+          >
+            {refreshing ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <RefreshCw size={16} />
+            )}
+            Formani yangilash
+          </Button>
+        )}
 
         {telegramUsername && (
           <Button variant="outline" asChild className="rounded-full gap-2 h-10">
