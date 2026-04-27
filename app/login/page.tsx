@@ -35,7 +35,7 @@ export default function LoginPage() {
           </div>
           <CardTitle className="text-3xl font-bold tracking-tight">Xush kelibsiz!</CardTitle>
           <CardDescription className="text-lg">
-            FormBot platformasidan foydalanish uchun Google akkauntingiz orqali kiring.
+            Gway.uz platformasidan foydalanish uchun Google akkauntingiz orqali kiring.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-6 pt-6 pb-10">
