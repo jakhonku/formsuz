@@ -38,19 +38,6 @@ export async function POST(req: Request, { params }: { params: { botId: string }
     const botId = params.botId;
     const body = await req.json();
 
-    // AGGRESSIVE DEBUG: Log every single hit to the webhook
-    try {
-      await prisma.chatMessage.create({
-        data: {
-          botId,
-          chatId: (body.message?.chat?.id || body.callback_query?.message?.chat?.id || "unknown").toString(),
-          content: `WEBHOOK HIT: ${body.message ? "message" : (body.callback_query ? "callback" : "other")}`,
-          type: "text",
-          sender: "user",
-        }
-      });
-    } catch (e) {}
-
     const bot = await prisma.bot.findUnique({
       where: { id: botId },
       include: { form: true },
