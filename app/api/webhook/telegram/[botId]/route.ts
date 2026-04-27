@@ -241,10 +241,13 @@ async function handleWorkspaceBotMessage(req: Request, body: any, bot: any, botT
         const file = await getFile(botToken, document.file_id);
         if (!file) throw new Error("File download failed");
 
+        const workspaceConfig = (bot.workspaceConfig as any) || {};
+
         const upload = await uploadFileToDrive(accessToken, {
           name: document.file_name || file.fileName || "telegram_file",
           mimeType: file.mimeType || "application/octet-stream",
           data: file.buffer,
+          folderId: workspaceConfig.folderId,
         });
 
         await sendMessage(botToken, chatId, `✅ Fayl muvaffaqiyatli yuklandi!\n\n📁 Nomi: ${upload.name}\n🔗 Havola: ${upload.webViewLink}`);
@@ -259,7 +262,11 @@ async function handleWorkspaceBotMessage(req: Request, body: any, bot: any, botT
   // Default fallback: assume it's a task if nothing else matches
   if (text && !text.startsWith("/")) {
     try {
-      await createGoogleTask(accessToken, { title: text });
+      const workspaceConfig = (bot.workspaceConfig as any) || {};
+      await createGoogleTask(accessToken, {
+        title: text,
+        taskListId: workspaceConfig.taskListId || "@default",
+      });
       await sendMessage(botToken, chatId, `✅ Vazifa qo'shildi: "${text}"`);
     } catch (e) {
       await sendMessage(botToken, chatId, "Vazifa qo'shishda xatolik yuz berdi.");
