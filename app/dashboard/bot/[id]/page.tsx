@@ -253,14 +253,6 @@ export default async function BotDetailPage({
               botId={bot.id} 
               botType={bot.type} 
               config={(bot.workspaceConfig as any) || {}} 
-              onConfigUpdate={async (newConfig: any) => {
-                // This is a client-side update via API
-                await fetch(`/api/bot/${bot.id}/workspace-config`, {
-                  method: "PATCH",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ workspaceConfig: newConfig }),
-                });
-              }}
            />
         </TabsContent>
 

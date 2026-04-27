@@ -28,7 +28,8 @@ interface DriveFile {
   iconLink?: string;
 }
 
-export function WorkspaceManager({ botId, botType, config, onConfigUpdate }: any) {
+export function WorkspaceManager({ botId, botType, config: initialConfig }: any) {
+  const [config, setConfig] = useState<any>(initialConfig || {});
   const [loading, setLoading] = useState(true);
   const [files, setFiles] = useState<DriveFile[]>([]);
   const [path, setPath] = useState<{id: string, name: string}[]>([{id: 'root', name: 'Mening Drive-im'}]);
@@ -81,9 +82,19 @@ export function WorkspaceManager({ botId, botType, config, onConfigUpdate }: any
     }
   }
 
-  function selectFolder(id: string) {
-    onConfigUpdate({ ...config, folderId: id });
-    toast.success("Bot uchun ushbu papka tanlandi");
+  async function selectFolder(id: string) {
+    const next = { ...config, folderId: id };
+    setConfig(next);
+    try {
+      await fetch(`/api/bot/${botId}/workspace-config`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workspaceConfig: next }),
+      });
+      toast.success("Bot uchun ushbu papka tanlandi");
+    } catch (e) {
+      toast.error("Saqlashda xatolik");
+    }
   }
 
   const isSelected = (id: string) => config.folderId === id || (id === 'root' && !config.folderId);
