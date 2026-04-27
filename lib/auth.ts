@@ -73,22 +73,28 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account }) {
       // Initial sign in
       if (account && user) {
-        // Fetch fresh plan info from DB even on sign in (since adapter creates the user)
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
           select: { plan: true, planExpiresAt: true }
         });
 
+        // Safely calculate expiry: use expires_at if available, fallback to expires_in (Google always sends 3599)
+        const accessTokenExpires = account.expires_at
+          ? account.expires_at * 1000
+          : Date.now() + ((account.expires_in as number || 3600) * 1000);
+
         return {
-          accessToken: account.access_token,
-          accessTokenExpires: (account.expires_at ?? 0) * 1000,
-          refreshToken: account.refresh_token,
+          sub: user.id,          // Required by NextAuth v4 to build session.user
           id: user.id,
           name: user.name,
           email: user.email,
           image: user.image,
+          accessToken: account.access_token,
+          accessTokenExpires,
+          refreshToken: account.refresh_token,
           plan: dbUser?.plan || "FREE",
-          planExpiresAt: dbUser?.planExpiresAt?.toISOString() || null
+          planExpiresAt: dbUser?.planExpiresAt?.toISOString() || null,
+          planCheckedAt: Date.now(),
         };
       }
 
