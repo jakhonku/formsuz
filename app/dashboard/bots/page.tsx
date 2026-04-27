@@ -8,7 +8,12 @@ export default async function BotsPage() {
 
   const bots = await prisma.bot.findMany({
     where: { userId: session?.user?.id },
-    include: {
+    select: {
+      id: true,
+      name: true,
+      status: true,
+      type: true,
+      telegramBotUsername: true,
       form: { select: { title: true } },
       _count: { select: { responses: true } },
     },

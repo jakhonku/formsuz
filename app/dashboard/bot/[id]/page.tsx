@@ -16,10 +16,12 @@ import {
   Award,
   ArrowLeft,
   Sparkles,
-  HardDrive
+  HardDrive,
+  Zap,
 } from "lucide-react";
 import { BotSettingsPanel } from "@/components/dashboard/BotSettingsPanel";
 import { BotHeaderActions } from "@/components/dashboard/BotHeaderActions";
+import { BotIntegrationsPanel } from "@/components/dashboard/BotIntegrationsPanel";
 import { parseForm } from "@/lib/formQuestions";
 import { RealTimeRefresh } from "@/components/dashboard/RealTimeRefresh";
 import { ResponsesList } from "@/components/dashboard/ResponsesList";
@@ -54,7 +56,8 @@ export default async function BotDetailPage({
   const questions = parsed.questions;
   const completedResponses = bot.responses || [];
   const totalCompleted = bot._count?.responses || 0;
-  const activeTab = ["responses", "workspace", "settings"].includes(searchParams?.tab || "")
+  const ownerEmail = session?.user?.email || null;
+  const activeTab = ["responses", "workspace", "integrations", "settings"].includes(searchParams?.tab || "")
     ? searchParams!.tab!
     : isWorkspaceBot ? "workspace" : "responses";
 
@@ -146,14 +149,17 @@ export default async function BotDetailPage({
                 Boshqaruv
               </TabsTrigger>
             ) : (
-              <>
-                <TabsTrigger value="responses" className="rounded-full px-5 gap-2 text-sm">
-                  <MessageSquare size={14} />
-                  Javoblar
-                </TabsTrigger>
-              </>
+              <TabsTrigger value="responses" className="rounded-full px-5 gap-2 text-sm">
+                <MessageSquare size={14} />
+                Javoblar
+              </TabsTrigger>
             )}
-            
+
+            <TabsTrigger value="integrations" className="rounded-full px-5 gap-2 text-sm">
+              <Zap size={14} />
+              Integratsiyalar
+            </TabsTrigger>
+
             <TabsTrigger value="settings" className="rounded-full px-5 gap-2 text-sm">
               <Settings size={14} />
               Sozlamalar
@@ -170,11 +176,15 @@ export default async function BotDetailPage({
         </TabsContent>
 
         <TabsContent value="workspace" className="w-full mt-5">
-           <WorkspaceManager 
-              botId={bot.id} 
-              botType={bot.type} 
-              config={(bot.workspaceConfig as any) || {}} 
+           <WorkspaceManager
+              botId={bot.id}
+              botType={bot.type}
+              config={(bot.workspaceConfig as any) || {}}
            />
+        </TabsContent>
+
+        <TabsContent value="integrations" className="w-full mt-5">
+          <BotIntegrationsPanel botId={bot.id} ownerEmail={ownerEmail} />
         </TabsContent>
 
         <TabsContent value="settings" className="w-full mt-5">

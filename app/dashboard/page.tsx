@@ -32,31 +32,57 @@ export default async function DashboardPage() {
   const userPlan = userInfo?.plan || "FREE";
   const canUseVoting = ["PRO", "BUSINESS", "GWAY"].includes(userPlan);
 
-  const [bots, recentResponses, totalResponses, activeBotsCount, formCount] =
-    await Promise.all([
-      prisma.bot.findMany({
-        where: { userId },
-        include: { form: true, _count: { select: { responses: true } } },
-        orderBy: { createdAt: "desc" },
-        take: 3,
-      }),
-      prisma.response.findMany({
-        where: { bot: { userId }, status: "completed" },
-        include: { bot: { select: { telegramBotUsername: true, form: { select: { title: true } } } } },
-        orderBy: { createdAt: "desc" },
-        take: 5,
-      }),
-      prisma.response.count({ where: { bot: { userId }, status: "completed" } }),
-      prisma.bot.count({ where: { userId, status: "active" } }),
-      prisma.form.count({ where: { userId } }),
-    ]);
-
-  const totalBots = await prisma.bot.count({ where: { userId } });
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const todayResponses = await prisma.response.count({
-    where: { bot: { userId }, status: "completed", createdAt: { gte: today } },
-  });
+
+  const [
+    bots,
+    recentResponses,
+    totalResponses,
+    activeBotsCount,
+    formCount,
+    totalBots,
+    todayResponses,
+  ] = await Promise.all([
+    prisma.bot.findMany({
+      where: { userId },
+      select: {
+        id: true,
+        name: true,
+        status: true,
+        telegramBotUsername: true,
+        type: true,
+        form: { select: { title: true } },
+        _count: { select: { responses: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 3,
+    }),
+    prisma.response.findMany({
+      where: { bot: { userId }, status: "completed" },
+      select: {
+        id: true,
+        botId: true,
+        chatId: true,
+        createdAt: true,
+        bot: {
+          select: {
+            telegramBotUsername: true,
+            form: { select: { title: true } },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+    }),
+    prisma.response.count({ where: { bot: { userId }, status: "completed" } }),
+    prisma.bot.count({ where: { userId, status: "active" } }),
+    prisma.form.count({ where: { userId } }),
+    prisma.bot.count({ where: { userId } }),
+    prisma.response.count({
+      where: { bot: { userId }, status: "completed", createdAt: { gte: today } },
+    }),
+  ]);
 
   return (
     <div className="flex flex-col h-full gap-5">

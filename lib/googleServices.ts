@@ -260,3 +260,17 @@ export async function listGoogleTasks(accessToken: string, max = 10) {
   const res = await tasks.tasks.list({ tasklist: "@default", maxResults: max });
   return res.data.items || [];
 }
+
+// ---------- Sheets ----------
+export async function createSpreadsheet(accessToken: string, title: string) {
+  const sheets = google.sheets({ version: "v4", auth: authClient(accessToken) });
+  const res = await sheets.spreadsheets.create({
+    requestBody: {
+      properties: { title },
+    },
+  });
+  return {
+    id: res.data.spreadsheetId,
+    url: res.data.spreadsheetUrl,
+  };
+}

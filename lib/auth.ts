@@ -128,9 +128,10 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
-      // Re-read plan/expiry from DB with a short TTL so admin upgrades
-      // take effect within ~60s without hammering the DB on every request.
-      const PLAN_TTL_MS = 60_000;
+      // Re-read plan/expiry from DB with a longer TTL so admin upgrades
+      // take effect within ~10 min without hammering the DB on every request
+      // (every page load triggers `getServerSession` which calls this callback).
+      const PLAN_TTL_MS = 10 * 60_000;
       const lastCheck = (token.planCheckedAt as number | undefined) ?? 0;
       if (token.id && Date.now() - lastCheck > PLAN_TTL_MS) {
         try {
