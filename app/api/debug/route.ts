@@ -1,32 +1,57 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import axios from "axios";
+import { decrypt } from "@/lib/crypto";
 
-export async function GET(request: Request) {
-  const session = await getServerSession(authOptions);
+export async function GET() {
+  try {
+    const userCount = await prisma.user.count();
+    const botCount = await prisma.bot.count();
+    
+    // Check webhooks for all active bots
+    const bots = await prisma.bot.findMany({
+      include: { form: { select: { title: true } } }
+    });
 
-  // Safe environment variables to expose (no secrets)
-  const safeEnv = {
-    NODE_ENV: process.env.NODE_ENV,
-    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-    // Don't expose secrets, keys, or tokens
-  };
+    const botDetails = await Promise.all(bots.slice(0, 5).map(async (bot) => {
+      let webhookInfo: any = "No token info";
+      try {
+        const token = decrypt(bot.telegramToken);
+        if (token) {
+          const res = await axios.get(`https://api.telegram.org/bot${token}/getWebhookInfo`);
+          webhookInfo = res.data.result;
+        } else {
+          webhookInfo = "Decryption failed";
+        }
+      } catch (e: any) {
+        webhookInfo = "Telegram API error: " + (e.message || "Unknown");
+      }
 
-  return NextResponse.json({
-    session: session ? {
-      user: session.user ? {
-        id: session.user.id,
-        name: session.user.name,
-        email: session.user.email,
-        image: session.user.image,
-        accessTokenExists: !!session.user.accessToken,
-        refreshTokenExists: !!session.user.refreshToken,
-        plan: session.user.plan,
-        planExpiresAt: session.user.planExpiresAt,
-      } : null,
-      expires: session.expires,
-    } : null,
-    env: safeEnv,
-    cookies: request.headers.get("cookie") || "",
-  });
+      return {
+        id: bot.id,
+        username: bot.telegramBotUsername,
+        form: bot.form?.title || "Unknown",
+        status: bot.status,
+        webhook: webhookInfo
+      };
+    }));
+
+    return NextResponse.json({
+      status: "ok",
+      env: {
+        NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+        DATABASE_URL_SET: !!process.env.DATABASE_URL,
+        DIRECT_URL_SET: !!process.env.DIRECT_URL,
+        ENCRYPTION_KEY_SET: !!process.env.ENCRYPTION_KEY,
+        ENCRYPTION_KEY_LENGTH: process.env.ENCRYPTION_KEY?.length || 0
+      },
+      stats: {
+        users: userCount,
+        bots: botCount
+      },
+      bots: botDetails
+    });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }
